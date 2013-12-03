@@ -85,7 +85,7 @@ slicerMacroBuildQtModule(
 set(MODULE_PYTHON_SCRIPTS
  #__init__
   KUtil
-  CarreraSliceEffect
+  KSliceEffect
   )
 
 set(MODULE_PYTHON_RESOURCES

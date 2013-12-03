@@ -108,8 +108,8 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
 
   def updateParameterNode(self, caller, event):
     '''# in each leaf subclass so that "self" in the observer
-       # is of the correct type
-    '''
+# is of the correct type
+'''
     node = EditUtil.EditUtil().getParameterNode()
     if node != self.parameterNode:
       if self.parameterNode:
@@ -154,7 +154,7 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
         self.locRadFrame.show()
     else:
       KSliceBot(self)
-      slicer.modules.editorBot.logic.emergencyStopFunc = self.botEstop;   #save the function that stops bot, destroys KSlice, if things go wrong 
+      slicer.modules.editorBot.logic.emergencyStopFunc = self.botEstop; #save the function that stops bot, destroys KSlice, if things go wrong
       if self.botButton:
         self.botButton.text = "Stop Interactive Segmentor"
       if self.locRadFrame:
@@ -239,7 +239,7 @@ handle events from the render window interactor
       if not orient:
         print "Warning, unexpected view orientation!?"
     if event == 'EnterEvent':
-      pass      #print "EnterEvent in KSliceEffect."
+      pass #print "EnterEvent in KSliceEffect."
     else:
       pass
 
@@ -319,12 +319,12 @@ def bind_view_observers( handlerFunc ):
 
 class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
   """
-    [concise useful desc]
-  """
+[concise useful desc]
+"""
 
   def __init__(self,sliceLogic):
     import vtkSlicerKSliceModuleLogicPython
-    self.fullInitialized=False                                                          #tracks if completed the initializtion (so can do stop correctly)
+    self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly)
     self.sliceLogic = sliceLogic
 
     #disconnect all shortcuts that may exist, to allow KSlice's to work, reconnect once bot is turned off
@@ -342,30 +342,30 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #this gets set once, user cannot use a different color w/o stopping segmentation, starting over
     #create variables to keep track of how the label changed (automatic part or user input)
-    self.labVal = EditorLib.EditUtil.EditUtil().getLabel() 
+    self.labVal = EditorLib.EditUtil.EditUtil().getLabel()
     Print_Good("Init KSliceLogic with Label Fixed to " + str(self.labVal) )
     self.acMod = 0
     self.userMod = 0
     self.emergencyStopFunc = None
-    self.inFact=1                      #weight of the user input  (small=soft user suggestion, large=essentially hard constraint)
+    self.inFact=1 #weight of the user input (small=soft user suggestion, large=essentially hard constraint)
 
-    self.dialogBox=qt.QMessageBox()                                                    #will display messages to draw users attention if he does anything wrong
+    self.dialogBox=qt.QMessageBox() #will display messages to draw users attention if he does anything wrong
     self.dialogBox.setWindowTitle("KSlice Interactive Segmentor Error")
-    self.dialogBox.setWindowModality(qt.Qt.NonModal)                                   #will allow user to continue interacting with Slicer
+    self.dialogBox.setWindowModality(qt.Qt.NonModal) #will allow user to continue interacting with Slicer
 
-    # TODO: check this claim-  might be causing leaks
-    #       set the image, label nodes (this will not change although the user can
-    #       alter what is bgrnd/frgrnd in editor)
+    # TODO: check this claim- might be causing leaks
+    # set the image, label nodes (this will not change although the user can
+    # alter what is bgrnd/frgrnd in editor)
     # Confused about how info propagates UIarray to UIVol, not the other way, NEEDS AUTO TESTS
 
-    #labelLogic          = self.sliceLogic.GetLabelLayer()
-    #backgroundLogic     = self.sliceLogic.GetBackgroundLayer()
-    self.editUtil       = EditUtil.EditUtil()
-    self.labelNode      = self.editUtil.getLabelVolume()                                #labelLogic.GetVolumeNode()
-    self.backgroundNode = self.editUtil.getBackgroundVolume()                           #backgroundLogic.GetVolumeNode()
+    #labelLogic = self.sliceLogic.GetLabelLayer()
+    #backgroundLogic = self.sliceLogic.GetBackgroundLayer()
+    self.editUtil = EditUtil.EditUtil()
+    self.labelNode = self.editUtil.getLabelVolume() #labelLogic.GetVolumeNode()
+    self.backgroundNode = self.editUtil.getBackgroundVolume() #backgroundLogic.GetVolumeNode()
 
-    #perform safety check on right images/labels being selected,                        #set up images
-    if type(self.backgroundNode)==type(None) or type(self.labelNode)==type(None):       #if red slice doesnt have a label or image, go no further
+    #perform safety check on right images/labels being selected, #set up images
+    if type(self.backgroundNode)==type(None) or type(self.labelNode)==type(None): #if red slice doesnt have a label or image, go no further
        self.dialogBox.setText("Either Image (must be Background Image) or Label not set in slice views.")
        self.dialogBox.show()
        
@@ -373,26 +373,26 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
            self.emergencyStopFunc()
        return
         
-    volumesLogic        = slicer.modules.volumes.logic()
-    steeredName         = self.backgroundNode.GetName() + '-UserInput'                    #the name we want it to have
+    volumesLogic = slicer.modules.volumes.logic()
+    steeredName = self.backgroundNode.GetName() + '-UserInput' #the name we want it to have
 
-    self.labelImg       = self.labelNode.GetImageData()                                   # vtkImageData*
-    self.labelName      = self.labelNode.GetName()                                        # record name of label so user, cant trick us
-    self.labArr         = slicer.util.array(self.labelName)                               # numpy array with label, TODO: prevents other-named labels?
-    self.imgName        = self.backgroundNode.GetName()
+    self.labelImg = self.labelNode.GetImageData() # vtkImageData*
+    self.labelName = self.labelNode.GetName() # record name of label so user, cant trick us
+    self.labArr = slicer.util.array(self.labelName) # numpy array with label, TODO: prevents other-named labels?
+    self.imgName = self.backgroundNode.GetName()
 
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:                                 # do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: # do nothing, exit function if user has played with images
       if self.emergencyStopFunc:
           self.emergencyStopFunc()
       return
 
-    self.imgSpacing	= self.backgroundNode.GetSpacing()		                  # get the pixel spacing
-    steeredVolume       = volumesLogic.CloneVolume(slicer.mrmlScene, self.labelNode, steeredName)
-    self.uiName         = steeredVolume.GetName()                                         # the name that was actually assigned by slicer
-    steeredArray        = slicer.util.array(self.uiName )                                 # get the numpy array
-    steeredArray[:]     = 0                                                               # Init user input to zeros
-    self.UIarray        = steeredArray                                                    # keep reference for easy computation of accumulation
-    self.uiImg          = steeredVolume.GetImageData() 
+    self.imgSpacing        = self.backgroundNode.GetSpacing()                 # get the pixel spacing
+    steeredVolume = volumesLogic.CloneVolume(slicer.mrmlScene, self.labelNode, steeredName)
+    self.uiName = steeredVolume.GetName() # the name that was actually assigned by slicer
+    steeredArray = slicer.util.array(self.uiName ) # get the numpy array
+    steeredArray[:] = 0 # Init user input to zeros
+    self.UIarray = steeredArray # keep reference for easy computation of accumulation
+    self.uiImg = steeredVolume.GetImageData()
 
 
 
@@ -402,13 +402,13 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     s3 = qt.QKeySequence(qt.Qt.Key_F) # Press f/F to run segmentor 3d
     s4 = qt.QKeySequence(qt.Qt.Key_T) # Press t/T to run segmentor 2.5d
     s5 = qt.QKeySequence(qt.Qt.Key_E) # Press e/E to run segmentor(chan-vese) 3D
-    tg = qt.QKeySequence(qt.Qt.Key_A) # toggle between the painting label and 0--erasing label 
+    tg = qt.QKeySequence(qt.Qt.Key_A) # toggle between the painting label and 0--erasing label
     cp = qt.QKeySequence(qt.Qt.Key_C) # copy
     ps = qt.QKeySequence(qt.Qt.Key_V) # paste
     wf = qt.QKeySequence(qt.Qt.Key_B) # flip weight factor between soft, ~hard user constraints
     
-    print  " keys for 2d, CV 3D, 3d, 2.5d, are      Q, E, F, T"
-    print  " toggle, copy, paste:                   A, C, V "
+    print " keys for 2d, CV 3D, 3d, 2.5d, are Q, E, F, T"
+    print " toggle, copy, paste: A, C, V "
     
     self.qtkeyconnections = []
     self.qtkeydefs = [ [s2,self.runSegment2D],
@@ -433,8 +433,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
 
     # a number of observers for various events
-    self.ladMod_tag            = self.labelImg.AddObserver("ModifiedEvent", self.labModByUser)                   # put a listener on label, so we know when user has drawn
-    self.logMod_tag            = self.sliceLogic.AddObserver("ModifiedEvent", self.updateLabelUserInput)         # put test listener on the whole window
+    self.ladMod_tag = self.labelImg.AddObserver("ModifiedEvent", self.labModByUser) # put a listener on label, so we know when user has drawn
+    self.logMod_tag = self.sliceLogic.AddObserver("ModifiedEvent", self.updateLabelUserInput) # put test listener on the whole window
     self.mouse_obs, self.swLUT = bind_view_observers(self.testWindowListener)
     self.mouse_obs.append([self.sliceLogic,self.logMod_tag])
   
@@ -447,31 +447,31 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     ksliceMod.SetLabelVol( self.labelImg )
     ksliceMod.SetUIVol( self.uiImg )
     ksliceMod.SetCurrLabel(self.labVal)
-    node    = EditUtil.EditUtil().getParameterNode()        # get the parameters from MRML
+    node = EditUtil.EditUtil().getParameterNode() # get the parameters from MRML
     currRad = int(float(node.GetParameter("KSliceEffect,radius")))
-    self.numIts  = int(float(node.GetParameter("KSliceEffect,numIts")))
-    ksliceMod.SetBrushRad(currRad)                          # only get to set radius at the beginning
+    self.numIts = int(float(node.GetParameter("KSliceEffect,numIts")))
+    ksliceMod.SetBrushRad(currRad) # only get to set radius at the beginning
     ksliceMod.SetNumIts(self.numIts)
     ksliceMod.SetSpacing(self.imgSpacing)
-    ksliceMod.SetLambdaPenalty(0)                           # ensure effect of user input is local only, with no penalty on curvature
+    ksliceMod.SetLambdaPenalty(0) # ensure effect of user input is local only, with no penalty on curvature
     ksliceMod.Initialize()
     self.ksliceMod= ksliceMod;
 
 
     # initialize state variables
-    #self.currSlice    = None
-    self.ijkPlane     = 'IJ'
-    self.sw           = slicer.app.layoutManager().sliceWidget('Red')
-    self.interactor   = self.sw.sliceView().interactor() #initialize to red slice interactor
-    self.computeCurrSliceSmarter()     #initialize the current slice to something meaningful
-    self.lastRunPlane = 'None'   #null setting, meaning we havent done any segmentations yet
-    self.lastModBy    = 'None'   #was last active contour run in 2D or 3D (cache needs to be recomputed)
-    self.accumInProg  = 0        #marker to know that we are accumulating user input   
+    #self.currSlice = None
+    self.ijkPlane = 'IJ'
+    self.sw = slicer.app.layoutManager().sliceWidget('Red')
+    self.interactor = self.sw.sliceView().interactor() #initialize to red slice interactor
+    self.computeCurrSliceSmarter() #initialize the current slice to something meaningful
+    self.lastRunPlane = 'None' #null setting, meaning we havent done any segmentations yet
+    self.lastModBy = 'None' #was last active contour run in 2D or 3D (cache needs to be recomputed)
+    self.accumInProg = 0 #marker to know that we are accumulating user input
 
     # make cache slices for the three different planes
     def createTmpArray(dim0, dim1, nameSuffix):
       Print_Good( "making array " + nameSuffix )
-      return np.zeros([volSize[dim0],volSize[dim1],1])   #tmpArr
+      return np.zeros([volSize[dim0],volSize[dim1],1]) #tmpArr
 
     print("Making temporary slice arrays")
     volSize=self.labelImg.GetDimensions()
@@ -482,7 +482,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.i_range=np.arange(0,volSize[0])
     self.j_range=np.arange(0,volSize[1])
     self.k_range=np.arange(0,volSize[2])
-    self.linInd=np.ix_([self.currSlice],  self.j_range, self.i_range) #indices for elements of slice, in the 3D array
+    self.linInd=np.ix_([self.currSlice], self.j_range, self.i_range) #indices for elements of slice, in the 3D array
 
 
 
@@ -490,21 +490,21 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.currSlice_tmp=self.currSlice
     self.ijkPlane_tmp =self.ijkPlane
     
-    # debug 
+    # debug
     range_img = self.backgroundNode.GetImageData().GetScalarRange()
     Print_Good( str(range_img) )
  
 
-    self.fullInitialized=True                                                          #tracks if completed the initializtion (so can do stop correctly)
+    self.fullInitialized=True #tracks if completed the initializtion (so can do stop correctly)
 
   def check_U_sync(self):
     #self.uiImg.Update()
     range_UIVol = self.uiImg.GetScalarRange()
     range_UIArr = [self.UIarray.min(),self.UIarray.max()]
-    strInfo="min,max of UIVol and UIArr = "+str(range_UIVol)+";  "+str(range_UIArr)+", sign(uk)= "
+    strInfo="min,max of UIVol and UIArr = "+str(range_UIVol)+"; "+str(range_UIArr)+", sign(uk)= "
     isGood = True
     if max( [abs(range_UIArr[0]-range_UIVol[0]),
-             abs(range_UIArr[1]-range_UIVol[1])]  )>0.5:
+             abs(range_UIArr[1]-range_UIVol[1])] )>0.5:
       Print_Bad( "FAIL SYNC! "+strInfo )
       isGood = False
     else:
@@ -512,25 +512,25 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     return isGood
 
   def sliceViewMatchEditor(self, sliceLogic):
-    #if self.dialogBox==type(None):                              #something deleted teh dialogBox, this function then breaks, bail
-    #    if self.emergencyStopFunc:
-    #        self.emergencyStopFunc()
-    #    return False
+    #if self.dialogBox==type(None): #something deleted teh dialogBox, this function then breaks, bail
+    # if self.emergencyStopFunc:
+    # self.emergencyStopFunc()
+    # return False
     
-    imgNode    = sliceLogic.GetBackgroundLayer().GetVolumeNode()
-    labelNode  = sliceLogic.GetLabelLayer().GetVolumeNode()
+    imgNode = sliceLogic.GetBackgroundLayer().GetVolumeNode()
+    labelNode = sliceLogic.GetLabelLayer().GetVolumeNode()
 
     if type(imgNode)==type(None) or type(labelNode)==type(None) :
-        self.dialogBox.setText("Either image (must be Background Image) or label not set in slice views.") 
+        self.dialogBox.setText("Either image (must be Background Image) or label not set in slice views.")
         self.dialogBox.show()
         if self.emergencyStopFunc:
             self.emergencyStopFunc()
-        return False 
+        return False
 
     dimImg=self.backgroundNode.GetImageData().GetDimensions()
     dimLab=self.labelNode.GetImageData().GetDimensions()
 
-    if not (dimImg[0]==dimLab[0] and dimImg[1]==dimLab[1] and dimImg[2]==dimLab[2]):    #if sizes dont match up(doing this b/c cant reach HelperBox parameters
+    if not (dimImg[0]==dimLab[0] and dimImg[1]==dimLab[1] and dimImg[2]==dimLab[2]): #if sizes dont match up(doing this b/c cant reach HelperBox parameters
         self.dialogBox.setText("Mismatched label to image.")
         self.dialogBox.show()
         if self.emergencyStopFunc:
@@ -553,18 +553,18 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         return False
 
   def testWindowListener(self, caller, event):
-    interactor=caller 						       # should be called by the slice interactor...
-    self.sw         = self.swLUT[interactor]
-    self.interactor = interactor 
+    interactor=caller                                                  # should be called by the slice interactor...
+    self.sw = self.swLUT[interactor]
+    self.interactor = interactor
     
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
     if event == "MouseMoveEvent": # this a verbose event, dont print
-      self.computeCurrSliceSmarter()                                   #just in case, so were always up to date
+      self.computeCurrSliceSmarter() #just in case, so were always up to date
       pass
     else:
-      pass  #print "windowListener => processEvent( " + str(event) +" )"   
+      pass #print "windowListener => processEvent( " + str(event) +" )"
    
     if event in ("EnterEvent","LeftButtonPressEvent","RightButtonPressEvent"):
       # should be done first! sets orientation info
@@ -574,31 +574,31 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
       else:
         viewName,orient = get_view_names(self.sw)
         xy = interactor.GetEventPosition()
-        ijk = smart_xyToIJK(xy,self.sw)                               #ijk computation leads to "computeCurrSliceSmarter" not working
+        ijk = smart_xyToIJK(xy,self.sw) #ijk computation leads to "computeCurrSliceSmarter" not working
         vals = get_values_at_IJK(ijk,self.sw)
-        self.sliceLogic = self.sw.sliceLogic()                        #this is a hack, look at init function, self.sliceLogic already defined as just "Red" slice
+        self.sliceLogic = self.sw.sliceLogic() #this is a hack, look at init function, self.sliceLogic already defined as just "Red" slice
         ijkPlane = self.sliceIJKPlane()
         self.ksliceMod.SetOrientation(str(ijkPlane))
         self.ijkPlane = ijkPlane
-        self.computeCurrSliceSmarter()                    
+        self.computeCurrSliceSmarter()
      
     #make sure accumulation has been done BEFORE clearing cache variables and recording over them (fixes multiple left clicks required by the "DrawEffect" tool
-    if event == "LeftButtonPressEvent" and self.accumInProg==0:      
+    if event == "LeftButtonPressEvent" and self.accumInProg==0:
 
       self.accumInProg=1
       if self.ijkPlane=="IJ":
-          self.linInd=np.ix_([self.currSlice],  self.j_range, self.i_range)
-          self.ij_tmpArr=deepcopy(self.labArr[self.linInd])            
+          self.linInd=np.ix_([self.currSlice], self.j_range, self.i_range)
+          self.ij_tmpArr=deepcopy(self.labArr[self.linInd])
           
       elif self.ijkPlane=="JK":
           self.linInd=np.ix_(self.k_range, self.j_range, [self.currSlice])
-          self.jk_tmpArr=deepcopy(self.labArr[self.linInd]) 
+          self.jk_tmpArr=deepcopy(self.labArr[self.linInd])
           
       elif self.ijkPlane=="IK":
-          self.linInd=np.ix_(self.k_range,  [self.currSlice], self.i_range)
-          self.ik_tmpArr=deepcopy(self.labArr[self.linInd]) 
+          self.linInd=np.ix_(self.k_range, [self.currSlice], self.i_range)
+          self.ik_tmpArr=deepcopy(self.labArr[self.linInd])
           
-      if EditorLib.EditUtil.EditUtil().getLabel() !=0:  #need this only if erasing
+      if EditorLib.EditUtil.EditUtil().getLabel() !=0: #need this only if erasing
           self.labArr[self.linInd]=0
       else:
           self.labArr[self.linInd]=1
@@ -606,46 +606,46 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
   def updateLabelUserInput(self, caller, event):
     print("updating label user input")
 
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:    
-      return  #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False:
+      return #do nothing, exit function if user has played with images
 
-    currLabelValue = EditorLib.EditUtil.EditUtil().getLabel()    # return integer value, *scalar*
+    currLabelValue = EditorLib.EditUtil.EditUtil().getLabel() # return integer value, *scalar*
     signAccum=(-1)*(currLabelValue!=0) + (1)*(currLabelValue==0) # change sign based on drawing/erasing
 
-    bUseLabelModTrigger = False    
+    bUseLabelModTrigger = False
     if (event=="ModifiedEvent") and (self.accumInProg==1):
-        # Danger: you haven't recalc'd the orientation and currSlice yet        
+        # Danger: you haven't recalc'd the orientation and currSlice yet
         # self.labVal doesn't seem to work when erasing
         print("passed update checks")
         if self.ijkPlane=="IJ":
-            if signAccum==-1:                                            # We're drawing
-                deltPaint=self.labArr[self.linInd]                       # find the next stuff that was painted
+            if signAccum==-1: # We're drawing
+                deltPaint=self.labArr[self.linInd] # find the next stuff that was painted
                 newLab= (self.ij_tmpArr + self.labArr[self.linInd])!=0
-            elif signAccum==1:                                           # user is erasing
-                deltPaint=(self.labArr[self.linInd])==0                   #(self.ij_tmpArr - self.labArr[self.linInd])!=0 
-                newLab=(deltPaint==0)*(self.ij_tmpArr!=0)               #self.labArr[self.linInd]  
+            elif signAccum==1: # user is erasing
+                deltPaint=(self.labArr[self.linInd])==0 #(self.ij_tmpArr - self.labArr[self.linInd])!=0
+                newLab=(deltPaint==0)*(self.ij_tmpArr!=0) #self.labArr[self.linInd]
         elif self.ijkPlane=="JK":
-            if signAccum==-1: 
+            if signAccum==-1:
                 deltPaint=self.labArr[self.linInd]
-                newLab=(self.jk_tmpArr + self.labArr[self.linInd])!=0  
-            elif signAccum==1:    
-                deltPaint=(self.labArr[self.linInd])==0                   #(self.jk_tmpArr - self.labArr[self.linInd])!=0 
-                newLab=(deltPaint==0)*(self.jk_tmpArr!=0)               #self.labArr[self.linInd] 
+                newLab=(self.jk_tmpArr + self.labArr[self.linInd])!=0
+            elif signAccum==1:
+                deltPaint=(self.labArr[self.linInd])==0 #(self.jk_tmpArr - self.labArr[self.linInd])!=0
+                newLab=(deltPaint==0)*(self.jk_tmpArr!=0) #self.labArr[self.linInd]
         elif self.ijkPlane=="IK":
-            if signAccum==-1: 
+            if signAccum==-1:
                 deltPaint=self.labArr[self.linInd]
-                newLab=(self.ik_tmpArr + self.labArr[self.linInd])!=0  
-            elif signAccum==1:    
-                deltPaint=(self.labArr[self.linInd])==0                 #(self.ik_tmpArr - self.labArr[self.linInd])!=0 
-                newLab=(deltPaint==0)*(self.ik_tmpArr!=0)             #self.labArr[self.linInd] 
+                newLab=(self.ik_tmpArr + self.labArr[self.linInd])!=0
+            elif signAccum==1:
+                deltPaint=(self.labArr[self.linInd])==0 #(self.ik_tmpArr - self.labArr[self.linInd])!=0
+                newLab=(deltPaint==0)*(self.ik_tmpArr!=0) #self.labArr[self.linInd]
         
         # Argh, overwrites any changes to underlying vtk volume!?
         #if bUseLabelModTrigger: # trying to add this back in
 
         ''' If you Enable this, It must pass the U Sync check! '''
         self.UIarray[self.linInd]+=signAccum*self.inFact*deltPaint
-        self.labArr[self.linInd] = self.labVal * newLab   
-        self.accumInProg=0                                              # done accumulating
+        self.labArr[self.linInd] = self.labVal * newLab
+        self.accumInProg=0 # done accumulating
         self.uiImg.Modified()
         #self.check_U_sync()
     
@@ -658,11 +658,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
   
       
 
-# 
-#        U_ijk = self.uiImg.GetScalarComponentAsDouble(ijk[0],ijk[1],ijk[2],0)
-#        print 'U at ' + str(ijk) + ' = '+str(U_ijk)
-#        U_new = U_ijk - 1.0
-#        self.uiImg.SetScalarComponentFromDouble(ijk[0],ijk[1],ijk[2],U_new)
+#
+# U_ijk = self.uiImg.GetScalarComponentAsDouble(ijk[0],ijk[1],ijk[2],0)
+# print 'U at ' + str(ijk) + ' = '+str(U_ijk)
+# U_new = U_ijk - 1.0
+# self.uiImg.SetScalarComponentFromDouble(ijk[0],ijk[1],ijk[2],U_new)
 
        
   def labModByUser(self,caller,event):
@@ -671,8 +671,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         print("modified by user, kslice bot is running")
       self.userMod=1
     else:
-      self.acMod=0                                                    #modification came from active contour, reset variable, prepare to listen to next modification
-      self.userMod=0                                                  #print("modified by active contour")
+      self.acMod=0 #modification came from active contour, reset variable, prepare to listen to next modification
+      self.userMod=0 #print("modified by active contour")
       pass
 
   def toggleDrawErase(self):
@@ -691,19 +691,19 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
   
 
   def copyslice(self):
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
-    self.copySliceView=self.sliceIJKPlane()                            #ensure were pasting from within the same view later
+    self.copySliceView=self.sliceIJKPlane() #ensure were pasting from within the same view later
     self.computeCurrSliceSmarter()
     self.ksliceMod.SetFromSlice(self.currSlice)
     print('copy slice')
 
   def pasteslice(self):
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
-    if self.copySliceView==self.sliceIJKPlane():                       #make sure user hasn't move to a different view
+    if self.copySliceView==self.sliceIJKPlane(): #make sure user hasn't move to a different view
       self.computeCurrSliceSmarter()
       self.ksliceMod.PasteSlice(self.currSlice)
       self.labelNode.Modified()
@@ -715,7 +715,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     #results in currSlice being off by 1, after click event/move event it works correctly(uncomment the print line below
     #to notice this effect)
     xy = self.interactor.GetEventPosition()
-    ijk = smart_xyToIJK(xy,self.sw)                                     #ijk computation leads to "computeCurrSliceSmarter" not working
+    ijk = smart_xyToIJK(xy,self.sw) #ijk computation leads to "computeCurrSliceSmarter" not working
 
     ns=-1
     for orient in ( ('IJ',2),('JK',0),('IK',1) ):
@@ -723,14 +723,14 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         ns = ijk[ orient[1] ]
     
     self.currSlice = ns
-    #print"Computation of current slice yields:" + str(ns) 
+    #print"Computation of current slice yields:" + str(ns)
 
   def computeCurrSlice(self):
     # annoying to reset these just for slice #...
     #labelLogic = self.sliceLogic.GetLabelLayer()
     #self.labelNode = labelLogic.GetVolumeNode()
     #backgroundLogic = self.sliceLogic.GetBackgroundLayer()
-    self.backgroundNode = self.backgroundNode                   #backgroundLogic.GetVolumeNode()
+    self.backgroundNode = self.backgroundNode #backgroundLogic.GetVolumeNode()
 
     sliceOffset = self.sliceLogic.GetSliceOffset()
     spacingVec = self.labelNode.GetSpacing()
@@ -742,7 +742,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
 
   def runSegment2D(self):
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
     print("doing 2D segmentation")
@@ -754,23 +754,23 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.ksliceMod.SetNumIts(self.numIts)
 
     #execute a run, we're on same plane, same run type, user has not drawn => use cache (check for "same slice" is done in c++)
-    useCache= (self.lastRunPlane==self.ijkPlane)& (self.lastModBy=='2D') & (self.userMod==0) 
+    useCache= (self.lastRunPlane==self.ijkPlane)& (self.lastModBy=='2D') & (self.userMod==0)
     self.ksliceMod.runUpdate2D(not useCache)
-    print "use cache?:" + str(useCache)    
+    print "use cache?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
     self.lastRunPlane=self.ijkPlane
-    self.lastModBy='2D'                             # was last active contour run in 2D or 3D (cache needs to be recomputed)
+    self.lastModBy='2D' # was last active contour run in 2D or 3D (cache needs to be recomputed)
     
     #update vars
-    self.labelImg.Modified()                        # This triggers a Modified Event on Label => windowListener call
-    self.labelNode.Modified()                       # labelNode.SetModifiedSinceRead(1)
+    self.labelImg.Modified() # This triggers a Modified Event on Label => windowListener call
+    self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
     
-    #self.check_U_sync()                            # turn the debug off
+    #self.check_U_sync() # turn the debug off
 
   def runSegment3DLocCV(self):
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
     print("doing 3D local chan-vese segmentation")
@@ -778,7 +778,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #make connections, parameter settings
     self.ksliceMod.SetCurrSlice(self.currSlice)
-    self.ksliceMod.SetNumIts(self.numIts)                    # should be less than 2D!
+    self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
 
     #execute a run, still doing 3D, user has not drawn => use cache
     useCache= ( (self.lastModBy=='3DLocCV') & (self.userMod==0) )
@@ -787,14 +787,14 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #save the 'last run state' information
     self.acMod=1
-    self.lastModBy='3DLocCV'                                    # was last active contour run in 2D or 3D (cache needs to be recomputed)
+    self.lastModBy='3DLocCV' # was last active contour run in 2D or 3D (cache needs to be recomputed)
 
     self.labelImg.Modified()
-    self.labelNode.Modified()                              # labelNode.SetModifiedSinceRead(1)
+    self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
 
-    #self.check_U_sync()                                   # turn the debug off
+    #self.check_U_sync() # turn the debug off
   def runSegment3DCV(self):
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
     print("doing 3D chan-vese segmentation")
@@ -802,7 +802,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #make connections, parameter settings
     self.ksliceMod.SetCurrSlice(self.currSlice)
-    self.ksliceMod.SetNumIts(self.numIts)                    # should be less than 2D!
+    self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
 
     #execute a run, still doing 3D, user has not drawn => use cache
     useCache= ( (self.lastModBy=='3DCV') & (self.userMod==0) )
@@ -811,44 +811,44 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #save the 'last run state' information
     self.acMod=1
-    self.lastModBy='3DCV'                                    # was last active contour run in 2D or 3D (cache needs to be recomputed)
+    self.lastModBy='3DCV' # was last active contour run in 2D or 3D (cache needs to be recomputed)
 
     self.labelImg.Modified()
-    self.labelNode.Modified()                              # labelNode.SetModifiedSinceRead(1)
+    self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
 
-    #self.check_U_sync()                                   # turn the debug off
+    #self.check_U_sync() # turn the debug off
 
 
 
   def runSegment2p5D(self):
-    if self.sliceViewMatchEditor(self.sliceLogic)==False:              #do nothing, exit function if user has played with images
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
     print("doing 2.5D segmentation")
     self.computeCurrSliceSmarter()
 
     self.ksliceMod.SetCurrSlice(self.currSlice)
-    self.ksliceMod.SetNumIts(self.numIts)                          # should be less than 2D!
-    self.ksliceMod.SetDistWeight(0.2)                     # weight evolution by distancef rom view-plane
+    self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
+    self.ksliceMod.SetDistWeight(0.2) # weight evolution by distancef rom view-plane
 
     #still doing 3D, user has not drawn => use cache
-    useCache= (self.lastModBy=='25D') & (self.userMod==0) 
+    useCache= (self.lastModBy=='25D') & (self.userMod==0)
     self.ksliceMod.runUpdate2p5D(not useCache)
     print "use cache?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
-    self.lastModBy='25D'                                   # was last active contour run in 2D or 3D (cache needs to be recomputed)
-    #self.check_U_sync()                                  # very slow operation
+    self.lastModBy='25D' # was last active contour run in 2D or 3D (cache needs to be recomputed)
+    #self.check_U_sync() # very slow operation
     
-    self.labelImg.Modified()                              # signal to slicer that the label needs to be updated
+    self.labelImg.Modified() # signal to slicer that the label needs to be updated
     self.labelNode.Modified()
 
 
   def destroy(self):
-    # PK to IK: can you purge the deprecated comments? This func is confusing to review. 
+    # PK to IK: can you purge the deprecated comments? This func is confusing to review.
     #super(KSliceEffectLogic,self).destroy()
-    if self.fullInitialized==False:                                                          #if initialized, remove, otherwise do nothing
+    if self.fullInitialized==False: #if initialized, remove, otherwise do nothing
         return
     
     print("Destroy in KSliceLogic has been called")
@@ -864,7 +864,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors
         #print "disconnected 'activated'?:" + str(test1)
-        #print "disconnected 'activatedAmbiguously'?:" + str(test2)                
+        #print "disconnected 'activatedAmbiguously'?:" + str(test2)
 
     #remove observers
     for style,tag in self.mouse_obs:
@@ -877,12 +877,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.sliceLogic.RemoveObserver(self.logMod_tag)
     
     #removing the ui Node
-    slicer.mrmlScene.RemoveNode( getNode(self.uiName) ) 
+    slicer.mrmlScene.RemoveNode( getNode(self.uiName) )
 
-    # destroy 
-    self.ksliceMod=None    #self.ksliceMod.FastDelete()
+    # destroy
+    self.ksliceMod=None #self.ksliceMod.FastDelete()
     self.dialogBox=None
-    self.UIarray=None      # keep reference for easy computation of accumulation
+    self.UIarray=None # keep reference for easy computation of accumulation
     self.uiImg=None
 
     #put back the editor shortcuts we removed
@@ -927,13 +927,13 @@ as a loadable scripted module
 """
   def __init__(self, parent):
     parent.dependencies = ["Editor"]
-    parent.title = "Editor CarreraSliceEffect Effect"
+    parent.title = "Editor KSliceEffect Effect"
     parent.categories = ["Developer Tools.Editor Extensions"]
-    parent.contributors = ["Ivan Kolesov, Peter Karasev, Patricio Vela (Georgia Institute of Technology) , Allen Tannenbaum (University of Alabama Birmingham), and Steve Pieper (Isomics, Inc.)"] # insert your name in the list
+    parent.contributors = ["Ivan Kolesov, LiangJia Zhu, Allen Tannenbaum (Stony Brook University), Yi Gao(University of Alabama Birmingham), Peter Karasev, Patricio Vela (Georgia Institute of Technology), and Steve Pieper (Isomics, Inc.)"] # insert your name in the list
     parent.helpText = """Interactive segmentation editor extension."""
-    parent.acknowledgementText = """ This editor extension was developed by Ivan Kolesov,  
-    Peter Karasev, Patricio Vela (Georgia Institute of Technology),
-Allen Tannenbaum (University of Alabama Birmingham), and Steve Pieper (Isomics, Inc.).  """
+    parent.acknowledgementText = """ This editor extension was developed by Ivan Kolesov,
+Peter Karasev, Patricio Vela (Georgia Institute of Technology),
+Allen Tannenbaum (University of Alabama Birmingham), and Steve Pieper (Isomics, Inc.). """
 
   
     # TODO:
@@ -970,5 +970,3 @@ class KSliceEffectWidget:
 
   def exit(self):
     pass
-
-
