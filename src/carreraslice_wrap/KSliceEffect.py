@@ -927,7 +927,7 @@ as a loadable scripted module
 """
   def __init__(self, parent):
     parent.dependencies = ["Editor"]
-    parent.title = "Editor KSliceEffect Effect"
+    parent.title = "Editor CarreraSliceEffect Effect"
     parent.categories = ["Developer Tools.Editor Extensions"]
     parent.contributors = ["Ivan Kolesov, Peter Karasev, Patricio Vela (Georgia Institute of Technology) , Allen Tannenbaum (University of Alabama Birmingham), and Steve Pieper (Isomics, Inc.)"] # insert your name in the list
     parent.helpText = """Interactive segmentation editor extension."""

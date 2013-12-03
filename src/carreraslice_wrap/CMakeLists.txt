@@ -32,15 +32,21 @@ set(MODULE_INCLUDE_DIRECTORIES
   )
 
 set(MODULE_SRCS
-  qSlicer${MODULE_NAME}Module.cxx
-  qSlicer${MODULE_NAME}Module.h
-  qSlicer${MODULE_NAME}ModuleWidget.cxx
-  qSlicer${MODULE_NAME}ModuleWidget.h
+  #qSlicer${MODULE_NAME}Module.cxx
+  #qSlicer${MODULE_NAME}Module.h
+  #qSlicer${MODULE_NAME}ModuleWidget.cxx
+  #qSlicer${MODULE_NAME}ModuleWidget.h
+  qSlicerKSliceModule.h
+  qSlicerKSliceModule.cxx
+  qSlicerKSliceModuleWidget.cxx
+  qSlicerKSliceModuleWidget.h
   )
 
 set(MODULE_MOC_SRCS
-  qSlicer${MODULE_NAME}Module.h
-  qSlicer${MODULE_NAME}ModuleWidget.h
+  #qSlicer${MODULE_NAME}Module.h
+  #qSlicer${MODULE_NAME}ModuleWidget.h
+  qSlicerKSliceModule.h
+  qSlicerKSliceModuleWidget.h
   )
 
 set(MODULE_UI_SRCS
@@ -53,7 +59,8 @@ set(MODULE_TARGET_LIBRARIES
   )
 
 set(MODULE_RESOURCES
-  Resources/qSlicer${MODULE_NAME}Module.qrc
+  #Resources/qSlicer${MODULE_NAME}Module.qrc
+   Resources/qSlicerCarreraSliceModule.qrc
   )
 
 link_directories(${KSLICE_LIB_PATH})
@@ -78,7 +85,7 @@ slicerMacroBuildQtModule(
 set(MODULE_PYTHON_SCRIPTS
  #__init__
   KUtil
-  KSliceEffect
+  CarreraSliceEffect
   )
 
 set(MODULE_PYTHON_RESOURCES

@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_testing()
 
 #-----------------------------------------------------------------------------
-set(EXTENSION_NAME KSlice)
+set(EXTENSION_NAME CarreraSlice)
 
 set(KSLICE_VERSION_MAJOR "1")
 set(KSLICE_VERSION_MINOR "0")
@@ -66,7 +66,6 @@ else(WIN32)
     set(CMAKE_C_FLAGS "-fPIC -g3 -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS -Wl,--no-undefined -fopenmp" CACHE STRING "compiler flags always used" FORCE)
     set(CMAKE_CXX_FLAGS "-fPIC -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS -Wl,--no-undefined -fopenmp" CACHE STRING "compiler flags always used" FORCE)
   else(LINUX)
-    # MacOS == Козлы
     set(CMAKE_C_FLAGS "-fPIC -g3 -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS  -fopenmp" CACHE STRING "compiler flags always used" FORCE)
     set(CMAKE_CXX_FLAGS "-fPIC -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS    -fopenmp" CACHE STRING "compiler flags always used" FORCE)
   endif(LINUX)
@@ -103,7 +102,7 @@ if(KSlice_Build_SlicerWrap)
 	else(WIN32) # for sane OS
 		set(KSLICE_LIB_PATH  ${CMAKE_BINARY_DIR}/lib/ CACHE PATH "where are vrcl and KSegmentor libraries")
     endif(WIN32)
-    add_subdirectory(kslice_wrap)
+    add_subdirectory(carreraslice_wrap)
     add_subdirectory(KViewerMain/exes)    # STANDALONE
 endif()
 
