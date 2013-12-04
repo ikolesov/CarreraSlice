@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 2.8.9)
+
+project(FastGrowCutCLI)
+
+#-----------------------------------------------------------------------------
+set(EXTENSION_HOMEPAGE "http://www.slicer.org/slicerWiki/index.php/Documentation/Nightly/Extensions/FastGrowCutCLI")
+set(EXTENSION_CATEGORY "Testing")
+set(EXTENSION_CONTRIBUTORS "Liangjia Zhu, Ivan Kolesov, Yi Gao, and Allen Tannenbaum")
+set(EXTENSION_DESCRIPTION "This is the intial version of fast grow cut module")
+#set(EXTENSION_ICONURL "http://viewvc.slicer.org/viewvc.cgi/Slicer4/trunk/Extensions/Testing/FastGrowCutCLI/FastGrowCutCLI.png?revision=21745&view=co")
+#set(EXTENSION_SCREENSHOTURLS "http://wiki.slicer.org/slicerWiki/images/a/ab/Slicer-r19441-FastGrowCutCLI-screenshot.png http://wiki.slicer.org/slicerWiki/images/1/1e/Slicer-r19441-FastGrowCutCLI-screenshot-2.png")
+
+#-----------------------------------------------------------------------------
+find_package(Slicer REQUIRED)
+include(${Slicer_USE_FILE})
+
+#-----------------------------------------------------------------------------
+add_subdirectory(FastGrowCutCLI)
+
+#-----------------------------------------------------------------------------
+include(${Slicer_EXTENSION_CPACK})

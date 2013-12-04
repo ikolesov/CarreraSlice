@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>
+    Testing
+  </category>
+  <title>
+   Fast Grow Cut
+  </title>
+  <description>
+    Fast Grow Cut
+  </description>
+  <version>1.0</version>
+  <documentation-url>
+
+  </documentation-url>
+  <license></license>
+  <contributor>
+    Linagjia Zhu, Ivan Kolesov, Yi Gao, Allen Tannenbaum
+  </contributor>
+  <acknowledgements>
+    This work is part of the National Alliance for Medical Image Computing (NAMIC), funded by the National Institutes of Health
+  </acknowledgements>
+
+ <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+
+  <string-enumeration>
+    <name>strInitial</name>
+    <longflag>--osteoporosis</longflag>
+    <label>Segmenter has been initialized for the current source image ?</label>
+    <default>no</default>
+    <element>no</element>
+    <element>yes</element>
+  </string-enumeration>
+
+    <image>
+        <name>sourceImageName</name>
+        <label>Source Image</label>
+        <channel>input</channel>
+        <index>0</index>
+        <description>Source image to be segmented</description>
+    </image>
+    <image type = "label">
+        <name>seedImageName</name>
+        <label>Seed Label Image</label>
+        <channel>input</channel>
+        <index>1</index>
+        <description>Seed labels</description>
+    </image>
+
+    <image type = "label">
+        <name>labImageName</name>
+        <label>Segmentation Result</label>
+        <channel>output</channel>
+        <index>2</index>
+        <description>Segmentation result</description>
+    </image>
+  </parameters>
+
+</executable>
