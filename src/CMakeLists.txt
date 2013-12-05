@@ -94,7 +94,7 @@ include_directories( ${QT_include_DIR} ${KSlice_include} )
 add_subdirectory(KViewerMain)
 add_subdirectory(KSegmentor)
 add_subdirectory(sfm_local_chanvese)
-add_subdirectory(dijkstra_growcut)
+#add_subdirectory(dijkstra_growcut)
 
 message(STATUS "Check that this dir actually contains libraries! On windows, will have subdirs! ${KSLICE_LIB_PATH}" )
 if(KSlice_Build_SlicerWrap)

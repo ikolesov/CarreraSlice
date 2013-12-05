@@ -59,8 +59,7 @@ set(MODULE_TARGET_LIBRARIES
   )
 
 set(MODULE_RESOURCES
-  #Resources/qSlicer${MODULE_NAME}Module.qrc
-   Resources/qSlicerCarreraSliceModule.qrc
+  Resources/qSlicer${MODULE_NAME}Module.qrc
   )
 
 link_directories(${KSLICE_LIB_PATH})
