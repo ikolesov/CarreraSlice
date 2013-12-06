@@ -51,6 +51,7 @@ template<typename SrcImageType, typename LabImageType,  typename DistImageType>
         void DoSegmentation();
         typename LabImageType::Pointer GetLabeImage();
         typename DistImageType::Pointer GetDistImage();
+        typename LabImageType::Pointer GetForegroundmage();
 
 		private:
             void FindROI();

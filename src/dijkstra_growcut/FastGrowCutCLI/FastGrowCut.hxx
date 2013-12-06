@@ -128,6 +128,32 @@ FastGrowCut<SrcImageType, LabImageType, DistImageType>
 }
 
 template<typename SrcImageType, typename LabImageType, typename DistImageType>
+typename LabImageType::Pointer
+FastGrowCut<SrcImageType, LabImageType, DistImageType>
+:: GetForegroundmage() {
+
+    // Dijstra label image
+    typename LabImageType::Pointer labImg = LabImageType::New();
+    labImg->CopyInformation(m_seedImg);
+    labImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
+    labImg->Allocate();
+    labImg->FillBuffer(0);
+
+    typedef itk::ImageRegionIterator<LabImageType>  LabelIterator;
+    LabelIterator labIt(labImg, m_outRegion);
+
+//       std::vector<DKElement>::iterator itDK;
+    long index = 0;
+    for(labIt.GoToBegin(); !labIt.IsAtEnd(); ++labIt) {
+        if(m_labels[index++] == 1)
+            labIt.Set(1);
+    }
+
+
+ return labImg;
+}
+
+template<typename SrcImageType, typename LabImageType, typename DistImageType>
 typename DistImageType::Pointer
 FastGrowCut<SrcImageType, LabImageType, DistImageType>
 :: GetDistImage() {

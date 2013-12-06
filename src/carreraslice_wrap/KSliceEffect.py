@@ -34,13 +34,80 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
     self.yellowSliceWidget = lm.sliceWidget('Yellow')
     self.greenSliceWidget = lm.sliceWidget('Green')
     self.parameterNode=parameterNode
+    
+    # fast grow cut parameters
+    self.bSegmenterInitialized = "no"
 
   def __del__(self):
     super(KSliceEffectOptions,self).__del__()
 
   def create(self):
     super(KSliceEffectOptions,self).create()
-
+    
+    # create a fast initial segmentation button
+    fastGrowCutColButton = ctk.ctkCollapsibleButton()
+    fastGrowCutColButton.text = "Fast Interactive Initial Segmentation"
+    fastGrowCutColButton.collapsed = True
+    self.frame.layout().addWidget(fastGrowCutColButton)
+    
+     # Layout within the LASeg collapsible button
+    fastGrowCutForm = qt.QFormLayout(fastGrowCutColButton)
+    
+    # status checkbox
+    iniFGCSegmenterCheckBox = qt.QCheckBox("Segmenter initialized?", fastGrowCutColButton)
+    iniFGCSegmenterCheckBox.toolTip = "When checked, segmenter for current master volume has been initialied."
+    iniFGCSegmenterCheckBox.checked = False
+    fastGrowCutForm.addWidget(iniFGCSegmenterCheckBox)
+    iniFGCSegmenterCheckBox.connect('clicked(bool)', self.onInitialSegmenterCheck)
+    
+    # source image selector
+    iniSrcFrame = qt.QFrame(fastGrowCutColButton)
+    iniSrcFrame.setLayout(qt.QHBoxLayout())
+    fastGrowCutForm.addWidget(iniSrcFrame)
+    iniSrcVolSelector = qt.QLabel("Source Image", iniSrcFrame)
+    iniSrcFrame.layout().addWidget(iniSrcVolSelector)
+    iniSrcVolSelector = slicer.qMRMLNodeComboBox(iniSrcFrame)
+    iniSrcVolSelector.nodeTypes = ( ("vtkMRMLScalarVolumeNode"), "" )
+    iniSrcVolSelector.setMRMLScene( slicer.mrmlScene )
+    iniSrcFrame.layout().addWidget(iniSrcVolSelector)
+    
+    # seed image selector
+    iniSeedFrame = qt.QFrame(fastGrowCutColButton)
+    iniSeedFrame.setLayout(qt.QHBoxLayout())
+    fastGrowCutForm.addWidget(iniSeedFrame)
+    iniSeedVolSelector = qt.QLabel("Seed Image", iniSeedFrame)
+    iniSeedFrame.layout().addWidget(iniSeedVolSelector)
+    iniSeedVolSelector = slicer.qMRMLNodeComboBox(iniSeedFrame)
+    iniSeedVolSelector.nodeTypes = ( ("vtkMRMLScalarVolumeNode"), "" )
+    iniSeedVolSelector.addAttribute( "vtkMRMLScalarVolumeNode", "LabelMap", "1" )
+    iniSeedVolSelector.setMRMLScene( slicer.mrmlScene )
+    iniSeedFrame.layout().addWidget(iniSeedVolSelector)
+    
+    # initial segmentation result selector
+    iniSegFrame = qt.QFrame(fastGrowCutColButton)
+    iniSegFrame.setLayout(qt.QHBoxLayout())
+    fastGrowCutForm.addWidget(iniSegFrame)
+    iniSegVolSelector = qt.QLabel("Inital Segmenation", iniSegFrame)
+    iniSegFrame.layout().addWidget(iniSegVolSelector)
+    iniSegVolSelector = slicer.qMRMLNodeComboBox(iniSegFrame)
+    iniSegVolSelector.nodeTypes = ( ("vtkMRMLScalarVolumeNode"), "" )
+    iniSegVolSelector.addAttribute( "vtkMRMLScalarVolumeNode", "LabelMap", "2" )
+    iniSegVolSelector.setMRMLScene( slicer.mrmlScene )
+    iniSegFrame.layout().addWidget(iniSegVolSelector)
+    
+    # inital segmentor button
+    fastGrowCutButton = qt.QPushButton("Fast Initial Segmentation")
+    fastGrowCutButton.toolTip = "Fast initial segmentation."
+    fastGrowCutForm.addWidget(fastGrowCutButton)
+    fastGrowCutButton.connect('clicked(bool)', self.onFastGrowCut)
+    
+    # Set local var as instance attribute
+    self.iniFGCSegmenterCheckBox = iniFGCSegmenterCheckBox
+    self.iniSrcVolSelector = iniSrcVolSelector
+    self.iniSeedVolSelector = iniSeedVolSelector
+    self.iniSegVolSelector = iniSegVolSelector
+    self.fastGrowCutButton = fastGrowCutButton
+    
     #create a "Start Bot" button
     self.botButton = qt.QPushButton(self.frame)
 
@@ -91,7 +158,39 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
       self.botButton.text = "Start Interactive Segmentor"
       if self.locRadFrame:
         self.locRadFrame.show()
+        
+  # status for fast interactive inital segmentation
+  def onInitialSegmenterCheck(self):
+	  #print("Got a %s from a %s" % (event, caller.GetClassName()))
+	  #if caller.IsA('vtkMRMLCommandLineModuleNode'):
+	  #	  print("Status is %s" % caller.GetStatusString())
+		  
+    if self.iniFGCSegmenterCheckBox.checked == False:
+		self.bSegmenterInitialized = "no"		
+    else:
+		self.bSegmenterInitialized = "yes" 
+  
+  # fast growcut 
+  def onFastGrowCut(self):
+	  
+	  # Initialize fast GrowCut segmentor for the current master volume
+	srcImgNode = self.iniSrcVolSelector.currentNode()
+	seedImgNode = self.iniSeedVolSelector.currentNode()
+	labImgNode = self.iniSegVolSelector.currentNode()
+	
+	#srcImg = self.editUtil.getBackgroundImage()
+	#seedImg = self.editUtil.getLabelImage()
+	
+	parameters = {}
+	parameters["strInitial"] = self.bSegmenterInitialized
+	parameters["sourceImageName"] = srcImgNode.GetID()
+	parameters["seedImageName"] = seedImgNode.GetID()	
+	parameters["labImageName"] = labImgNode.GetID()
 
+	fastGrowCut = slicer.modules.fastgrowcutcli
+	slicer.cli.run(fastGrowCut, None, parameters, True)			
+
+    
   def destroy(self):
     super(KSliceEffectOptions,self).destroy()
 
