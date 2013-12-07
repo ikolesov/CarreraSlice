@@ -37,17 +37,18 @@ int main(int argc, char** argv) {
      fastGC.DoSegmentation();
 
      // Get output image
-//     segImg = fastGC.GetLabeImage();
-     segImg = fastGC.GetForegroundmage();
+     segImg = fastGC.GetLabeImage();
+//     segImg = fastGC.GetForegroundmage();
 
      timer.Stop();
 
       if(!bInitialized)
-          std::cout << "Initial segmentation time: " << timer.GetMeanTime() << " seconds\n";
+          std::cout << "Initial fast growcut time: " << timer.GetMeanTime() << " seconds\n";
       else
-          std::cout << "update segmentation time: " << timer.GetMeanTime() << " seconds\n";
+          std::cout << "adaptive growcut time: " << timer.GetMeanTime() << " seconds\n";
 
-      FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
+//      FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
+      FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
 
      return EXIT_SUCCESS;
 }

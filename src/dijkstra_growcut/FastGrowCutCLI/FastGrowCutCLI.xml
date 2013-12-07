@@ -44,17 +44,9 @@
     <image type = "label">
         <name>seedImageName</name>
         <label>Seed Label Image</label>
-        <channel>input</channel>
+        <channel>output</channel>
         <index>1</index>
         <description>Seed labels</description>
-    </image>
-
-    <image type = "label">
-        <name>labImageName</name>
-        <label>Segmentation Result</label>
-        <channel>output</channel>
-        <index>2</index>
-        <description>Segmentation result</description>
     </image>
   </parameters>
 

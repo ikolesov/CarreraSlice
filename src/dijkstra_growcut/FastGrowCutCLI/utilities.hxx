@@ -74,7 +74,6 @@ namespace FGC
     return image;
   }
 
-
   /**
    * writeImage
    */

@@ -333,7 +333,8 @@ void FastGrowCut<SrcImageType, LabImageType, DistImageType>
 
              // Only update the difference seeds
              // TODO: check seedPre is a subset of seed!!
-             if(seedIt.Get() != 0 && m_distPre[index] >  DIST_EPSION) {
+//             if(seedIt.Get() != 0 && m_distPre[index] >  DIST_EPSION) {
+             if(seedIt.Get() != 0 && seedIt.Get() != m_labelsPre[index]) {
                  m_hpNodes[index] = (float)DIST_EPSION;
                  m_dist[index] = DIST_EPSION;
                  m_labels[index] = seedIt.Get();
