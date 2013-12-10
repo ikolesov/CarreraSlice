@@ -33,13 +33,13 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
     self.redSliceWidget = lm.sliceWidget('Red')
     self.yellowSliceWidget = lm.sliceWidget('Yellow')
     self.greenSliceWidget = lm.sliceWidget('Green')
-    self.parameterNode=parameterNode   
+    self.parameterNode=parameterNode
 
   def __del__(self):
     super(KSliceEffectOptions,self).__del__()
 
   def create(self):
-    super(KSliceEffectOptions,self).create()    
+    super(KSliceEffectOptions,self).create()
     
     #create a "Start Bot" button
     self.botButton = qt.QPushButton(self.frame)
@@ -337,7 +337,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     self.editUtil = EditUtil.EditUtil()
 
-	# fast grow cut parameters
+        # fast grow cut parameters
     self.bSegmenterInitialized = "no"
 
     # fast growcut shortcuts
@@ -414,7 +414,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
           self.emergencyStopFunc()
       return
 
-    self.imgSpacing        = self.backgroundNode.GetSpacing()                 # get the pixel spacing
+    self.imgSpacing = self.backgroundNode.GetSpacing() # get the pixel spacing
     steeredVolume = volumesLogic.CloneVolume(slicer.mrmlScene, self.labelNode, steeredName)
     self.uiName = steeredVolume.GetName() # the name that was actually assigned by slicer
     steeredArray = slicer.util.array(self.uiName ) # get the numpy array
@@ -580,7 +580,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         return False
 
   def testWindowListener(self, caller, event):
-    interactor=caller                                                  # should be called by the slice interactor...
+    interactor=caller # should be called by the slice interactor...
     self.sw = self.swLUT[interactor]
     self.interactor = interactor
     
@@ -770,33 +770,33 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
   # run fast GrowCut segmentor for the current master volume and label volume
   def runFastGrowCut(self):
-	
-	srcImgNode = self.editUtil.getBackgroundVolume()
-	seedImgNode = self.editUtil.getLabelVolume() 
+        
+        srcImgNode = self.editUtil.getBackgroundVolume()
+        seedImgNode = self.editUtil.getLabelVolume()
 
-	parameters = {}
-	parameters["strInitial"] = self.bSegmenterInitialized
-	parameters["sourceImageName"] = srcImgNode.GetID()
-	parameters["seedImageName"] = seedImgNode.GetID()	
+        parameters = {}
+        parameters["strInitial"] = self.bSegmenterInitialized
+        parameters["sourceImageName"] = srcImgNode.GetID()
+        parameters["seedImageName"] = seedImgNode.GetID()        
 
-	fastGrowCut = slicer.modules.fastgrowcutcli
-	slicer.cli.run(fastGrowCut, None, parameters, True)
-	
-	self.bSegmenterInitialized = "yes"
+        fastGrowCut = slicer.modules.fastgrowcutcli
+        slicer.cli.run(fastGrowCut, None, parameters, True)
+        
+        self.bSegmenterInitialized = "yes"
   
   # reset fast growcut segmenter
   def resetFastGrowCutFlag(self):
-	self.bSegmenterInitialized = "no"
-	print('reset the fast growcut segmenter')
-	
-	
+        self.bSegmenterInitialized = "no"
+        print('reset the fast growcut segmenter')
+        
+        
   # extract the foreground label (==1)
   def extractFastGrowCutForeground(self):
-	labelArray = slicer.util.array(self.editUtil.getLabelVolume().GetName()) 
-	labelArray[labelArray != 1] = 0
-	self.labelImg.Modified()
-	print('extracte foreground label == 1')
-	
+        labelArray = slicer.util.array(self.editUtil.getLabelVolume().GetName())
+        labelArray[labelArray != 1] = 0
+        self.labelImg.Modified()
+        print('extracte foreground label == 1')
+        
   def runSegment2D(self):
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
@@ -903,17 +903,17 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
   def destroy(self):
     #debug
-    #print("testing the deletion") 
+    #print("testing the deletion")
     #for i in range(len(self.qtkeyconnections)):
-    #    print self.qtkeyconnections[i]
+    # print self.qtkeyconnections[i]
 
-	#destroy GrowCut key shortcuts
+        #destroy GrowCut key shortcuts
     for i in range(len(self.qtkeydefsGrowcut)):
         keyfun = self.qtkeydefsGrowcut[i]
         keydef = self.qtkeyconnections[i]
         test1=keydef.disconnect('activated()', keyfun[1])
         test2=keydef.disconnect('activatedAmbiguously()', keyfun[1])
-        #self.qtkeyconnections.remove(keydef) #remove from list        
+        #self.qtkeyconnections.remove(keydef) #remove from list
         keydef.setParent(None)
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors
