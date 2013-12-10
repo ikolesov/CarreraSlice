@@ -343,7 +343,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     # fast growcut shortcuts
     resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
     runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
-    getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
+    #getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
     finGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
 
     print " keys for reset init, run GC, getFgrd, finGC are R,G,L, M"
@@ -791,11 +791,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         
         
   # extract the foreground label (==1)
-  def extractFastGrowCutForeground(self):
-        labelArray = slicer.util.array(self.editUtil.getLabelVolume().GetName())
-        labelArray[labelArray != 1] = 0
-        self.labelImg.Modified()
-        print('extracte foreground label == 1')
+#  def extractFastGrowCutForeground(self):
+#        labelArray = slicer.util.array(self.editUtil.getLabelVolume().GetName())
+#        labelArray[labelArray != 1] = 0
+#        self.labelImg.Modified()
+#        print('extract foreground label == 1')
         
   def runSegment2D(self):
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
