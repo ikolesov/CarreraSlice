@@ -323,22 +323,49 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 """
 
   def __init__(self,sliceLogic):
-    import vtkSlicerCarreraSliceModuleLogicPython
-    self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly)
-    self.sliceLogic = sliceLogic
-
-    #disconnect all shortcuts that may exist, to allow KSlice's to work, reconnect once bot is turned off
-    slicer.modules.EditorWidget.removeShortcutKeys()
-
-    print("Made a KSliceEffectLogic")
-
-
+    print("Preparing Growcut interaction")
     # self.attributes should be tuple of options:
     # 'MouseTool' - grabs the cursor
     # 'Nonmodal' - can be applied while another is active
     # 'Disabled' - not available
     self.attributes = ('MouseTool')
     self.displayName = 'CarreraSliceEffect Effect'
+
+    #disconnect all shortcuts that may exist, to allow KSlice's to work, reconnect once bot is turned off
+    slicer.modules.EditorWidget.removeShortcutKeys()
+    self.sliceLogic = sliceLogic
+
+    self.editUtil = EditUtil.EditUtil()
+
+	# fast grow cut parameters
+    self.bSegmenterInitialized = "no"
+
+    # fast growcut shortcuts
+    resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
+    runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
+    getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
+
+
+    print " keys for reset init, run GC, getFgrd, startKSlice are R,G,L, M"
+    
+    self.qtkeyconnections = []
+    self.qtkeydefsGrowcut = [ [resetFGC, self.resetFastGrowCutFlag],
+                              [runFGC,self.runFastGrowCut],
+                              [getFgrd, self.extractFastGrowCutForeground] ] # like a cell array in matlab
+
+    for keydef in self.qtkeydefsGrowcut:
+        s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
+        #s.setContext(1)
+        s.connect('activated()', keydef[1])
+        #s.connect('activatedAmbiguously()', keydef[1])
+        self.qtkeyconnections.append(s)
+
+    self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly) of KSlice
+
+  def init_kslice(self):
+    import vtkSlicerCarreraSliceModuleLogicPython
+
+    print("Made a KSliceEffectLogic")
 
     #this gets set once, user cannot use a different color w/o stopping segmentation, starting over
     #create variables to keep track of how the label changed (automatic part or user input)
@@ -360,9 +387,9 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #labelLogic = self.sliceLogic.GetLabelLayer()
     #backgroundLogic = self.sliceLogic.GetBackgroundLayer()
-    self.editUtil = EditUtil.EditUtil()
     self.labelNode = self.editUtil.getLabelVolume() #labelLogic.GetVolumeNode()
     self.backgroundNode = self.editUtil.getBackgroundVolume() #backgroundLogic.GetVolumeNode()
+
 
     #perform safety check on right images/labels being selected, #set up images
     if type(self.backgroundNode)==type(None) or type(self.labelNode)==type(None): #if red slice doesnt have a label or image, go no further
@@ -395,9 +422,6 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.uiImg = steeredVolume.GetImageData()
 
 
-	# fast grow cut parameters
-    self.bSegmenterInitialized = "no"
-
     #create key shortcuts, make the connections
     s2 = qt.QKeySequence(qt.Qt.Key_Q) # Press q/Q to run segmentor 2d
     s3 = qt.QKeySequence(qt.Qt.Key_F) # Press f/F to run segmentor 3d
@@ -408,30 +432,23 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     ps = qt.QKeySequence(qt.Qt.Key_V) # paste
     wf = qt.QKeySequence(qt.Qt.Key_B) # flip weight factor between soft, ~hard user constraints
     
-    # fast growcut shortcuts
-    resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
-    runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
-    getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
     
     print " keys for 2d, CV 3D, 3d, 2.5d, are Q, E, F, T"
     print " toggle, copy, paste: A, C, V "
     
-    self.qtkeyconnections = []
-    self.qtkeydefs = [ [s2,self.runSegment2D],
-                       [s3,self.runSegment3DLocCV],
-                       [s4,self.runSegment2p5D],
-                       [s5,self.runSegment3DCV],
-                       [tg,self.toggleDrawErase],
-                       [cp,self.copyslice],
-                       [ps,self.pasteslice],
-                       [wf,self.toggleInputFactor],
-                       [resetFGC, self.resetFastGrowCutFlag],
-                       [runFGC,self.runFastGrowCut],
-                       [getFgrd, self.extractFastGrowCutForeground] ] # like a cell array in matlab
+
+    self.qtkeydefsKSlice = [ [s2,self.runSegment2D],
+                           [s3,self.runSegment3DLocCV],
+                           [s4,self.runSegment2p5D],
+                           [s5,self.runSegment3DCV],
+                           [tg,self.toggleDrawErase],
+                           [cp,self.copyslice],
+                           [ps,self.pasteslice],
+                           [wf,self.toggleInputFactor]] # like a cell array in matlab
 
 
 
-    for keydef in self.qtkeydefs:
+    for keydef in self.qtkeydefsKSlice:
         s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
         #s.setContext(1)
         s.connect('activated()', keydef[1])
@@ -884,15 +901,32 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
 
   def destroy(self):
-    # PK to IK: can you purge the deprecated comments? This func is confusing to review.
-    #super(KSliceEffectLogic,self).destroy()
+    #debug
+    print("testing the deletion") 
+    for i in range(len(self.qtkeyconnections)):
+        print self.qtkeyconnections[i]
+
+	#destroy GrowCut key shortcuts
+    for i in range(len(self.qtkeydefsGrowcut)):
+        keyfun = self.qtkeydefsGrowcut[i]
+        keydef = self.qtkeyconnections[i]
+        test1=keydef.disconnect('activated()', keyfun[1])
+        test2=keydef.disconnect('activatedAmbiguously()', keyfun[1])
+        #self.qtkeyconnections.remove(keydef) #remove from list        
+        keydef.setParent(None)
+        #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
+        keydef.delete() #this causes errors
+
+    for i in range(len(self.qtkeyconnections)):
+        print self.qtkeyconnections[i]
+    
     if self.fullInitialized==False: #if initialized, remove, otherwise do nothing
         return
     
     print("Destroy in KSliceLogic has been called")
-    #disconnect key shortcut
-    for i in range(len(self.qtkeydefs)):
-        keyfun = self.qtkeydefs[i]
+    #disconnect KSlice key shortcut
+    for i in range(len(self.qtkeydefsGrowcut)-1, len(self.qtkeydefsKSlice) + len(self.qtkeydefsGrowcut)-1):
+        keyfun = self.qtkeydefsKSlice[i]
         keydef = self.qtkeyconnections[i]
         #print('disconnecting keydef: ')
         #print(keydef)
@@ -901,8 +935,9 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         keydef.setParent(None)
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors
-        #print "disconnected 'activated'?:" + str(test1)
-        #print "disconnected 'activatedAmbiguously'?:" + str(test2)
+        
+    for i in range(len(self.qtkeyconnections)):
+        print self.qtkeyconnections[i]
 
     #remove observers
     for style,tag in self.mouse_obs:
@@ -969,9 +1004,7 @@ as a loadable scripted module
     parent.categories = ["Developer Tools.Editor Extensions"]
     parent.contributors = ["Ivan Kolesov, LiangJia Zhu, Allen Tannenbaum (Stony Brook University), Yi Gao(University of Alabama Birmingham), Peter Karasev, Patricio Vela (Georgia Institute of Technology), and Steve Pieper (Isomics, Inc.)"] # insert your name in the list
     parent.helpText = """Interactive segmentation editor extension."""
-    parent.acknowledgementText = """ This editor extension was developed by Ivan Kolesov,
-Peter Karasev, Patricio Vela (Georgia Institute of Technology),
-Allen Tannenbaum (University of Alabama Birmingham), and Steve Pieper (Isomics, Inc.). """
+    parent.acknowledgementText = """ This editor extension was developed by Ivan Kolesov, LiangJia Zhu, Allen Tannenbaum (Stony Brook University), Yi Gao(University of Alabama Birmingham), Peter Karasev, Patricio Vela (Georgia Institute of Technology), and Steve Pieper (Isomics, Inc.) """
 
   
     # TODO:

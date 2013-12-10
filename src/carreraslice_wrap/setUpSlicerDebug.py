@@ -35,7 +35,7 @@ paintEffect.__del__()
 sliceWidget = lm.sliceWidget('Red')
 paintTool = EditorLib.PaintEffectTool(sliceWidget)
 editUtil.setLabel(1)
-paintTool.paintAddPoint(450,350)
+#paintTool.paintAddPoint(450,350)
 paintTool.paintApply()
 paintTool.cleanup()
 paintTool = None
