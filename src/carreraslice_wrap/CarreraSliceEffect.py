@@ -344,14 +344,15 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
     runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
     getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
+    finGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
 
-
-    print " keys for reset init, run GC, getFgrd, startKSlice are R,G,L, M"
+    print " keys for reset init, run GC, getFgrd, finGC are R,G,L, M"
     
     self.qtkeyconnections = []
     self.qtkeydefsGrowcut = [ [resetFGC, self.resetFastGrowCutFlag],
                               [runFGC,self.runFastGrowCut],
-                              [getFgrd, self.extractFastGrowCutForeground] ] # like a cell array in matlab
+                              [getFgrd, self.extractFastGrowCutForeground],
+                              [finGC, self.init_kslice] ] # like a cell array in matlab
 
     for keydef in self.qtkeydefsGrowcut:
         s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
