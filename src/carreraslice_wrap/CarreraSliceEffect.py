@@ -903,9 +903,9 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
   def destroy(self):
     #debug
-    print("testing the deletion") 
-    for i in range(len(self.qtkeyconnections)):
-        print self.qtkeyconnections[i]
+    #print("testing the deletion") 
+    #for i in range(len(self.qtkeyconnections)):
+    #    print self.qtkeyconnections[i]
 
 	#destroy GrowCut key shortcuts
     for i in range(len(self.qtkeydefsGrowcut)):
@@ -918,8 +918,6 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors
 
-    for i in range(len(self.qtkeyconnections)):
-        print self.qtkeyconnections[i]
     
     if self.fullInitialized==False: #if initialized, remove, otherwise do nothing
         return
@@ -937,8 +935,6 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors
         
-    for i in range(len(self.qtkeyconnections)):
-        print self.qtkeyconnections[i]
 
     #remove observers
     for style,tag in self.mouse_obs:
