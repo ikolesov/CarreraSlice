@@ -20,12 +20,12 @@ set(EXTENSION_SCREENSHOTURLS   "http://www.slicer.org/slicerWiki/images/thumb/2/
 #set(EXTENSION_BUILD_SUBDIRECTORY  
 
 set(MIDAS_PACKAGE_URL   http://slicer.kitware.com/midas3)
-set(MIDAS_PACKAGE_EMAIL  karasevpa@gmail.com)
+set(MIDAS_PACKAGE_EMAIL  ivan.kolesov1@gmail.com)
 set(MIDAS_PACKAGE_API_KEY  tqsS/lB5zAE7xcI3i52P0NFVvJx0x8EQ)
-set(EXTENSION_HOMEPAGE     http://wiki.slicer.org/slicerWiki/index.php/Documentation/Nightly/Modules/KSliceInteractiveSegmenter)
+set(EXTENSION_HOMEPAGE     http://wiki.slicer.org/slicerWiki/index.php/Documentation/Nightly/Modules/CarreraSliceInteractiveSegmenter)
 set(EXTENSION_CATEGORY    "Segmentation")
-set(EXTENSION_ICONURL    http://www.slicer.org/slicerWiki/images/b/bc/KSliceEffect.png)
-set(EXTENSION_CONTRIBUTORS  "Ivan Kolesov (GT), Peter Karasev (GT), Patricio Vela (GT), Allen Tannenbaum (UAB), Karl Fritscher (BWH & MGH), Steve Pieper (Isomics)")
+set(EXTENSION_ICONURL    http://www.slicer.org/slicerWiki/images/b/bc/CarreraSliceEffect.png)
+set(EXTENSION_CONTRIBUTORS  "Ivan Kolesov, LiangJia Zhu, Allen Tannenbaum (Stony Brook University), Peter Karasev, Patricio Vela (GT), Yi Gao (UAB), Karl Fritscher (BWH & MGH), Steve Pieper (Isomics)")
 set(EXTENSION_DESCRIPTION   "This extension provides an interactive 3D segmentation tool.")
 #-----------------------------------------------------------------------------
 

@@ -11,10 +11,8 @@ if(KSLICE_BUILD_FOOBAR_WIDGET)
 	  )
 
 	set(${KIT}_SRCS
-	  #qSlicer${MODULE_NAME}FooBarWidget.cxx
-	  #qSlicer${MODULE_NAME}FooBarWidget.h
-	  qSlicerKSliceFooBarWidget.cxx	  
-          qSlicerKSliceFooBarWidget.h
+	  qSlicer${MODULE_NAME}FooBarWidget.cxx
+	  qSlicer${MODULE_NAME}FooBarWidget.h
 	)
 
 	set(${KIT}_MOC_SRCS

@@ -7,10 +7,10 @@ set(KV_LIBS KSlice QVTK  ${QT_LIBRARIES}  vtkRendering  vtkGraphics
 
 set(KV_SRC      ${CMAKE_CURRENT_SOURCE_DIR}/../../kslice_wrap/Logic/vtkKSlice.cpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/../../kslice_wrap/Logic/vtkKSlice.h
-                ${CMAKE_BINARY_DIR}/kslice_wrap/Logic/vtkSlicerKSliceModuleLogicExport.h ) #a file called vtkSlicerKSliceModuleLogicExport.h gets created
+                ${CMAKE_BINARY_DIR}/kslice_wrap/Logic/vtkSlicerCarreraSliceModuleLogicExport.h ) #a file called vtkSlicerKSliceModuleLogicExport.h gets created
 
 # Tell cmake to delay looking for this file (this is needed, but not enough)
-SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/kslice_wrap/Logic/vtkSlicerKSliceModuleLogicExport.h  PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/kslice_wrap/Logic/vtkSlicerCarreraSliceModuleLogicExport.h  PROPERTIES GENERATED 1)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../kslice_wrap/Logic/
                      ${CMAKE_BINARY_DIR}/kslice_wrap/Logic/)

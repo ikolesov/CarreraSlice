@@ -32,11 +32,11 @@
 // STD includes
 #include <cstdlib>
 
-#include "vtkSlicerKSliceModuleLogicExport.h"
+#include "vtkSlicerCarreraSliceModuleLogicExport.h"
 
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class VTK_SLICER_KSLICE_MODULE_LOGIC_EXPORT vtkSlicerKSliceLogic :
+class VTK_SLICER_CARRERASLICE_MODULE_LOGIC_EXPORT vtkSlicerKSliceLogic :
   public vtkSlicerModuleLogic
 {
 public:

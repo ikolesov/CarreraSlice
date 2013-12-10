@@ -5,7 +5,7 @@ enable_testing()
 
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME KSlice)
+set(MODULE_NAME CarreraSlice)
 set(MODULE_TITLE ${MODULE_NAME})
 
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
@@ -32,21 +32,15 @@ set(MODULE_INCLUDE_DIRECTORIES
   )
 
 set(MODULE_SRCS
-  #qSlicer${MODULE_NAME}Module.cxx
-  #qSlicer${MODULE_NAME}Module.h
-  #qSlicer${MODULE_NAME}ModuleWidget.cxx
-  #qSlicer${MODULE_NAME}ModuleWidget.h
-  qSlicerKSliceModule.h
-  qSlicerKSliceModule.cxx
-  qSlicerKSliceModuleWidget.cxx
-  qSlicerKSliceModuleWidget.h
+  qSlicer${MODULE_NAME}Module.cxx
+  qSlicer${MODULE_NAME}Module.h
+  qSlicer${MODULE_NAME}ModuleWidget.cxx
+  qSlicer${MODULE_NAME}ModuleWidget.h
   )
 
 set(MODULE_MOC_SRCS
-  #qSlicer${MODULE_NAME}Module.h
-  #qSlicer${MODULE_NAME}ModuleWidget.h
-  qSlicerKSliceModule.h
-  qSlicerKSliceModuleWidget.h
+  qSlicer${MODULE_NAME}Module.h
+  qSlicer${MODULE_NAME}ModuleWidget.h
   )
 
 set(MODULE_UI_SRCS
@@ -84,11 +78,11 @@ slicerMacroBuildQtModule(
 set(MODULE_PYTHON_SCRIPTS
  #__init__
   KUtil
-  KSliceEffect
+  CarreraSliceEffect
   )
 
 set(MODULE_PYTHON_RESOURCES
-  KSliceEffect.png
+  CarreraSliceEffect.png
   )
 
 #-----------------------------------------------------------------------------

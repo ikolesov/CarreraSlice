@@ -5,11 +5,11 @@
 
 //#include "KDataWarehouse.h"
 #include "KViewerOptions.h"
-#include "vtkSlicerKSliceModuleLogicExport.h"
+#include "vtkSlicerCarreraSliceModuleLogicExport.h"
 #include "vtkImageData.h"
 #include "KSegmentor3D.h"
 
-class VTK_SLICER_KSLICE_MODULE_LOGIC_EXPORT vtkKSlice : public vtkObject
+class VTK_SLICER_CARRERASLICE_MODULE_LOGIC_EXPORT vtkKSlice : public vtkObject
 {
 
 
