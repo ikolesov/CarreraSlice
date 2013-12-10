@@ -351,7 +351,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.qtkeyconnections = []
     self.qtkeydefsGrowcut = [ [resetFGC, self.resetFastGrowCutFlag],
                               [runFGC,self.runFastGrowCut],
-                              [getFgrd, self.extractFastGrowCutForeground],
+                              #[getFgrd, self.extractFastGrowCutForeground],
                               [finGC, self.init_kslice] ] # like a cell array in matlab
 
     for keydef in self.qtkeydefsGrowcut:

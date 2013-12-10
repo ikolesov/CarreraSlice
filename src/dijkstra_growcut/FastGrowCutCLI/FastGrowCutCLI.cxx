@@ -37,8 +37,8 @@ int main(int argc, char** argv) {
      fastGC.DoSegmentation();
 
      // Get output image
-     segImg = fastGC.GetLabeImage();
-//     segImg = fastGC.GetForegroundmage();
+//     segImg = fastGC.GetLabeImage();
+     segImg = fastGC.GetForegroundmage();
 
      timer.Stop();
 
