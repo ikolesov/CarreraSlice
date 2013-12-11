@@ -361,9 +361,22 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         #s.connect('activatedAmbiguously()', keydef[1])
         self.qtkeyconnections.append(s)
 
+
+    #self.currSlice = None
+    self.ijkPlane = 'IJ'
+    self.sw = slicer.app.layoutManager().sliceWidget('Red')
+    self.interactor = self.sw.sliceView().interactor() #initialize to red slice interactor
+    self.computeCurrSliceSmarter() #initialize the current slice to something meaningful
+
+    self.mouse_obs_growcut, self.swLUT_growcut = bind_view_observers(self.entranceCursorDetect)
+
     self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly) of KSlice
 
   def init_kslice(self):
+    #remove observers used in growcut so they dont interfere
+    for style,tag in self.mouse_obs_growcut:
+        style.RemoveObserver(tag)
+
     import vtkSlicerCarreraSliceModuleLogicPython
 
     print("Made a KSliceEffectLogic")
@@ -482,15 +495,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     ksliceMod.SetSpacing(self.imgSpacing)
     ksliceMod.SetLambdaPenalty(.1) # ensure effect of user input is local only, with no penalty on curvature
     ksliceMod.Initialize()
+    ksliceMod.SetOrientation(str(self.ijkPlane))
     self.ksliceMod= ksliceMod;
 
+    print str(self.ijkPlane)
 
     # initialize state variables
-    #self.currSlice = None
-    self.ijkPlane = 'IJ'
-    self.sw = slicer.app.layoutManager().sliceWidget('Red')
-    self.interactor = self.sw.sliceView().interactor() #initialize to red slice interactor
-    self.computeCurrSliceSmarter() #initialize the current slice to something meaningful
     self.lastRunPlane = 'None' #null setting, meaning we havent done any segmentations yet
     self.lastModBy = 'None' #was last active contour run in 2D or 3D (cache needs to be recomputed)
     self.accumInProg = 0 #marker to know that we are accumulating user input
@@ -578,6 +588,15 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         if self.emergencyStopFunc:
             self.emergencyStopFunc()
         return False
+
+  def entranceCursorDetect(self, caller, event):
+    interactor=caller # should be called by the slice interactor...
+    self.interactor=interactor
+    self.sw = self.swLUT_growcut[interactor]
+    self.sliceLogic = self.sw.sliceLogic() #this is a hack, look at init function, self.sliceLogic already defined as just "Red" slice
+    ijkPlane = self.sliceIJKPlane()
+    self.ijkPlane = ijkPlane
+    self.computeCurrSliceSmarter()
 
   def testWindowListener(self, caller, event):
     interactor=caller # should be called by the slice interactor...
