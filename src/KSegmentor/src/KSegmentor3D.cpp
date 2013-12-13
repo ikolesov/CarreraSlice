@@ -21,7 +21,7 @@ using std::string;
 KSegmentor3D::KSegmentor3D(vtkImageData* image, vtkImageData* label, vtkImageData* UIVol,
                            bool contInit, int currSlice, int numIts, float distWeight, double lambdaPenalty, int brushRad, int currLabel, double *imgSpacing)
 {
-  m_EnergyName = GetSupportedEnergyNames()[1];
+  m_EnergyName = "None"; //Start from scratch //GetSupportedEnergyNames()[1];
   this->InitializeVariables(image,label, UIVol, contInit, currSlice, numIts, distWeight, lambdaPenalty, brushRad, currLabel, imgSpacing);
 
 // TODO: re-integrate this, check that label value is handled correctly from slicer
@@ -338,6 +338,7 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
 {
 
     if( !reInitFromMask ) {// do this only if re-making the level set function
+        std::cout<<"Not remaking phi"<<std::endl;
         cout <<  "\033[01;33m\033]" << "3D, using cached phi " << "\033[00m\033]" << endl;
         ll_init(LL3D.Lz);
         ll_init(LL3D.Ln1);
@@ -347,6 +348,7 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
         ll_init(LL3D.Lout2in); //ensure that Lout2in, Lin2out dont need to be intialized!!
         ll_init(LL3D.Lin2out);
     }else{
+        std::cout<<"remaking phi"<<std::endl;
         this->initializeData();
         this->CreateLLs(LL3D);
         ls_mask2phi3c(mask,phi,label,dims,LL3D.Lz,LL3D.Ln1,LL3D.Ln2,LL3D.Lp1,LL3D.Lp2);
@@ -366,7 +368,7 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
         reInit=0;
     }else{
         reInit=1;
-        prevMode="3DLocCV";   //keep track for next call
+        //prevMode="3DLocCV";   //keep track for next call
     }
 
 
@@ -424,6 +426,16 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
                                  LL3D.Lz, LL3D.Ln1, LL3D.Lp1, LL3D.Ln2, LL3D.Lp2, LL3D.Lin2out, LL3D.Lout2in,
                                  iter,lambda*0.5,display, reInit, this->segEngine->GetRadius() );
         prevMode="3DLocCV";
+    }
+    else if( 0==m_EnergyName.compare("CurvatureFlow"))
+    {
+        cout <<" run curvature flow " << endl;
+        double lambdaCurv=.05; //will make this adjustable later
+        double iterCurv=5; //this is a separate iteration from other energies
+        curvatureFlow(           /* TODO: compute this energy!*/
+                                 segEngine, img, phi, label, dims,
+                                 LL3D.Lz, LL3D.Ln1, LL3D.Lp1, LL3D.Ln2, LL3D.Lp2, LL3D.Lin2out, LL3D.Lout2in,
+                                 iterCurv,lambdaCurv,display, this->segEngine->GetRadius(), prevMode );
     }
     else
     {

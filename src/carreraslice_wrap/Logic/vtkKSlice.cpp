@@ -163,6 +163,21 @@ void vtkKSlice::runUpdate3DCV(bool reInitFromMask){      // E key now
 }
 
 
+void vtkKSlice::runUpdate3DCurvatureFlow(bool reInitFromMask){      // U key now
+    bool currSliceCheck   = checkSliceValid(this->Orientation, CurrSlice);
+    if(initCorrectFlag==1 && currSliceCheck==1){ //already initialized
+        this->ksegmentor->SetEnergyCurvatureFlow();
+        this->ksegmentor->SetCurrentSlice(CurrSlice);
+        this->ksegmentor->setNumIterations(NumIts);
+        this->ksegmentor->Update3D(reInitFromMask);
+        std::cout<<"did the update for 3d curvature flow" <<std::endl;
+    }else
+    {
+        std::cout<<"Execution stopped bc slice, initialization checks not passed"<<std::endl;
+        std::cout<<"Attempted to access slice "<< CurrSlice<<std::endl;
+    }
+}
+
 void vtkKSlice::printSpacing(){
     std::cout<<Spacing[0]<<" , "<<Spacing[1]<<" , "<<Spacing[2]<<std::endl;
 }

@@ -445,9 +445,10 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     cp = qt.QKeySequence(qt.Qt.Key_C) # copy
     ps = qt.QKeySequence(qt.Qt.Key_V) # paste
     wf = qt.QKeySequence(qt.Qt.Key_B) # flip weight factor between soft, ~hard user constraints
+    cf = qt.QKeySequence(qt.Qt.Key_U) # Press u/U to run curvature flow energy in 3D
+   
     
-    
-    print " keys for 2d, CV 3D, 3d, 2.5d, are Q, E, F, T"
+    print " keys for 2d, CV 3D, 3d, 2.5d, are Q, E, F, T, U"
     print " toggle, copy, paste: A, C, V "
     
 
@@ -458,7 +459,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
                            [tg,self.toggleDrawErase],
                            [cp,self.copyslice],
                            [ps,self.pasteslice],
-                           [wf,self.toggleInputFactor]] # like a cell array in matlab
+                           [wf,self.toggleInputFactor],
+                           [cf,self.runCurvatureFlow] ] # like a cell array in matlab
 
 
 
@@ -493,7 +495,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     ksliceMod.SetBrushRad(currRad) # only get to set radius at the beginning
     ksliceMod.SetNumIts(self.numIts)
     ksliceMod.SetSpacing(self.imgSpacing)
-    ksliceMod.SetLambdaPenalty(.1) # ensure effect of user input is local only, with no penalty on curvature
+    ksliceMod.SetLambdaPenalty(0) # use energy function "CurvatureFlow" rather than enforcing penalty here,
+                                  # it leads to bad effect if often remaking phi from mask (for example after providing input)
     ksliceMod.Initialize()
     ksliceMod.SetOrientation(str(self.ijkPlane))
     self.ksliceMod= ksliceMod;
@@ -893,7 +896,28 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #self.check_U_sync() # turn the debug off
 
+  def runCurvatureFlow(self):
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
+      return
 
+    print("doing curvature flow")
+    self.computeCurrSliceSmarter()
+
+    #make connections, parameter settings
+    self.ksliceMod.SetCurrSlice(self.currSlice)
+    self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
+
+    #execute a run, still doing 3D, user has not drawn => use cache
+    useCache= ( ( (self.lastModBy=='3DCV') | (self.lastModBy=='3DLocCV'))  & (self.userMod==0) ) #updates for chan vese and local chan vese are done inside curvatureFlow() function
+    self.ksliceMod.runUpdate3DCurvatureFlow(not useCache)
+    print "use cache?:" + str(useCache)
+
+    #save the 'last run state' information
+    self.acMod=1
+    #self.lastModBy='3DCV' # doesn't matter, keep everything as if nothing happened
+
+    self.labelImg.Modified()
+    self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
 
   def runSegment2p5D(self):
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images

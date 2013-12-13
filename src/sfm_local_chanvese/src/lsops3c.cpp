@@ -13,7 +13,7 @@ namespace
 
 void ls_iteration(float *F, float *phi, short *label, long* dims,
                   LL* Lz, LL* Ln1, LL* Lp1, LL *Ln2, LL *Lp2,
-                  LL *Lin2out, LL* Lout2in){
+                  LL *Lin2out, LL* Lout2in, bool scaleForce){
   int x,y,z,i,idx;
   double p, phi_old;
   LL *Sz, *Sn1, *Sp1, *Sn2, *Sp2;
@@ -27,8 +27,12 @@ void ls_iteration(float *F, float *phi, short *label, long* dims,
 
   // #1) Normalize F
   double Fmax = dMinF;
-  for(i=0;i<Lz->length;i++){
-    if(fabs(F[i])>Fmax) Fmax = fabs(F[i]);
+  if( scaleForce){ //when doing curvature flow, dont want to normalize force, otherwise do
+    for(i=0;i<Lz->length;i++){
+        if(fabs(F[i])>Fmax) Fmax = fabs(F[i]);
+    }
+  }else{
+      Fmax=1;
   }
 
   for(i=0;i<Lz->length;i++){

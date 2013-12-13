@@ -89,7 +89,7 @@ public:
         double *en_shrink_compute(LL *Lz, double* img, float *phi, long *dims, int *rad, double lam, double *scale);
 
         // function to smooth contour with curvature (uses en_null_update)
-        double *en_kappa_compute(LL *Lz,float *phi,long *dims);
+        float *en_kappa_compute(LL *Lz, float *phi, long *dims, double lambda);
 
         // clears update lists for energies that don't require updates
         void en_null_update(double* img, long *dims, LL *Lin2out, LL *Lout2in);
@@ -98,7 +98,7 @@ public:
         double en_kappa_pt(PT* p, float *phi, long *dims);
 
         // returns curvature (kappa) at p (x,y,z) and sets dx and dy values for the norm
-        double en_kappa_norm_pt(PT* p, float *phi, long *dims, double *dx, double *dy, double *dz);
+        float en_kappa_norm_pt(PT* p, float *phi, long *dims, double *dx, double *dy, double *dz);
 
         bool CheckLevelSetSizes( int queryLength );
         bool CheckBinSizes( int queryLength );

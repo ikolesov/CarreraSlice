@@ -68,6 +68,7 @@ class KSegmentorBase
             e_names.push_back("ChanVese");
             e_names.push_back("LocalCV");
             e_names.push_back("LocalCVLimited");
+            e_names.push_back("CurvatureFlow");
             return e_names;
         }
     public:
@@ -177,6 +178,10 @@ class KSegmentorBase
         void SetEnergyLocalCVLimited()
         {
             this->m_EnergyName = GetSupportedEnergyNames()[2];
+        }
+        void SetEnergyCurvatureFlow()
+        {
+            this->m_EnergyName = GetSupportedEnergyNames()[3];
         }
 
         vtkImageData* GetUIVol() { return U_Integral_image; }

@@ -2,6 +2,7 @@
 #include "stdio.h"
 //#include "sfm_local_chanvese_mex.h"
 #include <iostream>
+#include <fstream>
 using std::endl;
 using std::cout;
 
@@ -29,7 +30,7 @@ void interactive_edgebased(energy3c* segEngine, double *img, float *phi, short *
       apply_control_function( Lz, phi, F, U_integral, img, iter, dims );
 
       //perform iteration
-      ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in);
+      ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in, true);
 
       //update statistics
       segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
@@ -92,6 +93,13 @@ void interactive_rbchanvese(energy3c* segEngine, double *img, float *phi, short 
       std::cout<<"radius is:"<<rad[0]<<" , "<<rad[1]<<" , "<<rad[2]<<std::endl;
   }
 
+//      //IKDebug
+//  std::cout<<"writing phi"<<std::endl;
+//      std::ofstream phiBeforeFile("/home/ivan/phiBefore.txt",std::ios_base::out);
+//      for(int i=0;i< dims[0]*dims[1]; i++){
+//          phiBeforeFile<<phi[i]<<' ';
+//      }
+//      phiBeforeFile.close();
 
   for(int i=0;i<iter;i++){
     // compute force
@@ -103,16 +111,53 @@ void interactive_rbchanvese(energy3c* segEngine, double *img, float *phi, short 
     apply_control_function( Lz, phi, F, U_integral, img, iter, dims );
 
     //perform iteration
-    ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in);
+    ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in, true);
 
     //update statistics
     segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
 
   }
+
+//  //IKDebug
+//  std::ofstream phiAfterFile("/home/ivan/phiAfter.txt",std::ios_base::out);
+//  for(int i=0;i< dims[0]*dims[1]; i++){
+//      phiAfterFile<<phi[i]<<' ';
+//  }
+//  phiAfterFile.close();
+
   if( display > 0 )
     cout << "done sfls iters: " << iter << endl;
 
    //segEngine->en_lrbac_destroy(); //in the destructor
+}
+
+void curvatureFlow(energy3c* segEngine, double *img, float *phi, short *label, long *dims,
+                          LL *Lz, LL *Ln1, LL *Lp1, LL *Ln2, LL *Lp2, LL *Lin2out, LL *Lout2in,
+                          int iter, double lambda, int display, int *rad, std::string prevMode)
+{
+  float *F;
+
+  std::cout<<"This is the state: "<<prevMode<<std::endl;
+  for(int i=0;i<iter;i++){
+    // compute force
+    F = segEngine->en_kappa_compute(Lz, phi, dims, lambda);
+
+    //perform iteration
+    ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in, false);
+
+    //update statistics (curve has moved, update this depending on what was cached last time)
+    if( 0==prevMode.compare("3DLocCV")){
+        segEngine->en_chanvese_update(img, dims, Lin2out, Lout2in);
+    }
+    else if (0==prevMode.compare("3DChanVese")){
+        segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
+    }else{
+        std::cout<<"nothing was updated, is this correct?"<<std::endl;
+    }
+
+  }
+  if( display > 0 )
+    cout << "done sfls iters: " << iter << endl;
 }
 
 void interactive_rbchanvese_ext(energy3c* segEngine, double *img, float *phi, short *U_integral, short *label, long *dims,
@@ -174,7 +219,7 @@ void interactive_chanvese(energy3c* segEngine, double *img, float *phi, short *U
       // apply controller, modify F in-place
       apply_control_function( Lz, phi, F, U_integral, img, iter, dims );
       //perform iteration
-      ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in);
+      ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in, true);
       //update statistics
       segEngine->en_chanvese_update(img, dims, Lin2out, Lout2in);
 

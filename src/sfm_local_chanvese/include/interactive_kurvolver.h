@@ -3,7 +3,7 @@
 
 #include "sparse3c.h"
 #include "lsops3c.h"
-//#include "sfm_local_chanvese_mex.h"
+#include <iostream>
 
 void interactive_rbchanvese(energy3c *segEngine, double *img, float *phi, short *U_integral, short *label, long *dims,
                           LL *Lz, LL *Ln1, LL *Lp1, LL *Ln2, LL *Lp2, LL *Lin2out, LL *Lout2in,
@@ -39,3 +39,7 @@ void apply_control_function(LL *Lz, float *phi, float *F,
 
 void apply_control_function_ext(LL *Lz, float *phi, float *F,
                             short *U_integral, double *img, int iter, long* dims, double* normal, double* poP, float distWeight=0 );
+
+void curvatureFlow(energy3c* segEngine, double *img, float *phi, short *label, long *dims,
+                          LL *Lz, LL *Ln1, LL *Lp1, LL *Ln2, LL *Lp2, LL *Lin2out, LL *Lout2in,
+                          int iter, double lambda, int display, int *rad, std::string prevMode);

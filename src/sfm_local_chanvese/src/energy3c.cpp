@@ -723,7 +723,6 @@ float *energy3c::en_lrbac_compute(LL *Lz,float *phi, double *img, long *dims,
     for(int j=0;j<Lz->length;j++){
         F[j] = F[j]/scale[0]+lam*kappa[j];
     }
-
     return F;
 }
 
@@ -1645,25 +1644,34 @@ double energy3c::en_kappa_pt(PT* p, float *phi, long *dims){
     return en_kappa_norm_pt(p, phi, dims, &dx, &dy, &dz);
 }
 
-double *energy3c::en_kappa_compute(LL *Lz, float *phi, long *dims)
+float *energy3c::en_kappa_compute(LL *Lz, float *phi, long *dims, double lambda)
 {
-    double *kappa;
+    float *kappa;
     int n = 0;
     // allocate space for F
-    kappa = (double*)malloc(Lz->length*sizeof(double));
+    kappa = (float*)malloc(Lz->length*sizeof(float));
     if(kappa == NULL) return NULL;
 
     ll_init(Lz);              //begining of list;
+    double maxKap=0;
     while(Lz->curr != NULL){  //loop through list
-        kappa[n] = en_kappa_pt(Lz->curr, phi, dims); //compute kappa[n]
-        ll_step(Lz); n++;       //next point
+        kappa[n] = lambda*en_kappa_pt(Lz->curr, phi, dims); //compute kappa[n]
+        if(fabs(kappa[n])>maxKap){
+            maxKap=fabs(kappa[n]);
+        }
+        ll_step(Lz);
+        n++;       //next point
+    }
+
+    for(int j=0;j<Lz->length;j++){
+        kappa[j] = kappa[j]/maxKap;
     }
     return kappa;
 }
 
-double energy3c::en_kappa_norm_pt(PT* p, float *phi, long *dims, double *pdx, double *pdy, double *pdz){
-    double kappa;
-    double dx,dy,dz,dxx,dyy,dzz,dxy,dxz,dyz,dx2,dy2,dz2;
+float energy3c::en_kappa_norm_pt(PT* p, float *phi, long *dims, double *pdx, double *pdy, double *pdz){
+    float kappa;
+    float dx,dy,dz,dxx,dyy,dzz,dxy,dxz,dyz,dx2,dy2,dz2;
     int idx,x,y,z;
     int xok,yok,zok;
 
@@ -1700,7 +1708,7 @@ double energy3c::en_kappa_norm_pt(PT* p, float *phi, long *dims, double *pdx, do
     if(zok && yok){// (uf+db-df-ub)/4
         dyz = (phi[idx-OFFY+OFFZ]+phi[idx+OFFY-OFFZ]-phi[idx+OFFY+OFFZ]-phi[idx-OFFY-OFFZ])/4;
     }
-    double alpha_reg = 1e-3;
+    float alpha_reg = 1e-3;
     kappa = (dxx*(dy2+dz2)+dyy*(dx2+dz2)+dzz*(dx2+dy2)-
              2*dx*dy*dxy-2*dx*dz*dxz-2*dy*dz*dyz)/
             (dx2+dy2+dz2+ alpha_reg);

@@ -7,7 +7,7 @@
 
 void ls_iteration(float *F, float *phi, short *label, long* dims,
                   LL* Lz, LL* Ln1, LL* Lp1, LL *Ln2, LL *Lp2,
-                  LL *Lin2out, LL* Lout2in);
+                  LL *Lin2out, LL* Lout2in, bool scaleForce);
 
 void ls_iteration_ext(float *F, float *phi, short *label, long* dims,
                   LL* Lz, LL* Ln1, LL* Lp1, LL *Ln2, LL *Lp2,
