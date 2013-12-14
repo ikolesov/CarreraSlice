@@ -15,8 +15,8 @@ int main(int argc, char** argv) {
 //    char uiVolName[]  = "../../data/AN0084/ANON0084_ui.mha";
 
     char imgVolName[] = "../../../demoData/circleTest.mha";
-    char labVolName[] = "../../../demoData/squareNoise.mha";
-    char uiVolName[]  = "../../../demoData/squareNoise.mha";
+    char labVolName[] = "../../../demoData/pointTest.mha";
+    char uiVolName[]  = "../../../demoData/pointTest.mha";
 
 
     std::cout << "looking for img, label, U: " << imgVolName << ", "
@@ -130,9 +130,9 @@ int main(int argc, char** argv) {
             bbKSlice->runUpdate2D(0);
             break;
         case 4:
-            bbKSlice->runUpdate3DCV(1);
+            //bbKSlice->runUpdate3DCV(1);
             bbKSlice->SetCurrSlice(currSlice-1);
-            bbKSlice->runUpdate3DCurvatureFlow(0);
+            bbKSlice->runUpdate3DCurvatureFlow(1);
             bbKSlice->runUpdate3DCurvatureFlow(0);
             break;
 

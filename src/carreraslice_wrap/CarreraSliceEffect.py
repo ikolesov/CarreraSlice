@@ -495,7 +495,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     ksliceMod.SetBrushRad(currRad) # only get to set radius at the beginning
     ksliceMod.SetNumIts(self.numIts)
     ksliceMod.SetSpacing(self.imgSpacing)
-    ksliceMod.SetLambdaPenalty(.9) # use energy function "CurvatureFlow" rather than enforcing penalty here,
+    ksliceMod.SetLambdaPenalty(0) # use energy function "CurvatureFlow" rather than enforcing penalty here,
                                   # it leads to bad effect if often remaking phi from mask (for example after providing input)
     ksliceMod.Initialize()
     ksliceMod.SetOrientation(str(self.ijkPlane))

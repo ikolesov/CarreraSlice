@@ -118,6 +118,29 @@ void KSegmentor3D::initializeData()
   int labType=labelVol->GetScalarType();
   vrcl::convertLabel(labType,labelVol->GetScalarPointer(), mask, dimx, dimy, dimz);
 
+  //clean up, if have single pixels, these are mistakes, the way curvature is being computed,
+  //a lone pixel has kappa=0, so it will not be removed either. remove them manually in the beginning
+  //find 'interface' and mark as 0, create Lz
+  int x,y,z, idx;
+  bool flag;
+  for(x=0;x<DIMX;x++) for(y=0;y<DIMY;y++) for(z=0;z<DIMZ;z++){
+    idx = (int)(z*DIMXY+x*DIMY+y);
+
+    if(mask[idx] !=0){
+      flag = 0;
+      //if any neighbors are 1;
+      if(((y+1)<DIMY) && mask[idx+OFFY]!=0){flag = 1;}//up
+      if(((y-1)>=0)   && mask[idx-OFFY]!=0){flag = 1;}//down
+      if(((x+1)<DIMX) && mask[idx+OFFX]!=0){flag = 1;}//right
+      if(((x-1)>=0)   && mask[idx-OFFX]!=0){flag = 1;}//left
+      if(((z+1)<DIMZ) && mask[idx+OFFZ]!=0){flag = 1;}//front
+      if(((z-1)>=0)   && mask[idx-OFFZ]!=0){flag = 1;}//back
+      if(!flag){ //if none of the neighbors are 1, remove this noisy pixel
+        mask[idx] = 0;
+      }
+    }
+  }
+
 }
 
 
@@ -449,6 +472,13 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
 
     cout <<  "dims are:" << dims[0] << "    " << dims[1] << "      " << dims[2] << endl;
     cout <<  "Lz size: "       << LL3D.Lz->length << endl;
+
+//    ll_init(LL3D.Lz);
+//    while(LL3D.Lz->curr!=NULL){
+//        std::cout<<"curr phi on Lz is: "<<phi[LL3D.Lz->curr->idx]<<std::endl;
+//        ll_step(LL3D.Lz);
+//    }
+
 
     //whats the point of these two variables?
     // after PK cleans up, these will be clarified

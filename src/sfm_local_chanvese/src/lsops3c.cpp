@@ -43,6 +43,7 @@ void ls_iteration(float *F, float *phi, short *label, long* dims,
   //                                             ========
   //     (a) scan Lz values [-2.5 -1.5)[-1.5 -.5)[-.5 .5](.5 1.5](1.5 2.5]
   ll_init(Lz); i = 0;
+  int numRemoved=0;//IKDebug
   while(Lz->curr != NULL){
     x   = Lz->curr->x;
     y   = Lz->curr->y;
@@ -66,17 +67,22 @@ void ls_iteration(float *F, float *phi, short *label, long* dims,
       ll_pushnew(Lout2in,x,y,z,idx);
     }
 
+
+
     if(phi[idx] > .5){
       ll_push(Sp1, ll_remcurr(Lz));
+      numRemoved++;
     }
     else if(phi[idx] < -.5){
       ll_push(Sn1, ll_remcurr(Lz));
+      numRemoved++;
     }
     else{
       ll_step(Lz);
     }
     i++; //increment index into F
   }
+  std::cout<<"We have removed this many pixels from Lz: "<<numRemoved<<std::endl;
 
   // #3) update Ln1,Ln2,Lp1,Lp2
   //                                    ==========

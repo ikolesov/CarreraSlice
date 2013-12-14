@@ -1664,7 +1664,7 @@ float *energy3c::en_kappa_compute(LL *Lz, float *phi, long *dims, double lambda)
     }
 
     for(int j=0;j<Lz->length;j++){
-        kappa[j] = kappa[j]/maxKap;
+        kappa[j] = kappa[j]/(maxKap+10e-4); //avoid division by zero
     }
     return kappa;
 }
