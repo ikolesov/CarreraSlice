@@ -1,19 +1,19 @@
-if(FALSE)
+if(TRUE)
 
 # this directory is questionable on all platforms it seems
 
 set(KV_LIBS KSlice QVTK  ${QT_LIBRARIES}  vtkRendering  vtkGraphics
          vtkIO  vtkCommon   ) #${OpenCV_LIBS}
 
-set(KV_SRC      ${CMAKE_CURRENT_SOURCE_DIR}/../../kslice_wrap/Logic/vtkKSlice.cpp
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../kslice_wrap/Logic/vtkKSlice.h
-                ${CMAKE_BINARY_DIR}/kslice_wrap/Logic/vtkSlicerCarreraSliceModuleLogicExport.h ) #a file called vtkSlicerKSliceModuleLogicExport.h gets created
+set(KV_SRC      ${CMAKE_CURRENT_SOURCE_DIR}/../../carreraslice_wrap/Logic/vtkKSlice.cpp
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../carreraslice_wrap/Logic/vtkKSlice.h
+                ${CMAKE_BINARY_DIR}/carreraslice_wrap/Logic/vtkSlicerCarreraSliceModuleLogicExport.h ) #a file called vtkSlicerKSliceModuleLogicExport.h gets created
 
 # Tell cmake to delay looking for this file (this is needed, but not enough)
-SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/kslice_wrap/Logic/vtkSlicerCarreraSliceModuleLogicExport.h  PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_BINARY_DIR}/carreraslice_wrap/Logic/vtkSlicerCarreraSliceModuleLogicExport.h  PROPERTIES GENERATED 1)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../kslice_wrap/Logic/
-                     ${CMAKE_BINARY_DIR}/kslice_wrap/Logic/)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../carreraslice_wrap/Logic/
+                     ${CMAKE_BINARY_DIR}/carreraslice_wrap/Logic/)
 
 if(WIN32)
 	message(STATUS "skipping KViewer standalone on windows")
@@ -25,4 +25,4 @@ else()
 endif(WIN32)
 
 
-endif(FALSE)
+endif(TRUE)

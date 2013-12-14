@@ -10,9 +10,13 @@ int main(int argc, char** argv) {
 //    char labVolName[] = "../../data/bbTest/labVol.mha";
 //    char uiVolName[]  = "../../data/bbTest/uiVol.mha";
 
-    char imgVolName[] = "../../data/AN0084/ANON0084.mha";
-    char labVolName[] = "../../data/AN0084/ANON0084_label.mha";
-    char uiVolName[]  = "../../data/AN0084/ANON0084_ui.mha";
+//    char imgVolName[] = "../../data/AN0084/ANON0084.mha";
+//    char labVolName[] = "../../data/AN0084/ANON0084_label.mha";
+//    char uiVolName[]  = "../../data/AN0084/ANON0084_ui.mha";
+
+    char imgVolName[] = "../../../demoData/circleTest.mha";
+    char labVolName[] = "../../../demoData/squareNoise.mha";
+    char uiVolName[]  = "../../../demoData/squareNoise.mha";
 
 
     std::cout << "looking for img, label, U: " << imgVolName << ", "
@@ -29,9 +33,9 @@ int main(int argc, char** argv) {
     vtkImageData* uiVol;
 
     int rad=5;
-    double spacing[3]={.97, .97, 2.5};
+    double spacing[3]={1,1,1};
     float distWeight=.3;
-    int currSlice=256;
+    int currSlice=50;
 
     //test if we can read each file
     int canReadImg = imgReader->CanReadFile(imgVolName);
@@ -86,7 +90,7 @@ int main(int argc, char** argv) {
 
 
 
-    int test=2;
+    int test=4;
     int numIts=1;
     for(int i=0; i<numIts; i++)
     {
@@ -124,6 +128,12 @@ int main(int argc, char** argv) {
             bbKSlice->runUpdate2D(1);
             bbKSlice->SetCurrSlice(currSlice-1);
             bbKSlice->runUpdate2D(0);
+            break;
+        case 4:
+            bbKSlice->runUpdate3DCV(1);
+            bbKSlice->SetCurrSlice(currSlice-1);
+            bbKSlice->runUpdate3DCurvatureFlow(0);
+            bbKSlice->runUpdate3DCurvatureFlow(0);
             break;
 
         }

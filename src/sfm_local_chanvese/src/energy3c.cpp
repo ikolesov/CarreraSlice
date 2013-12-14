@@ -721,7 +721,7 @@ float *energy3c::en_lrbac_compute(LL *Lz,float *phi, double *img, long *dims,
    // if(scale[0]==0)
     scale[0] = Fmax;
     for(int j=0;j<Lz->length;j++){
-        F[j] = F[j]/scale[0]+lam*kappa[j];
+        F[j] = F[j]/scale[0]+ lam*kappa[j];
     }
     return F;
 }

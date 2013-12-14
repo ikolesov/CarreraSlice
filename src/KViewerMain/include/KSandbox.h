@@ -465,11 +465,16 @@ namespace vrcl {
   template<typename T> void setLabel3D(T *array, float *source, int Nelements, int currLabel)
   {
       float phi_val = 0;
+      int n;
       for (int idx=0;idx<Nelements;idx++)
       {
           phi_val = source[idx];
           array[idx] =( (T) 0 >= phi_val )*currLabel;
+          if(0 >= phi_val){ //IKDebug
+              n++;
+          }
       }
+      std::cout<<"there are this many pixels in foreground: "<<n<<std::endl;
   }
 
   template<typename T> void setLabel3D(int labType, T *array, float *source, int Nelements, int currLabel)

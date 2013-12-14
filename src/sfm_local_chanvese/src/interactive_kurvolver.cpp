@@ -147,11 +147,19 @@ void curvatureFlow(energy3c* segEngine, double *img, float *phi, short *label, l
 
     //update statistics (curve has moved, update this depending on what was cached last time)
     if( 0==prevMode.compare("3DLocCV")){
-        segEngine->en_chanvese_update(img, dims, Lin2out, Lout2in);
+         segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
     }
     else if (0==prevMode.compare("3DChanVese")){
-        segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
+       segEngine->en_chanvese_update(img, dims, Lin2out, Lout2in);
     }else{
+        ll_init(Lin2out);
+        while(Lin2out->curr != NULL){
+            ll_remcurr_free(Lin2out);
+        }
+        ll_init(Lout2in);
+        while(Lout2in->curr != NULL){
+            ll_remcurr_free(Lout2in);
+        }
         std::cout<<"nothing was updated, is this correct?"<<std::endl;
     }
 
