@@ -14,10 +14,13 @@ int main(int argc, char** argv) {
 //    char labVolName[] = "../../data/AN0084/ANON0084_label.mha";
 //    char uiVolName[]  = "../../data/AN0084/ANON0084_ui.mha";
 
-    char imgVolName[] = "../../../demoData/circleTest.mha";
-    char labVolName[] = "../../../demoData/pointTest.mha";
-    char uiVolName[]  = "../../../demoData/pointTest.mha";
+//    char imgVolName[] = "../../../demoData/circleTest.mha";
+//    char labVolName[] = "../../../demoData/pointTest.mha";
+//    char uiVolName[]  = "../../../demoData/pointTest.mha";
 
+        char imgVolName[] = "../../../demoData/circleTest.mha";
+        char labVolName[] = "../../../demoData/squareNoise.mha";
+        char uiVolName[]  = "../../../demoData/squareNoise.mha";
 
     std::cout << "looking for img, label, U: " << imgVolName << ", "
               << labVolName << ", " << uiVolName << std::endl;

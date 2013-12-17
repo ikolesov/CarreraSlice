@@ -71,18 +71,15 @@ void ls_iteration(float *F, float *phi, short *label, long* dims,
 
     if(phi[idx] > .5){
       ll_push(Sp1, ll_remcurr(Lz));
-      numRemoved++;
     }
     else if(phi[idx] < -.5){
       ll_push(Sn1, ll_remcurr(Lz));
-      numRemoved++;
     }
     else{
       ll_step(Lz);
     }
     i++; //increment index into F
   }
-  std::cout<<"We have removed this many pixels from Lz: "<<numRemoved<<std::endl;
 
   // #3) update Ln1,Ln2,Lp1,Lp2
   //                                    ==========

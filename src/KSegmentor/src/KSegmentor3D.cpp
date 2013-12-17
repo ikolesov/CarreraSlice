@@ -139,6 +139,18 @@ void KSegmentor3D::initializeData()
         mask[idx] = 0;
       }
     }
+
+    if(mask[idx] ==0){
+      //if all neighbors are 1, we have hole, fill it
+      if(((y+1)<DIMY) && mask[idx+OFFY]!=0){flag = 1;}else{continue;}//up
+      if(((y-1)>=0)   && mask[idx-OFFY]!=0){flag = 1;}else{continue;}//down
+      if(((x+1)<DIMX) && mask[idx+OFFX]!=0){flag = 1;}else{continue;}//right
+      if(((x-1)>=0)   && mask[idx-OFFX]!=0){flag = 1;}else{continue;}//left
+      if(((z+1)<DIMZ) && mask[idx+OFFZ]!=0){flag = 1;}else{continue;}//front
+      if(((z-1)>=0)   && mask[idx-OFFZ]!=0){flag = 1;}else{continue;}//back
+      //if all of the neighbors are nonzero, fill this pixel
+      mask[idx] = this->currLabel;
+    }
   }
 
 }

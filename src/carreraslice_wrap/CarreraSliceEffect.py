@@ -123,7 +123,7 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
     disableState = self.parameterNode.GetDisableModifiedEvent()
     self.parameterNode.SetDisableModifiedEvent(1)
     defaults = (
-      ("radius", "5"),
+      ("radius", "10"),
       ("numIts", "10")
     )
     for d in defaults:
@@ -344,15 +344,15 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
     runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
     #getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
-    finGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
+    #finGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
 
-    print " keys for reset init, run GC, getFgrd, finGC are R,G,L, M"
+    print " keys for reset init, run GC, getFgrd, finGC are R,G" #,L, M"
     
     self.qtkeyconnections = []
     self.qtkeydefsGrowcut = [ [resetFGC, self.resetFastGrowCutFlag],
-                              [runFGC,self.runFastGrowCut],
+                              [runFGC,self.runFastGrowCut] ]
                               #[getFgrd, self.extractFastGrowCutForeground],
-                              [finGC, self.init_kslice] ] # like a cell array in matlab
+                              #[finGC, self.init_kslice] ] #this is turned off temporarily, once interaction in growcut is better established, will add back in
 
     for keydef in self.qtkeydefsGrowcut:
         s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
@@ -376,6 +376,18 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     #remove observers used in growcut so they dont interfere
     for style,tag in self.mouse_obs_growcut:
         style.RemoveObserver(tag)
+
+    #destroy GrowCut key shortcuts
+    for i in range(len(self.qtkeydefsGrowcut)):
+        keyfun = self.qtkeydefsGrowcut[i]
+        keydef = self.qtkeyconnections[i]
+        test1=keydef.disconnect('activated()', keyfun[1])
+        test2=keydef.disconnect('activatedAmbiguously()', keyfun[1])
+        #self.qtkeyconnections.remove(keydef) #remove from list
+        keydef.setParent(None)
+        #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
+        keydef.delete() #this causes errors
+
 
     import vtkSlicerCarreraSliceModuleLogicPython
 
@@ -805,7 +817,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         slicer.cli.run(fastGrowCut, None, parameters, True)
         
         self.bSegmenterInitialized = "yes"
-  
+
+        self.init_kslice() #this line intializes KSlice, at this point growcut interaction (after being used for intialization is turned off)
   # reset fast growcut segmenter
   def resetFastGrowCutFlag(self):
         self.bSegmenterInitialized = "no"
@@ -949,17 +962,6 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     #print("testing the deletion")
     #for i in range(len(self.qtkeyconnections)):
     # print self.qtkeyconnections[i]
-
-        #destroy GrowCut key shortcuts
-    for i in range(len(self.qtkeydefsGrowcut)):
-        keyfun = self.qtkeydefsGrowcut[i]
-        keydef = self.qtkeyconnections[i]
-        test1=keydef.disconnect('activated()', keyfun[1])
-        test2=keydef.disconnect('activatedAmbiguously()', keyfun[1])
-        #self.qtkeyconnections.remove(keydef) #remove from list
-        keydef.setParent(None)
-        #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
-        keydef.delete() #this causes errors
 
     
     if self.fullInitialized==False: #if initialized, remove, otherwise do nothing
