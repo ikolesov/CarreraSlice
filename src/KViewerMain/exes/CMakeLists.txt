@@ -1,4 +1,5 @@
-if(TRUE)
+set(KSlice_Build_Standalone FALSE CACHE BOOL FALSE)
+if(KSlice_Build_Standalone)
 
 # this directory is questionable on all platforms it seems
 
@@ -25,4 +26,4 @@ else()
 endif(WIN32)
 
 
-endif(TRUE)
+endif()
