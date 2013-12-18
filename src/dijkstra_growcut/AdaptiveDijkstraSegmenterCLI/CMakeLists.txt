@@ -1,6 +1,6 @@
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME FastGrowCutCLI)
+set(MODULE_NAME AdaptiveDijkstraSegmenterCLI)
 
 #-----------------------------------------------------------------------------
 set(MODULE_INCLUDE_DIRECTORIES
@@ -19,9 +19,9 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES ${MODULE_TARGET_LIBRARIES}
   INCLUDE_DIRECTORIES ${MODULE_INCLUDE_DIRECTORIES}
   ADDITIONAL_SRCS #${MODULE_SRCS}
-  FastGrowCutCLI.cxx
-  FastGrowCut.h
-  FastGrowCut.hxx
+  AdaptiveDijkstraSegmenterCLI.cxx
+  AdaptiveDijkstraSegmenter.h
+  AdaptiveDijkstraSegmenter.hxx
   fibheap.cpp
   fibheap.h
   )

@@ -4,14 +4,14 @@
     Testing
   </category>
   <title>
-   Fast Grow Cut
+   Adaptive Dijkstra Segmenter
   </title>
   <description>
-    Fast Grow Cut
+    Adaptive Dijkstra Segmenter
   </description>
   <version>1.0</version>
   <documentation-url>
-
+	This is a CLI module for interactive 3D segmentation
   </documentation-url>
   <license></license>
   <contributor>

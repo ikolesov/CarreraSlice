@@ -337,23 +337,34 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     self.editUtil = EditUtil.EditUtil()
 
-        # fast grow cut parameters
+    # fast grow cut parameters
     self.bSegmenterInitialized = "no"
+    self.bEditGrowCutSeed = True
+    seedImgNode = self.sliceLogic.GetLabelLayer().GetVolumeNode()
+    seedArray = slicer.util.array(seedImgNode.GetName())
+    self.growCutSeedArray = deepcopy(slicer.util.array(seedImgNode.GetName()))
+    self.growCutSegArray = deepcopy(slicer.util.array(seedImgNode.GetName()))
+    self.growCutSeedArray = seedArray.copy()
+    self.growCutSegArray = seedArray.copy()
+    self.growCutSeedArray[:] = 0
+    self.growCutSegArray[:] = 0
 
     # fast growcut shortcuts
     resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
     runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
+    editSeed = qt.QKeySequence(qt.Qt.Key_S) # edit seed labels
     #getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
-    #finGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
+    findGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
 
-    print " keys for reset init, run GC, getFgrd, finGC are R,G" #,L, M"
+    print " keys for reset init, run GC, edit seed, and smooth are R,G, S, M"
     
     self.qtkeyconnections = []
     self.qtkeydefsGrowcut = [ [resetFGC, self.resetFastGrowCutFlag],
-                              [runFGC,self.runFastGrowCut] ]
+                              [runFGC,self.runFastGrowCut],
+                              [editSeed, self.editGrowCutSeed],
                               #[getFgrd, self.extractFastGrowCutForeground],
-                              #[finGC, self.init_kslice] ] #this is turned off temporarily, once interaction in growcut is better established, will add back in
-
+                              #[findGC, self.init_kslice] ] #this is turned off temporarily, once interaction in growcut is better established, will add back in
+							  [findGC, self.demoCarreraSlice]]
     for keydef in self.qtkeydefsGrowcut:
         s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
         #s.setContext(1)
@@ -803,25 +814,40 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
   # run fast GrowCut segmentor for the current master volume and label volume
   def runFastGrowCut(self):
-        
-        srcImgNode = self.editUtil.getBackgroundVolume()
-        seedImgNode = self.editUtil.getLabelVolume()
+	  
+	if self.bEditGrowCutSeed == True:
+		srcImgNode = self.editUtil.getBackgroundVolume()
+		seedImgNode = self.editUtil.getLabelVolume()
+		self.growCutSegArray = slicer.util.array(seedImgNode.GetName())
+		self.growCutSeedArray[:] = self.growCutSegArray[:]
+		
+		parameters = {}
+		parameters["strInitial"] = self.bSegmenterInitialized
+		parameters["sourceImageName"] = srcImgNode.GetID()
+		parameters["seedImageName"] = seedImgNode.GetID()        
 
-        parameters = {}
-        parameters["strInitial"] = self.bSegmenterInitialized
-        parameters["sourceImageName"] = srcImgNode.GetID()
-        parameters["seedImageName"] = seedImgNode.GetID()        
-
-        fastGrowCut = slicer.modules.fastgrowcutcli
-        slicer.cli.run(fastGrowCut, None, parameters, True)
-        
-        self.bSegmenterInitialized = "yes"
-
-        self.init_kslice() #this line intializes KSlice, at this point growcut interaction (after being used for intialization is turned off)
+		fastGrowCut = slicer.modules.adaptivedijkstrasegmentercli
+		slicer.cli.run(fastGrowCut, None, parameters, True)
+			
+		self.bSegmenterInitialized = "yes"
+		self.bEditGrowCutSeed = False
+	else:
+		print('Please go to seed labels first by pressing S')
+  
   # reset fast growcut segmenter
   def resetFastGrowCutFlag(self):
         self.bSegmenterInitialized = "no"
-        print('reset the fast growcut segmenter')
+        self.bEditGrowCutSeed = True
+        self.growCutSeedArray[:] = 0
+        self.growCutSegArray[:] = 0
+        
+        seedImgNode = self.editUtil.getLabelVolume()
+        seedArray = slicer.util.array(seedImgNode.GetName())
+        seedArray[:] = 0
+        
+        seedImgNode.GetImageData().Modified()
+        seedImgNode.Modified()
+        print('reset adaptive Dijkstra segmenter')
         
         
   # extract the foreground label (==1)
@@ -830,6 +856,52 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 #        labelArray[labelArray != 1] = 0
 #        self.labelImg.Modified()
 #        print('extract foreground label == 1')
+
+  def editGrowCutSeed(self):
+	
+	seedImgNode = self.editUtil.getLabelVolume()
+	seedArray = slicer.util.array(seedImgNode.GetName())
+	if self.bEditGrowCutSeed == False:
+		
+		self.growCutSegArray[:] = seedArray[:]
+		seedArray[:] = self.growCutSeedArray[:]
+		self.bEditGrowCutSeed = True
+
+		seedImgNode.GetImageData().Modified()
+		seedImgNode.Modified()
+
+		print('show label image')
+	else:
+		if self.growCutSegArray.any() != 0 :
+		
+			seedArray[:] = self.growCutSegArray[:]
+			self.bEditGrowCutSeed = False
+			seedImgNode.GetImageData().Modified()
+			seedImgNode.Modified()
+			print('show segmentation')
+		else:
+			print('no segmentation result')	
+			
+  # extract the foreground label (==1)
+#  def extractFastGrowCutForeground(self):
+#        labelArray = slicer.util.array(self.editUtil.getLabelVolume().GetName())
+#        labelArray[labelArray != 1] = 0
+#        self.labelImg.Modified()
+#        print('extract foreground label == 1')
+
+  def demoCarreraSlice(self):
+	
+	if self.bEditGrowCutSeed == True:
+		print('Please run adaptive Dijkstra first by pressing G')
+		return
+	
+	self.init_kslice()
+	  
+	for i in range(1):
+		self.runSegment3DLocCV()
+	
+	for i in range(3):
+		self.runCurvatureFlow()
         
   def runSegment2D(self):
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images

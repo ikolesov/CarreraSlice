@@ -94,6 +94,6 @@ template<typename SrcImageType, typename LabImageType,  typename DistImageType>
 
 }
 
-#include "FastGrowCut.hxx"
+#include "AdaptiveDijkstraSegmenter.hxx"
 
 #endif

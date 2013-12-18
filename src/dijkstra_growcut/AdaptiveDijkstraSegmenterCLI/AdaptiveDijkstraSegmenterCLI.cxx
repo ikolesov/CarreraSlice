@@ -1,6 +1,6 @@
-#include "FastGrowCutCLICLP.h"
+#include "AdaptiveDijkstraSegmenterCLICLP.h"
 
-#include "FastGrowCut.h"
+#include "AdaptiveDijkstraSegmenter.h"
 #include "itkTimeProbe.h"
 
 int main(int argc, char** argv) {
@@ -43,9 +43,9 @@ int main(int argc, char** argv) {
      timer.Stop();
 
       if(!bInitialized)
-          std::cout << "Initial fast growcut time: " << timer.GetMeanTime() << " seconds\n";
+          std::cout << "Initial Dijkstra segmentation time: " << timer.GetMeanTime() << " seconds\n";
       else
-          std::cout << "adaptive growcut time: " << timer.GetMeanTime() << " seconds\n";
+          std::cout << "adaptive Dijkstra segmentation time: " << timer.GetMeanTime() << " seconds\n";
 
 //      FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
       FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());

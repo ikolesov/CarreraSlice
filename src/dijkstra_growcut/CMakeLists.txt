@@ -15,7 +15,7 @@
 #include(${Slicer_USE_FILE})
 
 #-----------------------------------------------------------------------------
-add_subdirectory(FastGrowCutCLI)
+add_subdirectory(AdaptiveDijkstraSegmenterCLI)
 
 #-----------------------------------------------------------------------------
 #include(${Slicer_EXTENSION_CPACK})

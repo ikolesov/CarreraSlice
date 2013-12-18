@@ -1,5 +1,5 @@
 
-#include "FastGrowCut.h"
+#include "AdaptiveDijkstraSegmenter.h"
 
 #include "itkImageRegionIterator.h"
 #include "itkImageRegionIteratorWithIndex.h"
