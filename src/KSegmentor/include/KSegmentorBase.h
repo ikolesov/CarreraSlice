@@ -65,10 +65,10 @@ class KSegmentorBase
         static std::vector<std::string> GetSupportedEnergyNames()
         {
             std::vector<std::string> e_names;
-            e_names.push_back("ChanVese");
-            e_names.push_back("LocalCV");
-            e_names.push_back("LocalCVLimited");
-            e_names.push_back("CurvatureFlow");
+            e_names.push_back("3DChanVese");
+            e_names.push_back("3DLocalCV");
+            e_names.push_back("3DLocalCVLimited");
+            e_names.push_back("3DCurvatureFlow");
             return e_names;
         }
     public:
@@ -225,8 +225,8 @@ class KSegmentorBase
         float m_DistWeight,m_ThreshWeight;
 
         std::string m_EnergyName;
+        std::string lastRunOf;
         std::string m_IJK_orient; // IJ, JK, IK
-        std::string prevMode;
         std::string last2DOrient;
         double m_Umax;
 

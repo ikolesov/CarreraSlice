@@ -30,8 +30,8 @@ class KSegmentor3D: public vrcl::KSegmentorBase{
         void initializeData();
         /** compute view plane's normal and center */
         void CalcViewPlaneParams( );
-        virtual void Update3D(bool reInitFromMask);
-        virtual void Update2D(bool reInitFromMask);
+        virtual void Update3D(bool userEdit);
+        virtual void Update2D(bool userEdit);
 
         /** external interface to update at a voxel */
         void accumulateCurrentUserInput( double value,

@@ -517,7 +517,6 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     # initialize state variables
     self.lastRunPlane = 'None' #null setting, meaning we havent done any segmentations yet
-    self.lastModBy = 'None' #was last active contour run in 2D or 3D (cache needs to be recomputed)
     self.accumInProg = 0 #marker to know that we are accumulating user input
 
     # make cache slices for the three different planes
@@ -845,14 +844,13 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.ksliceMod.SetNumIts(self.numIts)
 
     #execute a run, we're on same plane, same run type, user has not drawn => use cache (check for "same slice" is done in c++)
-    useCache= (self.lastRunPlane==self.ijkPlane)& (self.lastModBy=='2D') & (self.userMod==0)
-    self.ksliceMod.runUpdate2D(not useCache)
-    print "use cache?:" + str(useCache)
+    useCache= (self.userMod==1) | (not self.lastRunPlane==self.ijkPlane) 
+    self.ksliceMod.runUpdate2D(useCache)
+    print "user modified?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
     self.lastRunPlane=self.ijkPlane
-    self.lastModBy='2D' # was last active contour run in 2D or 3D (cache needs to be recomputed)
     
     #update vars
     self.labelImg.Modified() # This triggers a Modified Event on Label => windowListener call
@@ -872,13 +870,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
 
     #execute a run, still doing 3D, user has not drawn => use cache
-    useCache= ( (self.lastModBy=='3DLocCV') & (self.userMod==0) )
-    self.ksliceMod.runUpdate3DLocCV(not useCache)
-    print "use cache?:" + str(useCache)
+    useCache= (self.userMod==1)
+    self.ksliceMod.runUpdate3DLocCV(useCache)
+    print "user modified?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
-    self.lastModBy='3DLocCV' # was last active contour run in 2D or 3D (cache needs to be recomputed)
 
     self.labelImg.Modified()
     self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
@@ -896,13 +893,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
 
     #execute a run, still doing 3D, user has not drawn => use cache
-    useCache= ( (self.lastModBy=='3DCV') & (self.userMod==0) )
-    self.ksliceMod.runUpdate3DCV(not useCache)
-    print "use cache?:" + str(useCache)
+    useCache= (self.userMod==1)
+    self.ksliceMod.runUpdate3DCV(useCache)
+    print "user modified?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
-    self.lastModBy='3DCV' # was last active contour run in 2D or 3D (cache needs to be recomputed)
 
     self.labelImg.Modified()
     self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
@@ -921,13 +917,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.ksliceMod.SetNumIts(self.numIts) # should be less than 2D!
 
     #execute a run, still doing 3D, user has not drawn => use cache
-    useCache= ( ( (self.lastModBy=='3DCV') | (self.lastModBy=='3DLocCV'))  & (self.userMod==0) ) #updates for chan vese and local chan vese are done inside curvatureFlow() function
-    self.ksliceMod.runUpdate3DCurvatureFlow(not useCache)
-    print "use cache?:" + str(useCache)
+    useCache= (self.userMod==1) #updates for chan vese and local chan vese are done inside curvatureFlow() function
+    self.ksliceMod.runUpdate3DCurvatureFlow(useCache)
+    print "user modified?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
-    #self.lastModBy='3DCV' # doesn't matter, keep everything as if nothing happened
 
     self.labelImg.Modified()
     self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
@@ -944,13 +939,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.ksliceMod.SetDistWeight(0.2) # weight evolution by distancef rom view-plane
 
     #still doing 3D, user has not drawn => use cache
-    useCache= (self.lastModBy=='25D') & (self.userMod==0)
-    self.ksliceMod.runUpdate2p5D(not useCache)
-    print "use cache?:" + str(useCache)
+    useCache= (self.userMod==1)
+    self.ksliceMod.runUpdate2p5D(useCache)
+    print "user modified?:" + str(useCache)
 
     #save the 'last run state' information
     self.acMod=1
-    self.lastModBy='25D' # was last active contour run in 2D or 3D (cache needs to be recomputed)
     #self.check_U_sync() # very slow operation
     
     self.labelImg.Modified() # signal to slicer that the label needs to be updated

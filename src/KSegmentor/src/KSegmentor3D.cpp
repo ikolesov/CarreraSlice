@@ -21,7 +21,7 @@ using std::string;
 KSegmentor3D::KSegmentor3D(vtkImageData* image, vtkImageData* label, vtkImageData* UIVol,
                            bool contInit, int currSlice, int numIts, float distWeight, double lambdaPenalty, int brushRad, int currLabel, double *imgSpacing)
 {
-  m_EnergyName = "None"; //Start from scratch //GetSupportedEnergyNames()[1];
+
   this->InitializeVariables(image,label, UIVol, contInit, currSlice, numIts, distWeight, lambdaPenalty, brushRad, currLabel, imgSpacing);
 
 // TODO: re-integrate this, check that label value is handled correctly from slicer
@@ -47,9 +47,11 @@ KSegmentor3D::KSegmentor3D(vtkImageData* image, vtkImageData* label, vtkImageDat
   this->m_IJK_orient="IJ";
   this->prevSlice   =-1;
   this->currSlice   =-1;
-  this->prevMode    = "None"; // have not done 2D or 3D
+  this->lastRunOf    = "None"; // last level set evolution of type ... (variable for keeping track when to re-initialize)
   this->last2DOrient= "None"; // null init for orientation
   this->firstPassInit = true; // have not done initializeData() yet
+  this->m_EnergyName = "None"; //Start from scratch //GetSupportedEnergyNames()[1];
+
 
 }
 
@@ -203,7 +205,7 @@ bool check_U_behavior(const std::vector<float>& phi0, float* phi1, short* U )
 
 }
 
-void KSegmentor3D::Update2D(bool reInitFromMask)
+void KSegmentor3D::Update2D(bool userEdit)
 {
     //set the orientation
     int dim0=0;
@@ -250,7 +252,8 @@ void KSegmentor3D::Update2D(bool reInitFromMask)
     cout << "orient=" << m_IJK_orient << ", prevslice=" << prevSlice << ", " << "currslice= " << currSlice << endl;
     bool sameSlice=(prevSlice == this->currSlice);
 
-    if( sameSlice==1 && !reInitFromMask ) {
+    bool useCachedPhi=(lastRunOf.compare("2D") ) && (!userEdit) && sameSlice;
+    if( useCachedPhi ) {
         cout <<  "\033[01;32m\033]" << "using cached phi " << "\033[00m\033]" << endl;
         ll_init(LL2D.Lz);
         ll_init(LL2D.Ln1);
@@ -301,11 +304,11 @@ void KSegmentor3D::Update2D(bool reInitFromMask)
     // Why does the U_I_slice keep seeming like zeros when clicking??
 
     bool reInit;
-    if(prevMode=="2D" && last2DOrient==m_IJK_orient && sameSlice==1){
+    if( (lastRunOf.compare("2D")==0) && last2DOrient==m_IJK_orient && sameSlice==1){
         reInit=0;
     }else{
         reInit=1;
-        prevMode="2D";   //keep track for next call
+        lastRunOf="2D";   //keep track for next call
         last2DOrient=m_IJK_orient;
     }
 
@@ -369,10 +372,17 @@ void KSegmentor3D::CalcViewPlaneParams( )
 }
 #endif
 
-void KSegmentor3D::Update3D(bool reInitFromMask)
+void KSegmentor3D::Update3D(bool userEdit)
 {
 
-    if( !reInitFromMask ) {// do this only if re-making the level set function
+    bool useCachedPhi=( lastRunOf.compare("3DChanVese")==0  ||
+                        lastRunOf.compare("3DChanVeseLimited")==0  ||
+                        lastRunOf.compare("3DLocalCVLimited")==0  ||
+                        lastRunOf.compare("3DLocalCV")==0  ||
+                        lastRunOf.compare("3DCurvatureFlow")==0 )
+                        && (!userEdit);
+
+    if( useCachedPhi) {// do this only if re-making the level set function
         std::cout<<"Not remaking phi"<<std::endl;
         cout <<  "\033[01;33m\033]" << "3D, using cached phi " << "\033[00m\033]" << endl;
         ll_init(LL3D.Lz);
@@ -398,16 +408,8 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
 
     cout << "m_EnergyName = " << m_EnergyName << endl;
 
-    bool reInit;
-    if(prevMode=="3DLocCV"){
-        reInit=0;
-    }else{
-        reInit=1;
-        //prevMode="3DLocCV";   //keep track for next call
-    }
 
-
-    if( 0 == m_EnergyName.compare("ChanVese") )
+    if( 0 == m_EnergyName.compare("3DChanVese") )
     {
         cout << " run basic chan-vese on it "<< endl;
         CalcViewPlaneParams();
@@ -422,9 +424,9 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
             double cv_cost = this->evalChanVeseCost(u0,u1);
             cout << "chan vese cost = " << cv_cost << endl;
         }
-        prevMode="3DChanVese";
+        lastRunOf="3DChanVese";
     }
-    else if( 0 == m_EnergyName.compare("ChanVeseLimited") )
+    else if( 0 == m_EnergyName.compare("3DChanVeseLimited") )
     {
         cout << " run limited basic chan-vese on it "<< endl;
         CalcViewPlaneParams();
@@ -440,29 +442,44 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
             double cv_cost = this->evalChanVeseCost(u0,u1);
             cout << "chan vese cost = " << cv_cost << endl;
         }
-        prevMode="3DChanVese";
+        lastRunOf="3DChanVeseLimited";
     }
-    else if (0== m_EnergyName.compare("LocalCVLimited"))
+    else if (0== m_EnergyName.compare("3DLocalCVLimited"))
     {
         cout << " run local global chan-vese on it, limiting around current plane "<< endl;
+
+        bool reInit;
+        if(lastRunOf.compare("3DLocalCVLimited")==0){
+            reInit=0;
+        }else{
+            reInit=1;
+        }
+
         CalcViewPlaneParams();
         assert(m_PlaneNormalVector.size()==3);
         interactive_rbchanvese_ext(segEngine, img,phi,ptrIntegral_Image,label,dims,
                                LL3D.Lz,LL3D.Ln1,LL3D.Lp1,LL3D.Ln2,LL3D.Lp2,LL3D.Lin2out,LL3D.Lout2in,LL3D.Lchanged,
                                iter,0.5*lambda,display,&(m_PlaneNormalVector[0]),
                                &(m_PlaneCenter[0]),this->m_DistWeight, reInit, this->segEngine->GetRadius() );
-        prevMode="3DLocCV";
+        lastRunOf="3DLocalCVLimited";
     }
-    else if( 0 == m_EnergyName.compare("LocalCV") )
+    else if( 0 == m_EnergyName.compare("3DLocalCV") )
     {
+        bool reInit;
+        if(lastRunOf.compare("3DLocalCV")==0){
+            reInit=0;
+        }else{
+            reInit=1;
+        }
+
         cout <<" run localized func " << endl;
         interactive_rbchanvese(    /* TODO: compute this energy!*/
                                  segEngine, img, phi, ptrIntegral_Image, label, dims,
                                  LL3D.Lz, LL3D.Ln1, LL3D.Lp1, LL3D.Ln2, LL3D.Lp2, LL3D.Lin2out, LL3D.Lout2in,
                                  iter,lambda*0.5,display, reInit, this->segEngine->GetRadius() );
-        prevMode="3DLocCV";
+        lastRunOf="3DLocalCV";
     }
-    else if( 0==m_EnergyName.compare("CurvatureFlow"))
+    else if( 0==m_EnergyName.compare("3DCurvatureFlow"))
     {
         cout <<" run curvature flow " << endl;
         double lambdaCurv=.05; //will make this adjustable later
@@ -470,7 +487,8 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
         curvatureFlow(           /* TODO: compute this energy!*/
                                  segEngine, img, phi, label, dims,
                                  LL3D.Lz, LL3D.Ln1, LL3D.Lp1, LL3D.Ln2, LL3D.Lp2, LL3D.Lin2out, LL3D.Lout2in,
-                                 iterCurv,lambdaCurv,display, this->segEngine->GetRadius(), prevMode );
+                                 iterCurv,lambdaCurv,display, this->segEngine->GetRadius(), lastRunOf );
+        lastRunOf="3DCurvatureFlow";
     }
     else
     {
@@ -484,13 +502,6 @@ void KSegmentor3D::Update3D(bool reInitFromMask)
 
     cout <<  "dims are:" << dims[0] << "    " << dims[1] << "      " << dims[2] << endl;
     cout <<  "Lz size: "       << LL3D.Lz->length << endl;
-
-//    ll_init(LL3D.Lz);
-//    while(LL3D.Lz->curr!=NULL){
-//        std::cout<<"curr phi on Lz is: "<<phi[LL3D.Lz->curr->idx]<<std::endl;
-//        ll_step(LL3D.Lz);
-//    }
-
 
     //whats the point of these two variables?
     // after PK cleans up, these will be clarified

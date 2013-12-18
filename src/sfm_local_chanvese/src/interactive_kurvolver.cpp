@@ -146,7 +146,7 @@ void curvatureFlow(energy3c* segEngine, double *img, float *phi, short *label, l
     ls_iteration(F,phi,label,dims,Lz,Ln1,Lp1,Ln2,Lp2,Lin2out,Lout2in, false);
 
     //update statistics (curve has moved, update this depending on what was cached last time)
-    if( 0==prevMode.compare("3DLocCV")){
+    if( 0==prevMode.compare("3DLocalCV")){
          segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
     }
     else if (0==prevMode.compare("3DChanVese")){
