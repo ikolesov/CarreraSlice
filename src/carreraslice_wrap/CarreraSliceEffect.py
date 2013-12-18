@@ -896,12 +896,13 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 		return
 	
 	self.init_kslice()
-	  
-	for i in range(1):
-		self.runSegment3DLocCV()
+	 
+     
+	#for i in range(1):
+	#	self.runSegment3DLocCV()
 	
-	for i in range(3):
-		self.runCurvatureFlow()
+	#for i in range(3):
+	#	self.runCurvatureFlow()
         
   def runSegment2D(self):
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
