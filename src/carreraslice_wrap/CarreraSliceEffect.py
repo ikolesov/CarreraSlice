@@ -533,17 +533,17 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     # make cache slices for the three different planes
     def createTmpArray(dim0, dim1, nameSuffix):
       Print_Good( "making array " + nameSuffix )
-      return np.zeros([volSize[dim0],volSize[dim1],1]) #tmpArr
+      return np.zeros([self.volSize[dim0],self.volSize[dim1],1]) #tmpArr
 
     print("Making temporary slice arrays")
-    volSize=self.labelImg.GetDimensions()
+    self.volSize=self.labelImg.GetDimensions()
     self.ij_tmpArr=createTmpArray(0,1,'-ij_Tmp')
     self.jk_tmpArr=createTmpArray(1,2,'-jk_Tmp')
     self.ik_tmpArr=createTmpArray(0,2,'-ik_Tmp')
 
-    self.i_range=np.arange(0,volSize[0])
-    self.j_range=np.arange(0,volSize[1])
-    self.k_range=np.arange(0,volSize[2])
+    self.i_range=np.arange(0,self.volSize[0])
+    self.j_range=np.arange(0,self.volSize[1])
+    self.k_range=np.arange(0,self.volSize[2])
     self.linInd=np.ix_([self.currSlice], self.j_range, self.i_range) #indices for elements of slice, in the 3D array
 
 
@@ -713,9 +713,40 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         # Argh, overwrites any changes to underlying vtk volume!?
         #if bUseLabelModTrigger: # trying to add this back in
 
-        ''' If you Enable this, It must pass the U Sync check! '''
+        #these two lines fix label, add to curr slice ...
+        print signAccum
         self.UIarray[self.linInd]+=signAccum*self.inFact*deltPaint
         self.labArr[self.linInd] = self.labVal * newLab
+
+        # ... now add input to a few nearby slices (drawing in 3D)
+        sliceNbhd=3
+        if self.ijkPlane=="IJ":
+            sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
+            for c in sliceIndArr:
+                changeSlice=self.currSlice+c
+                if (changeSlice>=0 and changeSlice<self.volSize[2]):
+                    currInd=self.linInd=np.ix_([changeSlice], self.j_range, self.i_range) #[i + offset for i in self.linInd]
+                    self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
+                    self.labArr[currInd] = self.labVal*(deltPaint==0)*(self.labArr[currInd]!=0) #( (self.labArr[currInd] + deltPaint)!=0)
+        elif self.ijkPlane=="JK":
+            sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
+            for c in sliceIndArr:
+                changeSlice=self.currSlice+c
+                if (changeSlice>=0 and changeSlice<self.volSize[0]):
+                    currInd=self.linInd=np.ix_(self.k_range, self.j_range, [changeSlice]) #[i + offset for i in self.linInd]
+                    self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
+                    self.labArr[currInd] = self.labVal*(deltPaint==0)*(self.labArr[currInd]!=0) #self.labVal*( (self.labArr[currInd] + deltPaint)!=0)
+        elif self.ijkPlane=="IK":
+            sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
+            for c in sliceIndArr:
+                changeSlice=self.currSlice+c
+                if (changeSlice>=0 and changeSlice<self.volSize[1]):
+                    currInd=self.linInd=np.ix_(self.k_range, [changeSlice], self.i_range) #[i + offset for i in self.linInd]
+                    self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
+                    self.labArr[currInd] = self.labVal*(deltPaint==0)*(self.labArr[currInd]!=0) #self.labVal*( (self.labArr[currInd] + deltPaint)!=0)
+
+
+
         self.accumInProg=0 # done accumulating
         self.uiImg.Modified()
         #self.check_U_sync()
