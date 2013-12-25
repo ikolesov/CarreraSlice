@@ -26,6 +26,9 @@
 
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
+#include "vtkObjectFactory.h"
+#include "vtkIntArray.h"
+#include "vtkMRMLScene.h"
 
 // MRML includes
 

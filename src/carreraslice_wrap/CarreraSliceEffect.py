@@ -675,7 +675,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
           self.labArr[self.linInd]=1
 
   def updateLabelUserInput(self, caller, event):
-    #print("updating label user input")
+    print("updating label user input")
 
     if self.sliceViewMatchEditor(self.sliceLogic)==False:
       return #do nothing, exit function if user has played with images
@@ -691,65 +691,63 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         if self.ijkPlane=="IJ":
             if signAccum==-1: # We're drawing
                 deltPaint=self.labArr[self.linInd] # find the next stuff that was painted
-                newLab= (self.ij_tmpArr + self.labArr[self.linInd])!=0
+                newLab= (self.ij_tmpArr + deltPaint)!=0
             elif signAccum==1: # user is erasing
-                deltPaint=(self.labArr[self.linInd])==0 #(self.ij_tmpArr - self.labArr[self.linInd])!=0
-                newLab=(deltPaint==0)*(self.ij_tmpArr!=0) #self.labArr[self.linInd]
+                deltPaint=(self.labArr[self.linInd])==0 
+                newLab=(deltPaint==0)*(self.ij_tmpArr!=0) 
         elif self.ijkPlane=="JK":
             if signAccum==-1:
                 deltPaint=self.labArr[self.linInd]
-                newLab=(self.jk_tmpArr + self.labArr[self.linInd])!=0
+                newLab=(self.jk_tmpArr + deltPaint)!=0
             elif signAccum==1:
-                deltPaint=(self.labArr[self.linInd])==0 #(self.jk_tmpArr - self.labArr[self.linInd])!=0
-                newLab=(deltPaint==0)*(self.jk_tmpArr!=0) #self.labArr[self.linInd]
+                deltPaint=(self.labArr[self.linInd])==0 
+                newLab=(deltPaint==0)*(self.jk_tmpArr!=0)
         elif self.ijkPlane=="IK":
             if signAccum==-1:
                 deltPaint=self.labArr[self.linInd]
-                newLab=(self.ik_tmpArr + self.labArr[self.linInd])!=0
+                newLab=(self.ik_tmpArr + deltPaint)!=0
             elif signAccum==1:
-                deltPaint=(self.labArr[self.linInd])==0 #(self.ik_tmpArr - self.labArr[self.linInd])!=0
-                newLab=(deltPaint==0)*(self.ik_tmpArr!=0) #self.labArr[self.linInd]
+                deltPaint=(self.labArr[self.linInd])==0 
+                newLab=(deltPaint==0)*(self.ik_tmpArr!=0)
         
         # Argh, overwrites any changes to underlying vtk volume!?
         #if bUseLabelModTrigger: # trying to add this back in
 
         #these two lines fix label, add to curr slice ...
-        print signAccum
+        print "The accumulation sign is: " + str(signAccum)
         self.UIarray[self.linInd]+=signAccum*self.inFact*deltPaint
         self.labArr[self.linInd] = self.labVal * newLab
 
         # ... now add input to a few nearby slices (drawing in 3D)
         sliceNbhd=3
-        if self.ijkPlane=="IJ":
-            sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
-            for c in sliceIndArr:
-                changeSlice=self.currSlice+c
-                if (changeSlice>=0 and changeSlice<self.volSize[2]):
-                    currInd=self.linInd=np.ix_([changeSlice], self.j_range, self.i_range) #[i + offset for i in self.linInd]
-                    self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
-                    self.labArr[currInd] = self.labVal*(deltPaint==0)*(self.labArr[currInd]!=0) #( (self.labArr[currInd] + deltPaint)!=0)
-        elif self.ijkPlane=="JK":
-            sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
-            for c in sliceIndArr:
-                changeSlice=self.currSlice+c
-                if (changeSlice>=0 and changeSlice<self.volSize[0]):
-                    currInd=self.linInd=np.ix_(self.k_range, self.j_range, [changeSlice]) #[i + offset for i in self.linInd]
-                    self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
-                    self.labArr[currInd] = self.labVal*(deltPaint==0)*(self.labArr[currInd]!=0) #self.labVal*( (self.labArr[currInd] + deltPaint)!=0)
-        elif self.ijkPlane=="IK":
-            sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
-            for c in sliceIndArr:
-                changeSlice=self.currSlice+c
-                if (changeSlice>=0 and changeSlice<self.volSize[1]):
-                    currInd=self.linInd=np.ix_(self.k_range, [changeSlice], self.i_range) #[i + offset for i in self.linInd]
-                    self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
-                    self.labArr[currInd] = self.labVal*(deltPaint==0)*(self.labArr[currInd]!=0) #self.labVal*( (self.labArr[currInd] + deltPaint)!=0)
+        sliceIndArr=range(-sliceNbhd,0) + range(1, sliceNbhd)
 
+        for c in sliceIndArr:
+            print c
+            changeSlice=self.currSlice+c
+            if self.ijkPlane=="IJ":
+                maxSlice=self.volSize[2]
+                currInd=np.ix_([changeSlice], self.j_range, self.i_range)
+            elif self.ijkPlane=="JK":
+                maxSlice=self.volSize[0]
+                currInd=np.ix_(self.k_range, self.j_range, [changeSlice])
+            elif self.ijkPlane=="IK":
+                maxSlice=self.volSize[1]
+                currInd=np.ix_(self.k_range, [changeSlice], self.i_range)
+
+            if (changeSlice>=0 and changeSlice<maxSlice):
+                if signAccum==-1:
+                   newLab=(self.labArr[currInd] + deltPaint)!=0
+                elif signAccum==1:
+                   newLab=(deltPaint==0)*(self.labArr[currInd]!=0)
+                self.UIarray[currInd]+=signAccum*self.inFact*deltPaint
+                self.labArr[currInd] = self.labVal * newLab
 
 
         self.accumInProg=0 # done accumulating
         self.uiImg.Modified()
-        #self.check_U_sync()
+        
+        self.check_U_sync()
     
     if event == "RightButtonPressEvent":
         print "right mouse ..."
