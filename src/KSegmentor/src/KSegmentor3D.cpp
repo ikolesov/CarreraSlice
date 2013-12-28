@@ -482,8 +482,8 @@ void KSegmentor3D::Update3D(bool userEdit)
     else if( 0==m_EnergyName.compare("3DCurvatureFlow"))
     {
         cout <<" run curvature flow " << endl;
-        double lambdaCurv=.05; //will make this adjustable later
-        double iterCurv=5; //this is a separate iteration from other energies
+        double lambdaCurv=.5; //will make this adjustable later
+        double iterCurv=1; //this is a separate iteration from other energies
         curvatureFlow(           /* TODO: compute this energy!*/
                                  segEngine, img, phi, label, dims,
                                  LL3D.Lz, LL3D.Ln1, LL3D.Lp1, LL3D.Ln2, LL3D.Lp2, LL3D.Lin2out, LL3D.Lout2in,

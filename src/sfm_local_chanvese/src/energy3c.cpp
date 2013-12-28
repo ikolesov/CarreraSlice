@@ -1655,10 +1655,11 @@ float *energy3c::en_kappa_compute(LL *Lz, float *phi, long *dims, double lambda)
     ll_init(Lz);              //begining of list;
     double maxKap=0;
     while(Lz->curr != NULL){  //loop through list
-        kappa[n] = lambda*en_kappa_pt(Lz->curr, phi, dims); //compute kappa[n]
+        kappa[n] = en_kappa_pt(Lz->curr, phi, dims); //compute kappa[n]
         if(fabs(kappa[n])>maxKap){
             maxKap=fabs(kappa[n]);
         }
+        kappa[n]=lambda*kappa[n];
         ll_step(Lz);
         n++;       //next point
     }

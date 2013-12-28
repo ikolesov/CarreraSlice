@@ -123,8 +123,8 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
     disableState = self.parameterNode.GetDisableModifiedEvent()
     self.parameterNode.SetDisableModifiedEvent(1)
     defaults = (
-      ("radius", "10"),
-      ("numIts", "10")
+      ("radius", "5"),
+      ("numIts", "5")
     )
     for d in defaults:
       param = "KSliceEffect,"+d[0]
