@@ -384,6 +384,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly) of KSlice
 
   def init_kslice(self):
+    self.numGrowcutShortcuts=len(self.qtkeydefsGrowcut)
     #remove observers used in growcut so they dont interfere
     for style,tag in self.mouse_obs_growcut:
         style.RemoveObserver(tag)
@@ -399,6 +400,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors
 
+    for i in range(len(self.qtkeydefsGrowcut)): #clear the list (so can check in destructor)
+        self.qtkeydefsGrowcut.pop()
 
     import vtkSlicerCarreraSliceModuleLogicPython
 
@@ -919,10 +922,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 #        print('extract foreground label == 1')
 
   def demoCarreraSlice(self):
-	
-	if self.bEditGrowCutSeed == True:
-		print('Please run adaptive Dijkstra first by pressing G')
-		return
+
+        #LiangJia: what if user wants to use level sets immediately (he's initializing it differently), shouldnt we let him?	
+	#if self.bEditGrowCutSeed == True:
+	#	print('Please run adaptive Dijkstra first by pressing G')
+	#	return
 	
 	self.init_kslice()
 	 
@@ -1059,15 +1063,26 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     #for i in range(len(self.qtkeyconnections)):
     # print self.qtkeyconnections[i]
 
-    
+    #destroy GrowCut key shortcuts
+    for i in range(len(self.qtkeydefsGrowcut)):  #this will be an empty list if the KSlice part has been reached (all growcut functionality disabled)
+        keyfun = self.qtkeydefsGrowcut[i]
+        keydef = self.qtkeyconnections[i]
+        test1=keydef.disconnect('activated()', keyfun[1])
+        test2=keydef.disconnect('activatedAmbiguously()', keyfun[1])
+        #self.qtkeyconnections.remove(keydef) #remove from list
+        keydef.setParent(None)
+        #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
+        keydef.delete() #this causes errors    
+
+
     if self.fullInitialized==False: #if initialized, remove, otherwise do nothing
         return
-    
+
     print("Destroy in KSliceLogic has been called")
     #disconnect KSlice key shortcut
     for i in range(len(self.qtkeydefsKSlice)):
         keyfun = self.qtkeydefsKSlice[i]
-        keydef = self.qtkeyconnections[i+len(self.qtkeydefsGrowcut)]
+        keydef = self.qtkeyconnections[i+self.numGrowcutShortcuts]
         #print('disconnecting keydef: ')
         #print(keydef)
         test1=keydef.disconnect('activated()', keyfun[1])
