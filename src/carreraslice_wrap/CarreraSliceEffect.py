@@ -794,6 +794,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
   
 
   def copyslice(self):
+    print('begin copy slice')
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
