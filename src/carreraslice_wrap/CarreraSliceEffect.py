@@ -859,6 +859,9 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 		parameters["sourceImageName"] = srcImgNode.GetID()
 		parameters["seedImageName"] = seedImgNode.GetID()        
 
+		print "the seed img is" + seedImgNode.GetID()
+		print "the source img is" + srcImgNode.GetID()
+
 		fastGrowCut = slicer.modules.adaptivedijkstrasegmentercli
 		slicer.cli.run(fastGrowCut, None, parameters, True)
 			
