@@ -55,6 +55,10 @@ public:
   vtkSetObjectMacro(SeedVol, vtkImageData);
   vtkSetMacro(bInitialized, bool);
 
+
+  //processing functions
+  void RunADS();
+
 protected:
   vtkSlicerAdaptiveDijkstraSegmenterLogic();
   virtual ~vtkSlicerAdaptiveDijkstraSegmenterLogic();
@@ -66,7 +70,7 @@ protected:
   virtual void OnMRMLSceneNodeAdded(vtkMRMLNode* node);
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
 private:
-  const unsigned short SrcDimension;
+
   typedef float FPixelType;											// float type pixel for cost function
   typedef short SPixelType;
 

@@ -25,6 +25,8 @@
 
 // VTK includes
 #include <vtkNew.h>
+#include <vtkIntArray.h>
+#include <vtkMRMLScene.h>
 
 // STD includes
 #include <cassert>
@@ -49,7 +51,8 @@ void vtkSlicerAdaptiveDijkstraSegmenterLogic::PrintSelf(ostream& os, vtkIndent i
 }
 
 void vtkSlicerAdaptiveDijkstraSegmenterLogic::RunADS(){
-    SrcDimension = 3;
+    const unsigned short SrcDimension=3;
+
     //itk images, as growcut currently needs (converted from vtk data above)
     typedef itk::Image<SPixelType, SrcDimension> SrcImageType;
     typedef itk::Image<SPixelType, SrcDimension> LabImageType;
@@ -57,7 +60,7 @@ void vtkSlicerAdaptiveDijkstraSegmenterLogic::RunADS(){
 
 
 
-    std::cout <<"segmenter initialzed?  " << strInitial <<std::endl;
+    //std::cout <<"segmenter initialzed?  " << strInitial <<std::endl;
 
     itk::TimeProbe timer;
 
@@ -94,7 +97,7 @@ void vtkSlicerAdaptiveDijkstraSegmenterLogic::RunADS(){
         std::cout << "adaptive Dijkstra segmentation time: " << timer.GetMeanTime() << " seconds\n";
 
     //FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
-    FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
+    //FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
 
     return;
 }
