@@ -2,10 +2,10 @@
 #ifndef KVIEWER_GUI_H
 #define KVIEWER_GUI_H
 
-//#include "vtkSlicerCarreraSliceModuleLogicExport.h"
+#include "vtkSlicerAdaptiveDijkstraSegmenterModuleLogicExport.h"
 #include "vtkImageData.h"
 
-class VTK_SLICER_CARRERASLICE_MODULE_LOGIC_EXPORT vtkAdaptDijkstraGC : public vtkObject
+class VTK_SLICER_ADAPTIVEDIJKSTRASEGMENTER_MODULE_LOGIC_EXPORT vtkAdaptDijkstraGC : public vtkObject
 {
 
 
@@ -26,8 +26,8 @@ public:
   void PrintSelf(ostream &os, vtkIndent indent);
 
 protected:
-  vtkKSlice();
-  virtual ~vtkKSlice();
+  vtkAdaptDijkstraGC();
+  virtual ~vtkAdaptDijkstraGC();
 
 private:
   //vtk image data (from slicer)

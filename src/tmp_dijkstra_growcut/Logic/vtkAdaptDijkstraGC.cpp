@@ -4,6 +4,10 @@
 #include "vtkObjectFactory.h"
 #include "vtkSmartPointer.h"
 
+#include "itkImage.h"
+#include "itkTimeProbe.h"
+
+#include "AdaptiveDijkstraSegmenter.h"
 
 vtkCxxRevisionMacro(vtkAdaptDijkstraGC, "$Revision$"); //necessary?
 vtkStandardNewMacro(vtkAdaptDijkstraGC); //for the new() macro
@@ -32,7 +36,7 @@ vtkAdaptDijkstraGC::~vtkAdaptDijkstraGC() {
     this->SetSeedVol(NULL);
   }
 
-  delete this->ksegmentor;
+  //delete this->ksegmentor;
   std::cout<<"AdaptDijkstraGC destroyed"<<std::endl;
 }
 
@@ -90,4 +94,8 @@ void vtkAdaptDijkstraGC::RunADS(){
     //FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
 
     return;
+}
+
+void vtkAdaptDijkstraGC::PrintSelf(ostream &os, vtkIndent indent){
+    std::cout<<"This function has been found"<<std::endl;
 }
