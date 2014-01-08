@@ -93,6 +93,7 @@ void vtkAdaptDijkstraGC::RunADS(){
     //FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
     //FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
 
+    std::cout<<"Ran ADS done"<<std::endl;
     return;
 }
 

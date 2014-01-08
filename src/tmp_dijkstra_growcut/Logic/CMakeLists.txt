@@ -7,14 +7,11 @@ set(${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT
 set(${KIT}_INCLUDE_DIRECTORIES
   )
 
-set(${KIT}_SRCS
-  vtkSlicer${MODULE_NAME}Logic.cxx
-  vtkSlicer${MODULE_NAME}Logic.h
+
+set(ADAP_DIJKSTRA_GC_SRCS
   fibheap.cpp
   fibheap.h
   utilities.h
-  vtkAdaptDijkstraGC.cpp
-  vtkAdaptDijkstraGC.h
   AdaptiveDijkstraSegmenter.hxx
   AdaptiveDijkstraSegmenter.h
   itkImageToVTKImageFilter.h
@@ -23,9 +20,34 @@ set(${KIT}_SRCS
   itkVTKImageToImageFilter.txx
   )
 
-set(${KIT}_TARGET_LIBRARIES
-  ${ITK_LIBRARIES}
+set(ADAP_DIJKSTRA_GC_LIBS
+${ITK_LIBRARIES}
+)
+
+
+add_library(AdaptDijkstraLogic STATIC ${ADAP_DIJKSTRA_GC_SRCS})
+target_link_libraries(AdaptDijkstraLogic ${ADAP_DIJKSTRA_GC_LIBS})
+
+
+set(${KIT}_SRCS
+  vtkSlicer${MODULE_NAME}Logic.cxx
+  vtkSlicer${MODULE_NAME}Logic.h
+  vtkAdaptDijkstraGC.cpp
+  vtkAdaptDijkstraGC.h
+#  fibheap.cpp
+#  fibheap.h
+#  utilities.h
+#  AdaptiveDijkstraSegmenter.hxx
+#  AdaptiveDijkstraSegmenter.h
+#  itkImageToVTKImageFilter.h
+#  itkImageToVTKImageFilter.txx
+#  itkVTKImageToImageFilter.h
+#  itkVTKImageToImageFilter.txx
   )
+
+set(${KIT}_TARGET_LIBRARIES
+AdaptDijkstraLogic
+)
 
 #-----------------------------------------------------------------------------
 SlicerMacroBuildModuleLogic(

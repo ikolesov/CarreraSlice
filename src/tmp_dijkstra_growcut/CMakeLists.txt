@@ -7,6 +7,22 @@ if(NOT Slicer_SOURCE_DIR)
   include(${Slicer_USE_FILE})
 endif()
 
+if(WIN32)
+  set(CMAKE_CXX_FLAGS_DEBUG "/D_DEBUG /MDd /Zi /Ob0 /Od /RTC1" CACHE STRING "extra compiler flags for debug" FORCE )
+  set(CMAKE_C_FLAGS_DEBUG "/D_DEBUG /MDd /Zi /Ob0 /Od /RTC1" CACHE STRING "extra compiler flags for debug" FORCE )
+else(WIN32)
+  set(CMAKE_C_FLAGS_DEBUG "-pedantic " CACHE STRING "extra compiler flags for debug" FORCE )
+  if(LINUX)
+    set(CMAKE_C_FLAGS "-fPIC -g3 -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS -Wl,--no-undefined -fopenmp" CACHE STRING "compiler flags always used" FORCE)
+    set(CMAKE_CXX_FLAGS "-fPIC -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS -Wl,--no-undefined -fopenmp" CACHE STRING "compiler flags always used" FORCE)
+  else(LINUX)
+    set(CMAKE_C_FLAGS "-fPIC -g3 -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS  -fopenmp" CACHE STRING "compiler flags always used" FORCE)
+    set(CMAKE_CXX_FLAGS "-fPIC -Wall -pipe -DVTK_EXCLUDE_STRSTREAM_HEADERS    -fopenmp" CACHE STRING "compiler flags always used" FORCE)
+  endif(LINUX)
+  set(CMAKE_CXX_FLAGS_DEBUG "-g3 " CACHE STRING "extra compiler flags for debug" FORCE )
+endif(WIN32)
+
+
 #-----------------------------------------------------------------------------
 set(MODULE_NAME AdaptiveDijkstraSegmenter)
 set(MODULE_TITLE ${MODULE_NAME})

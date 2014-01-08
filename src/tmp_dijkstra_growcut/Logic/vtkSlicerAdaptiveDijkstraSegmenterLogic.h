@@ -36,7 +36,6 @@
 #include "vtkSlicerAdaptiveDijkstraSegmenterModuleLogicExport.h"
 
 //Our includes
-#include "AdaptiveDijkstraSegmenter.h"
 #include "itkTimeProbe.h"
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
