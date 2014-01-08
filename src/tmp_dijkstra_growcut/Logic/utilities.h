@@ -11,6 +11,7 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkImportImageFilter.h"
+#include "itkVTKImageToImageFilter.h"
 
 #include <csignal>
 
@@ -63,21 +64,14 @@ typename itkImage_t::Pointer convertImgToITK(vtkImageData* convertSource)
   typename itkImage_t::Pointer image;
 
   //run the conversion here!
+  typedef itk::VTKImageToImageFilter<itkImage_t> VTKImageToImageType;
 
+  typename VTKImageToImageType::Pointer vtkImageToImageFilter = VTKImageToImageType::New();
+  vtkImageToImageFilter->SetInput(convertSource);
+  vtkImageToImageFilter->Update();
 
-
-
-//  try
-//    {
-//      reader->Update();
-//      image = reader->GetOutput();
-//    }
-//  catch ( itk::ExceptionObject &err)
-//    {
-//      std::cerr<< "ExceptionObject caught !" << std::endl;
-//      std::cerr<< err << std::endl;
-//      raise(SIGABRT);
-//    }
+  //itkImage_t::Pointer image = itkImage_t::New();
+  image->Graft(vtkImageToImageFilter->GetOutput());
 
   return image;
 }

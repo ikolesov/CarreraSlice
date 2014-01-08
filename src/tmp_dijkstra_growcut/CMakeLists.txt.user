@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 2.7.0, 2014-01-07T10:32:27. -->
+<!-- Written by QtCreator 2.7.0, 2014-01-07T17:48:13. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -65,6 +65,11 @@
       <value type="QString" key="CMakeProjectManager.MakeStep.AdditionalArguments"></value>
       <valuelist type="QVariantList" key="CMakeProjectManager.MakeStep.BuildTargets">
        <value type="QString">all</value>
+       <value type="QString">vtkSlicerAdaptiveDijkstraSegmenterModuleLogic</value>
+       <value type="QString">vtkSlicerAdaptiveDijkstraSegmenterModuleLogicPython</value>
+       <value type="QString">vtkSlicerAdaptiveDijkstraSegmenterModuleLogicPythonD</value>
+       <value type="QString">qSlicerAdaptiveDijkstraSegmenterModuleWidgets</value>
+       <value type="QString">qSlicerAdaptiveDijkstraSegmenterModuleWidgetsPythonQt</value>
       </valuelist>
       <value type="bool" key="CMakeProjectManager.MakeStep.Clean">false</value>
       <value type="bool" key="CMakeProjectManager.MakeStep.UseNinja">false</value>

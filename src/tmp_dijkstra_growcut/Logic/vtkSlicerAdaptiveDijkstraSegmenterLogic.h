@@ -36,7 +36,6 @@
 #include "vtkSlicerAdaptiveDijkstraSegmenterModuleLogicExport.h"
 
 //Our includes
-//#include "AdaptiveDijkstraSegmenterCLICP.h"
 #include "AdaptiveDijkstraSegmenter.h"
 #include "itkTimeProbe.h"
 
@@ -50,14 +49,6 @@ public:
   vtkTypeMacro(vtkSlicerAdaptiveDijkstraSegmenterLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  //set parameters of grow cut
-  vtkSetObjectMacro(SourceVol, vtkImageData);
-  vtkSetObjectMacro(SeedVol, vtkImageData);
-  vtkSetMacro(bInitialized, bool);
-
-
-  //processing functions
-  void RunADS();
 
 protected:
   vtkSlicerAdaptiveDijkstraSegmenterLogic();
@@ -70,16 +61,6 @@ protected:
   virtual void OnMRMLSceneNodeAdded(vtkMRMLNode* node);
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
 private:
-
-  typedef float FPixelType;											// float type pixel for cost function
-  typedef short SPixelType;
-
-  //vtk image data (from slicer)
-  vtkImageData* SourceVol;
-  vtkImageData* SeedVol;
-
-  bool bInitialized;
-
 
   vtkSlicerAdaptiveDijkstraSegmenterLogic(const vtkSlicerAdaptiveDijkstraSegmenterLogic&); // Not implemented
   void operator=(const vtkSlicerAdaptiveDijkstraSegmenterLogic&);               // Not implemented

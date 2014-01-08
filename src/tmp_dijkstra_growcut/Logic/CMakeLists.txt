@@ -12,10 +12,15 @@ set(${KIT}_SRCS
   vtkSlicer${MODULE_NAME}Logic.h
   fibheap.cpp
   fibheap.h
-  utilities.hxx
-  #AdaptiveDijkstraSegmenterCLI.cxx
-  AdaptiveDijkstraSegmenter.h
+  utilities.h
+  vtkAdaptDijkstraGC.cpp
+  vtkAdaptDijkstraGC.h
   AdaptiveDijkstraSegmenter.hxx
+  AdaptiveDijkstraSegmenter.h
+  itkImageToVTKImageFilter.h
+  itkImageToVTKImageFilter.txx
+  itkVTKImageToImageFilter.h
+  itkVTKImageToImageFilter.txx
   )
 
 set(${KIT}_TARGET_LIBRARIES
@@ -30,3 +35,7 @@ SlicerMacroBuildModuleLogic(
   SRCS ${${KIT}_SRCS}
   TARGET_LIBRARIES ${${KIT}_TARGET_LIBRARIES}
   )
+
+#add_library(vtkAdaptiveDijkstra ${${KIT}_SRCS})
+#link_directories(${KIT}_TARGET_LIBRARIES)
+#target_link_libraries(vtkAdaptiveDijkstra ${${KIT}_TARGET_LIBRARIES})
