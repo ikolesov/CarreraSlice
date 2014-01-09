@@ -20,7 +20,7 @@ vtkAdaptDijkstraGC::vtkAdaptDijkstraGC( ) {
 
     SourceVol   = NULL;
     SeedVol   = NULL;
-
+    OutputVol = NULL;
 }
 
 
@@ -41,47 +41,34 @@ vtkAdaptDijkstraGC::~vtkAdaptDijkstraGC() {
 }
 
 void vtkAdaptDijkstraGC::RunADS(){
-    const unsigned short SrcDimension=3;
-
-    typedef float FPixelType;											// float type pixel for cost function
-    typedef short SPixelType;
 
     //itk images, as growcut currently needs (converted from vtk data above)
-    typedef itk::Image<SPixelType, SrcDimension> SrcImageType;
-    typedef itk::Image<SPixelType, SrcDimension> LabImageType;
-    typedef itk::Image<FPixelType, SrcDimension> DistImageType;
-
-
 
     //std::cout <<"segmenter initialzed?  " << strInitial <<std::endl;
 
     itk::TimeProbe timer;
 
     timer.Start();
-    //SrcImageType::Pointer srcImg = FGC::readImage<SrcImageType>(sourceImageName.c_str());
-    //LabImageType::Pointer seedImg = FGC::readImage<LabImageType>(seedImageName.c_str());
-    //LabImageType::Pointer segImg;
 
-    SrcImageType::Pointer srcImg = FGC::convertImgToITK<SrcImageType>(this->SourceVol);
-    LabImageType::Pointer seedImg = FGC::convertImgToITK<LabImageType>(this->SeedVol);
-    LabImageType::Pointer segImg;
+    srcImg = FGC::convertImgToITK<SrcImageType>(this->SourceVol);
+    seedImg = FGC::convertImgToITK<LabImageType>(this->SeedVol);
 
 
     bInitialized = strInitial == "yes" ? true : false;
 
-    FGC::FastGrowCut<SrcImageType, LabImageType, DistImageType> fastGC;
+    fastGC= new FGC::FastGrowCut<SrcImageType, LabImageType>();
 
     // Initialization
-    fastGC.SetSourceImage(srcImg);
-    fastGC.SetSeedlImage(seedImg);
-    fastGC.SetWorkMode(bInitialized);
+    fastGC->SetSourceImage(srcImg);
+    fastGC->SetSeedlImage(seedImg);
+    fastGC->SetWorkMode(bInitialized);
 
     // Do Dijkstra-based grow cut classification
-    fastGC.DoSegmentation();
+    fastGC->DoSegmentation();
 
     // Get output image
     //segImg = fastGC.GetLabeImage();
-    segImg = fastGC.GetForegroundmage();
+    segImg = fastGC->GetForegroundmage();
 
     timer.Stop();
 
@@ -92,6 +79,7 @@ void vtkAdaptDijkstraGC::RunADS(){
 
     //FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
     //FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
+    OutputVol = FGC::convertImgToVTK<LabImageType>(this->SeedVol);
 
     std::cout<<"Ran ADS done"<<std::endl;
     return;

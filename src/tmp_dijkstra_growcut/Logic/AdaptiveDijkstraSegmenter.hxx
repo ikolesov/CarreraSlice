@@ -39,8 +39,8 @@ int  HeapNode::operator <(FibHeapNode& RHS) {
 
 
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+FastGrowCut<SrcImageType, LabImageType>
 ::FastGrowCut() {
 
      m_heap = NULL;
@@ -52,29 +52,29 @@ FastGrowCut<SrcImageType, LabImageType, DistImageType>
      m_fnLabPre = "/tmp/FGC_LabPre.txt";
  }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::SetSourceImage(const typename SrcImageType::Pointer srcImg) {
 
     m_srcImg = srcImg;
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::SetSeedlImage(const typename LabImageType::Pointer seedImg) {
 
     m_seedImg = seedImg;
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::SetWorkMode(bool bSegUnInitialized ) {
 
     m_bSegInitialized = bSegUnInitialized;
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+FastGrowCut<SrcImageType, LabImageType>
     ::~FastGrowCut() {
 
         if(m_heap != NULL) {
@@ -85,8 +85,8 @@ FastGrowCut<SrcImageType, LabImageType, DistImageType>
         }
 	}
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 :: DoSegmentation() {
 
 
@@ -102,9 +102,9 @@ void FastGrowCut<SrcImageType, LabImageType, DistImageType>
     FGC::WriteVectorIntoFile<float>(m_fnDistPre.c_str(), m_dist);
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
+template<typename SrcImageType, typename LabImageType>
 typename LabImageType::Pointer
-FastGrowCut<SrcImageType, LabImageType, DistImageType>
+FastGrowCut<SrcImageType, LabImageType>
 :: GetLabeImage() {
 
     // Dijstra label image
@@ -127,9 +127,9 @@ FastGrowCut<SrcImageType, LabImageType, DistImageType>
  return labImg;
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
+template<typename SrcImageType, typename LabImageType>
 typename LabImageType::Pointer
-FastGrowCut<SrcImageType, LabImageType, DistImageType>
+FastGrowCut<SrcImageType, LabImageType>
 :: GetForegroundmage() {
 
     // Dijstra label image
@@ -153,9 +153,9 @@ FastGrowCut<SrcImageType, LabImageType, DistImageType>
  return labImg;
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
+template<typename SrcImageType, typename LabImageType>
 typename DistImageType::Pointer
-FastGrowCut<SrcImageType, LabImageType, DistImageType>
+FastGrowCut<SrcImageType, LabImageType>
 :: GetDistImage() {
 
     // Dijstra distance image
@@ -177,8 +177,8 @@ FastGrowCut<SrcImageType, LabImageType, DistImageType>
  return distImg;
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::InitializationHP() {
 
      m_imSize = m_srcImgROI->GetLargestPossibleRegion().GetSize();
@@ -247,8 +247,8 @@ void FastGrowCut<SrcImageType, LabImageType, DistImageType>
 
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::InitializationAHP() {
 
      m_imSize = m_srcImgROI->GetLargestPossibleRegion().GetSize();
@@ -351,8 +351,8 @@ void FastGrowCut<SrcImageType, LabImageType, DistImageType>
     }
   }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::DijkstraBasedClassificationAHP() {
 
     HeapNode *hnMin, hnTmp;
@@ -456,8 +456,8 @@ void FastGrowCut<SrcImageType, LabImageType, DistImageType>
 
 }
 
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::DijkstraBasedClassificationHP() {
 
     HeapNode *hnMin, hnTmp;
@@ -504,8 +504,8 @@ void FastGrowCut<SrcImageType, LabImageType, DistImageType>
 //    std::cout << "all = " << k << std::endl;
 
 }
-template<typename SrcImageType, typename LabImageType, typename DistImageType>
-void FastGrowCut<SrcImageType, LabImageType, DistImageType>
+template<typename SrcImageType, typename LabImageType>
+void FastGrowCut<SrcImageType, LabImageType>
 ::FindROI() {
 
     typename LabImageType::IndexType roiStart;

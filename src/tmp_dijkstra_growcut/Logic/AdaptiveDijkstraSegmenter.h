@@ -39,7 +39,11 @@ const float  DIST_INF = std::numeric_limits<float>::max();
 const float  DIST_EPSION = 1e-3;
 unsigned char NNGBH = 26;
 
-template<typename SrcImageType, typename LabImageType,  typename DistImageType>
+
+
+typedef itk::Image<float , 3> DistImageType;
+
+template<typename SrcImageType, typename LabImageType>
     class FastGrowCut {
 		public:
         FastGrowCut();
@@ -60,15 +64,19 @@ template<typename SrcImageType, typename LabImageType,  typename DistImageType>
             void InitializationAHP();
             void DijkstraBasedClassificationAHP();
 
+            //computation containers
             typename SrcImageType::Pointer m_srcImg;
             typename LabImageType::Pointer m_seedImg;
-            typename LabImageType::Pointer m_labImgPre;
-            typename DistImageType::Pointer m_distImgPre;
-            typename SrcImageType::Pointer m_srcImgROI;
-             typename LabImageType::Pointer m_seedImgROI;
 
+            //cropped containers
+            typename SrcImageType::Pointer m_srcImgROI;
+            typename LabImageType::Pointer m_seedImgROI;
+
+            //
             typename LabImageType::SizeType m_imSize;
             typename LabImageType::RegionType m_outRegion;
+
+
 
             typedef typename SrcImageType::IndexType IndexType;
             long m_DIMX, m_DIMY, m_DIMZ, m_DIMXY, m_DIMXYZ;

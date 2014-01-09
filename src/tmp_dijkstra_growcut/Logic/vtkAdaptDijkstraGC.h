@@ -4,6 +4,14 @@
 
 #include "vtkSlicerAdaptiveDijkstraSegmenterModuleLogicExport.h"
 #include "vtkImageData.h"
+#include "AdaptiveDijkstraSegmenter.h"
+
+
+const unsigned short SrcDimension = 3;
+typedef float FPixelType;											// float type pixel for cost function
+typedef short SPixelType;
+typedef itk::Image<SPixelType, SrcDimension> SrcImageType;
+typedef itk::Image<SPixelType, SrcDimension> LabImageType;
 
 class VTK_SLICER_ADAPTIVEDIJKSTRASEGMENTER_MODULE_LOGIC_EXPORT vtkAdaptDijkstraGC : public vtkObject
 {
@@ -19,6 +27,8 @@ public:
   //set parameters of grow cut
   vtkSetObjectMacro(SourceVol, vtkImageData);
   vtkSetObjectMacro(SeedVol, vtkImageData);
+  vtkSetObjectMacro(OutputVol, vtkImageData);
+
   vtkSetMacro(bInitialized, bool);
 
   //processing functions
@@ -33,7 +43,17 @@ private:
   //vtk image data (from slicer)
   vtkImageData* SourceVol;
   vtkImageData* SeedVol;
+  vtkImageData* OutputVol;
 
+  //converted itk images
+  SrcImageType::Pointer srcImg;
+  LabImageType::Pointer seedImg;
+  LabImageType::Pointer segImg;
+
+  //logic code
+  FGC::FastGrowCut<SrcImageType, LabImageType> *fastGC;
+
+  //state variables
   bool bInitialized;
   std::string strInitial;
 };
