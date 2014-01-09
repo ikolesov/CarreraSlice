@@ -48,6 +48,9 @@ FastGrowCut::FastGrowCut(vtkImageData *image, vtkImageData *seed) {
      m_srcImg = image;
      m_seedImg = seed;
 
+     m_srcImgROI = NULL;
+     m_seedImgROI = NULL;
+
      InitializeVariables(m_srcImg, m_seedImg);
      InitializeData();
 
@@ -610,8 +613,8 @@ void FastGrowCut::FindROI() {
 
     }
 
-   m_srcImgROI= ; //need this ROI extraction function
-   m_seedImgROI = ;//
+   m_srcImgROI = (double *) GetROI(img, vecROI);
+   m_seedImgROI = (short *) GetROI(seed, vecROI);
 
     //typename SrcImageType::RegionType iRegion;
     //iRegion.SetSize( isize );
@@ -641,3 +644,28 @@ void FastGrowCut::FindROI() {
 }
 
 } // end FGC
+
+
+template<typename T> void *GetROI(T *array, long *vecROI)
+{
+    //code the de-allocation
+    if(array==NULL){
+        //deallocate previous ROI
+
+    }
+    //code the allocation
+    void *croppedArr;
+    croppedArr=malloc(          );
+
+    //code cropping
+
+
+
+    return croppedArr;
+//    float phi_val = 0;
+//    for (int idx=0;idx<Nelements;idx++)
+//    {
+//        phi_val = source[idx];
+//        array[idx] =( (T) 0 >= phi_val )*currLabel;
+//    }
+}
