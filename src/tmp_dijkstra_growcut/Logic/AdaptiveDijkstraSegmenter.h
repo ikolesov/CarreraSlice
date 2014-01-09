@@ -68,8 +68,8 @@ class FastGrowCut {
 
 
             //cropped containers
-            typename SrcImageType::Pointer m_srcImgROI;
-            typename LabImageType::Pointer m_seedImgROI;
+            double *m_srcImgROI;
+            short *m_seedImgROI;
 
             //
             typename LabImageType::SizeType m_imSize;
