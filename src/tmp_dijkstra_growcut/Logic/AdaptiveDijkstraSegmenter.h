@@ -41,19 +41,17 @@ unsigned char NNGBH = 26;
 
 
 
-typedef itk::Image<float , 3> DistImageType;
-
-template<typename SrcImageType, typename LabImageType>
-    class FastGrowCut {
+//typedef itk::Image<float , 3> DistImageType;
+class FastGrowCut {
 		public:
-        FastGrowCut();
+        FastGrowCut(vtkImageData* image, vtkImageData* seed);
          ~FastGrowCut();
 
-        void SetSourceImage(const typename SrcImageType::Pointer srcImg);
-        void SetSeedlImage(const typename LabImageType::Pointer seedImg);
+        //void SetSourceImage(const typename SrcImageType::Pointer srcImg);
+        //void SetSeedlImage(const typename LabImageType::Pointer seedImg);
         void SetWorkMode(bool bSegInitialized = false);
         void DoSegmentation();
-        typename LabImageType::Pointer GetLabeImage();
+        //typename LabImageType::Pointer GetLabeImage();
         typename DistImageType::Pointer GetDistImage();
         typename LabImageType::Pointer GetForegroundmage();
 
@@ -65,8 +63,9 @@ template<typename SrcImageType, typename LabImageType>
             void DijkstraBasedClassificationAHP();
 
             //computation containers
-            typename SrcImageType::Pointer m_srcImg;
-            typename LabImageType::Pointer m_seedImg;
+            vtkImageData *m_srcImg;
+            vtkImageData *m_seedImg;
+
 
             //cropped containers
             typename SrcImageType::Pointer m_srcImgROI;
@@ -94,9 +93,16 @@ template<typename SrcImageType, typename LabImageType>
             std::vector<char> m_labelsPre;
             std::vector<float> m_distPre;
             bool m_bSegInitialized;
-            std::string m_fnROI;
-            std::string m_fnDistPre;
-            std::string m_fnLabPre;
+
+            //state variables
+            long vecROI[6];
+            double *img;
+            short *seed;
+            int *mdims;
+            long dimz,dimy,dimx;
+            //std::string m_fnROI;
+            //std::string m_fnDistPre;
+            //std::string m_fnLabPre;
 
 	};
 

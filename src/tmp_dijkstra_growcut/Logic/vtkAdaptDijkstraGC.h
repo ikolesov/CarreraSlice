@@ -27,7 +27,7 @@ public:
   //set parameters of grow cut
   vtkSetObjectMacro(SourceVol, vtkImageData);
   vtkSetObjectMacro(SeedVol, vtkImageData);
-  vtkSetObjectMacro(OutputVol, vtkImageData);
+  //vtkSetObjectMacro(OutputVol, vtkImageData);
 
   vtkSetMacro(bInitialized, bool);
 
@@ -46,9 +46,9 @@ private:
   vtkImageData* OutputVol;
 
   //converted itk images
-  SrcImageType::Pointer srcImg;
-  LabImageType::Pointer seedImg;
-  LabImageType::Pointer segImg;
+  //SrcImageType::Pointer srcImg;
+  //LabImageType::Pointer seedImg;
+  //LabImageType::Pointer segImg;
 
   //logic code
   FGC::FastGrowCut<SrcImageType, LabImageType> *fastGC;

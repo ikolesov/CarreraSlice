@@ -39,43 +39,21 @@ int  HeapNode::operator <(FibHeapNode& RHS) {
 
 
 
-template<typename SrcImageType, typename LabImageType>
-FastGrowCut<SrcImageType, LabImageType>
-::FastGrowCut() {
+FastGrowCut::FastGrowCut(vtkImageData *image, vtkImageData *seed) {
 
      m_heap = NULL;
      m_hpNodes = NULL;
      m_bSegInitialized = false;
 
-     m_fnROI = "/tmp/FGC_ROI.txt";
-     m_fnDistPre = "/tmp/FGC_DistPre.txt";
-     m_fnLabPre = "/tmp/FGC_LabPre.txt";
- }
+     m_srcImg = image;
+     m_seedImg = seed;
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::SetSourceImage(const typename SrcImageType::Pointer srcImg) {
+     InitializeVariables(m_srcImg, m_seedImg);
+     InitializeData();
 
-    m_srcImg = srcImg;
 }
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::SetSeedlImage(const typename LabImageType::Pointer seedImg) {
-
-    m_seedImg = seedImg;
-}
-
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::SetWorkMode(bool bSegUnInitialized ) {
-
-    m_bSegInitialized = bSegUnInitialized;
-}
-
-template<typename SrcImageType, typename LabImageType>
-FastGrowCut<SrcImageType, LabImageType>
-    ::~FastGrowCut() {
+FastGrowCut::~FastGrowCut() {
 
         if(m_heap != NULL) {
             delete m_heap;
@@ -83,11 +61,45 @@ FastGrowCut<SrcImageType, LabImageType>
         if(m_hpNodes != NULL) {
             delete []m_hpNodes;
         }
-	}
+}
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-:: DoSegmentation() {
+void FastGrowCut::InitializeVariables(vtkImageData *image, vtkImageData *seed){
+    mdims = new int[3];
+    image->GetDimensions(mdims);
+    dimz = (int) mdims[2];
+    dimy = (int) mdims[1];
+    dimx = (int) mdims[0];
+}
+
+void FastGrowCut::InitializeData(){
+    //set up vtkimagedata to array
+    int imgType=imageVol->GetScalarType();
+    vrcl::convertImage( imgType,m_srcImg->GetScalarPointer(),img, dimx, dimy, dimz);
+
+    int labType=labelVol->GetScalarType();
+    vrcl::convertLabel( labType,m_seedImg->GetScalarPointer(), seed, dimx, dimy, dimz);
+
+    //set up roi arrays
+}
+
+void FastGrowCut::SetSourceImage(const typename SrcImageType::Pointer srcImg) {
+
+    m_srcImg = srcImg;
+}
+
+void FastGrowCut::SetSeedlImage(const typename LabImageType::Pointer seedImg) {
+
+    m_seedImg = seedImg;
+}
+
+
+void FastGrowCut::SetWorkMode(bool bSegUnInitialized ) {
+
+    m_bSegInitialized = bSegUnInitialized;
+}
+
+
+void FastGrowCut::DoSegmentation() {
 
 
      FindROI();
@@ -98,158 +110,156 @@ void FastGrowCut<SrcImageType, LabImageType>
      DijkstraBasedClassificationAHP();
 
     // Save distance and label information to tempary files
-    FGC::WriteVectorIntoFile<char>(m_fnLabPre.c_str(), m_labels);
-    FGC::WriteVectorIntoFile<float>(m_fnDistPre.c_str(), m_dist);
+    //FGC::WriteVectorIntoFile<char>(m_fnLabPre.c_str(), m_labels);
+    //FGC::WriteVectorIntoFile<float>(m_fnDistPre.c_str(), m_dist);
 }
 
-template<typename SrcImageType, typename LabImageType>
-typename LabImageType::Pointer
-FastGrowCut<SrcImageType, LabImageType>
-:: GetLabeImage() {
+//template<typename SrcImageType, typename LabImageType>
+//typename LabImageType::Pointer
+//FastGrowCut<SrcImageType, LabImageType>
+//:: GetLabeImage() {
 
-    // Dijstra label image
-    typename LabImageType::Pointer labImg = LabImageType::New();
-    labImg->CopyInformation(m_seedImg);
-    labImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
-    labImg->Allocate();
-    labImg->FillBuffer(0);
+//    // Dijstra label image
+//    typename LabImageType::Pointer labImg = LabImageType::New();
+//    labImg->CopyInformation(m_seedImg);
+//    labImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
+//    labImg->Allocate();
+//    labImg->FillBuffer(0);
 
-    typedef itk::ImageRegionIterator<LabImageType>  LabelIterator;
-    LabelIterator labIt(labImg, m_outRegion);
+//    typedef itk::ImageRegionIterator<LabImageType>  LabelIterator;
+//    LabelIterator labIt(labImg, m_outRegion);
 
-//       std::vector<DKElement>::iterator itDK;
-    long index = 0;
-    for(labIt.GoToBegin(); !labIt.IsAtEnd(); ++labIt) {
-        labIt.Set(m_labels[index++]);
-    }
-
-
- return labImg;
-}
-
-template<typename SrcImageType, typename LabImageType>
-typename LabImageType::Pointer
-FastGrowCut<SrcImageType, LabImageType>
-:: GetForegroundmage() {
-
-    // Dijstra label image
-    typename LabImageType::Pointer labImg = LabImageType::New();
-    labImg->CopyInformation(m_seedImg);
-    labImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
-    labImg->Allocate();
-    labImg->FillBuffer(0);
-
-    typedef itk::ImageRegionIterator<LabImageType>  LabelIterator;
-    LabelIterator labIt(labImg, m_outRegion);
-
-//       std::vector<DKElement>::iterator itDK;
-    long index = 0;
-    for(labIt.GoToBegin(); !labIt.IsAtEnd(); ++labIt) {
-        if(m_labels[index++] == 1)
-            labIt.Set(1);
-    }
+////       std::vector<DKElement>::iterator itDK;
+//    long index = 0;
+//    for(labIt.GoToBegin(); !labIt.IsAtEnd(); ++labIt) {
+//        labIt.Set(m_labels[index++]);
+//    }
 
 
- return labImg;
-}
+// return labImg;
+//}
 
-template<typename SrcImageType, typename LabImageType>
-typename DistImageType::Pointer
-FastGrowCut<SrcImageType, LabImageType>
-:: GetDistImage() {
+//template<typename SrcImageType, typename LabImageType>
+//typename LabImageType::Pointer
+//FastGrowCut<SrcImageType, LabImageType>
+//:: GetForegroundmage() {
 
-    // Dijstra distance image
-    typename DistImageType::Pointer distImg = DistImageType::New();
-    distImg->CopyInformation(m_seedImg);
-    distImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
-    distImg->Allocate();
-    distImg->FillBuffer(DIST_INF);
+//    // Dijstra label image
+//    typename LabImageType::Pointer labImg = LabImageType::New();
+//    labImg->CopyInformation(m_seedImg);
+//    labImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
+//    labImg->Allocate();
+//    labImg->FillBuffer(0);
 
-    typedef itk::ImageRegionIterator<DistImageType>  DistIterator;
-    DistIterator distIt(distImg, m_outRegion);
+//    typedef itk::ImageRegionIterator<LabImageType>  LabelIterator;
+//    LabelIterator labIt(labImg, m_outRegion);
 
-    long index = 0;
-    for(distIt.GoToBegin(); !distIt.IsAtEnd(); ++distIt) {
-        distIt.Set(m_dist[index++]);
-    }
+////       std::vector<DKElement>::iterator itDK;
+//    long index = 0;
+//    for(labIt.GoToBegin(); !labIt.IsAtEnd(); ++labIt) {
+//        if(m_labels[index++] == 1)
+//            labIt.Set(1);
+//    }
 
 
- return distImg;
-}
+// return labImg;
+//}
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::InitializationHP() {
+//template<typename SrcImageType, typename LabImageType>
+//typename DistImageType::Pointer
+//FastGrowCut<SrcImageType, LabImageType>
+//:: GetDistImage() {
 
-     m_imSize = m_srcImgROI->GetLargestPossibleRegion().GetSize();
-     m_DIMX = m_imSize[0];
-     m_DIMY = m_imSize[1];
-     m_DIMZ = m_imSize[2];
-     m_DIMXY = m_DIMX*m_DIMY;
-     m_DIMXYZ = m_DIMXY*m_DIMZ;
+//    // Dijstra distance image
+//    typename DistImageType::Pointer distImg = DistImageType::New();
+//    distImg->CopyInformation(m_seedImg);
+//    distImg->SetBufferedRegion(m_seedImg->GetBufferedRegion());
+//    distImg->Allocate();
+//    distImg->FillBuffer(DIST_INF);
 
-    if((m_heap = new FibHeap) == NULL || (m_hpNodes = new HeapNode[m_DIMXYZ+1]) == NULL) {
-        std::cerr << "Memory allocation failed-- ABORTING.\n";
-        raise(SIGABRT);
-    }
-    m_heap->ClearHeapOwnership();
+//    typedef itk::ImageRegionIterator<DistImageType>  DistIterator;
+//    DistIterator distIt(distImg, m_outRegion);
 
-    // Compute index offset
-    m_indOff.clear();
-    long ix,iy,iz;
-    for(ix = -1; ix <= 1; ix++)
-        for(iy = -1; iy <= 1; iy++)
-            for(iz = -1; iz <= 1; iz++) {
-                if(!(ix == 0 && iy == 0 && iz == 0)) {
-                    m_indOff.push_back(ix + iy*m_DIMX + iz*m_DIMXY);
-                }
-            }
+//    long index = 0;
+//    for(distIt.GoToBegin(); !distIt.IsAtEnd(); ++distIt) {
+//        distIt.Set(m_dist[index++]);
+//    }
 
-    // Construct Graph Vertices
-    m_NBSIZE = std::vector<unsigned char>(m_DIMXYZ, 0);
-    m_imvec.resize(m_DIMXYZ);
-    m_labels.resize(m_DIMXYZ);
-    m_dist.resize(m_DIMXYZ);
 
-    typedef itk::ImageRegionIterator<LabImageType>  SeedIterator;
-    SeedIterator seedIt(m_seedImgROI, m_seedImgROI->GetBufferedRegion());
-    typedef itk::ImageRegionIterator<SrcImageType>  SrcIterator;
-    SrcIterator srcIt(m_srcImgROI, m_srcImgROI->GetBufferedRegion());
-    IndexType imIndex;
-    long index;
+// return distImg;
+//}
 
-    for( seedIt.GoToBegin(), srcIt.GoToBegin(); !seedIt.IsAtEnd(); ++seedIt, ++srcIt) {
-       imIndex = seedIt.GetIndex();
-       index = imIndex[0] + imIndex[1]*m_DIMX + imIndex[2]*m_DIMXY;
-       m_imvec[index] = srcIt.Get();
-       m_labels[index] = seedIt.Get();
+//template<typename SrcImageType, typename LabImageType>
+//void FastGrowCut<SrcImageType, LabImageType>
+//::InitializationHP() {
 
-       if(m_labels[index] == 0) {
-           m_hpNodes[index] = (float)DIST_INF;
-           m_dist[index] = DIST_INF;
-       }
-       else {
-          m_hpNodes[index] = (float)DIST_EPSION;
-          m_dist[index] = DIST_EPSION;
-       }
+//     m_imSize = m_srcImgROI->GetLargestPossibleRegion().GetSize();
+//     m_DIMX = m_imSize[0];
+//     m_DIMY = m_imSize[1];
+//     m_DIMZ = m_imSize[2];
+//     m_DIMXY = m_DIMX*m_DIMY;
+//     m_DIMXYZ = m_DIMXY*m_DIMZ;
 
-       m_heap->Insert(&m_hpNodes[index]);
-       m_hpNodes[index].SetIndexValue(index);
-   }
+//    if((m_heap = new FibHeap) == NULL || (m_hpNodes = new HeapNode[m_DIMXYZ+1]) == NULL) {
+//        std::cerr << "Memory allocation failed-- ABORTING.\n";
+//        raise(SIGABRT);
+//    }
+//    m_heap->ClearHeapOwnership();
 
-   long  i,j,k;
-   for(i = 1; i < m_DIMX - 1; i++)
-       for(j = 1; j < m_DIMY - 1; j++)
-           for(k = 1; k < m_DIMZ - 1; k++) {
-               index = i + j*m_DIMX + k*m_DIMXY;
-               m_NBSIZE[index] = NNGBH;
-           }
+//    // Compute index offset
+//    m_indOff.clear();
+//    long ix,iy,iz;
+//    for(ix = -1; ix <= 1; ix++)
+//        for(iy = -1; iy <= 1; iy++)
+//            for(iz = -1; iz <= 1; iz++) {
+//                if(!(ix == 0 && iy == 0 && iz == 0)) {
+//                    m_indOff.push_back(ix + iy*m_DIMX + iz*m_DIMXY);
+//                }
+//            }
 
-}
+//    // Construct Graph Vertices
+//    m_NBSIZE = std::vector<unsigned char>(m_DIMXYZ, 0);
+//    m_imvec.resize(m_DIMXYZ);
+//    m_labels.resize(m_DIMXYZ);
+//    m_dist.resize(m_DIMXYZ);
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::InitializationAHP() {
+//    typedef itk::ImageRegionIterator<LabImageType>  SeedIterator;
+//    SeedIterator seedIt(m_seedImgROI, m_seedImgROI->GetBufferedRegion());
+//    typedef itk::ImageRegionIterator<SrcImageType>  SrcIterator;
+//    SrcIterator srcIt(m_srcImgROI, m_srcImgROI->GetBufferedRegion());
+//    IndexType imIndex;
+//    long index;
+
+//    for( seedIt.GoToBegin(), srcIt.GoToBegin(); !seedIt.IsAtEnd(); ++seedIt, ++srcIt) {
+//       imIndex = seedIt.GetIndex();
+//       index = imIndex[0] + imIndex[1]*m_DIMX + imIndex[2]*m_DIMXY;
+//       m_imvec[index] = srcIt.Get();
+//       m_labels[index] = seedIt.Get();
+
+//       if(m_labels[index] == 0) {
+//           m_hpNodes[index] = (float)DIST_INF;
+//           m_dist[index] = DIST_INF;
+//       }
+//       else {
+//          m_hpNodes[index] = (float)DIST_EPSION;
+//          m_dist[index] = DIST_EPSION;
+//       }
+
+//       m_heap->Insert(&m_hpNodes[index]);
+//       m_hpNodes[index].SetIndexValue(index);
+//   }
+
+//   long  i,j,k;
+//   for(i = 1; i < m_DIMX - 1; i++)
+//       for(j = 1; j < m_DIMY - 1; j++)
+//           for(k = 1; k < m_DIMZ - 1; k++) {
+//               index = i + j*m_DIMX + k*m_DIMXY;
+//               m_NBSIZE[index] = NNGBH;
+//           }
+
+//}
+
+void FastGrowCut::InitializationAHP() {
 
      m_imSize = m_srcImgROI->GetLargestPossibleRegion().GetSize();
      m_DIMX = m_imSize[0];
@@ -324,8 +334,8 @@ void FastGrowCut<SrcImageType, LabImageType>
     else {
         m_labelsPre.clear();
         m_distPre.clear();
-        FGC::LoadVectorIntoFile<char>(m_fnLabPre.c_str(), m_labelsPre, m_DIMXYZ);
-        FGC::LoadVectorIntoFile<float>(m_fnDistPre.c_str(), m_distPre, m_DIMXYZ);
+        //FGC::LoadVectorIntoFile<char>(m_fnLabPre.c_str(), m_labelsPre, m_DIMXYZ);
+        //FGC::LoadVectorIntoFile<float>(m_fnDistPre.c_str(), m_distPre, m_DIMXYZ);
         for( seedIt.GoToBegin(); !seedIt.IsAtEnd(); ++seedIt) {
 
              imIndex = seedIt.GetIndex();
@@ -351,9 +361,8 @@ void FastGrowCut<SrcImageType, LabImageType>
     }
   }
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::DijkstraBasedClassificationAHP() {
+
+void FastGrowCut::DijkstraBasedClassificationAHP() {
 
     HeapNode *hnMin, hnTmp;
     float t, tOri, tSrc;
@@ -456,9 +465,7 @@ void FastGrowCut<SrcImageType, LabImageType>
 
 }
 
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::DijkstraBasedClassificationHP() {
+void FastGrowCut::DijkstraBasedClassificationHP() {
 
     HeapNode *hnMin, hnTmp;
     float t, tOri, tSrc;
@@ -504,9 +511,9 @@ void FastGrowCut<SrcImageType, LabImageType>
 //    std::cout << "all = " << k << std::endl;
 
 }
-template<typename SrcImageType, typename LabImageType>
-void FastGrowCut<SrcImageType, LabImageType>
-::FindROI() {
+
+
+void FastGrowCut::FindROI() {
 
     typename LabImageType::IndexType roiStart;
     typename LabImageType::IndexType roiEnd;
@@ -531,7 +538,7 @@ void FastGrowCut<SrcImageType, LabImageType>
     unsigned int ndims = m_seedImg->GetImageDimension();
 
     bool foundLabel = false;
-     itk::ImageRegionIteratorWithIndex< LabImageType > label(m_seedImg, m_seedImg->GetBufferedRegion() );
+    itk::ImageRegionIteratorWithIndex< LabImageType > label(m_seedImg, m_seedImg->GetBufferedRegion() );
     for(label.GoToBegin(); !label.IsAtEnd(); ++label) {
         if(label.Get() != 0) {
             typename LabImageType::IndexType idx = label.GetIndex();
@@ -587,54 +594,50 @@ void FastGrowCut<SrcImageType, LabImageType>
       }
     std::cout << "]" << std::endl;
 
-    std::vector<long> vecROI(6,0);
     vecROI[0] = isize[0]; vecROI[1] = isize[1];vecROI[2] = isize[2];
     vecROI[3] = istart[0]; vecROI[4] = istart[1];vecROI[5] = istart[2];
 
-    FGC::WriteVectorIntoFile<long>(m_fnROI.c_str(), vecROI);
+    //FGC::WriteVectorIntoFile<long>(m_fnROI.c_str(), vecROI);
 
-//    istart[0] = 32; istart[1] = 149; istart[2] = 0;
-//    isize[0] = 502; isize[1] = 336; isize[3] = 43;
-
-//    lstart[0] = 32; lstart[1] = 149; lstart[2] = 0;
-//    lsize[0] = 502; lsize[1] = 336; lsize[3] = 43;
-
-
-}
+    }
     else {
-        std::vector<long> vecROI;
-        FGC::LoadVectorIntoFile<long>(m_fnROI.c_str(), vecROI, 6);
+        //std::vector<long> vecROI;
+        //FGC::LoadVectorIntoFile<long>(m_fnROI.c_str(), vecROI, 6);
         isize[0] = vecROI[0]; isize[1] = vecROI[1];isize[2] = vecROI[2];
         istart[0] = vecROI[3]; istart[1] = vecROI[4]; istart[2] = vecROI[5];
         lsize = isize;
         lstart = istart;
 
     }
-    typename SrcImageType::RegionType iRegion;
-    iRegion.SetSize( isize );
-    iRegion.SetIndex( istart );
 
-    typedef itk::RegionOfInterestImageFilter< SrcImageType, SrcImageType > iFilterType;
-    typename iFilterType::Pointer fInput = iFilterType::New();
-    fInput->SetRegionOfInterest( iRegion );
+   m_srcImgROI= ; //need this ROI extraction function
+   m_seedImgROI = ;//
 
-    fInput->SetInput( m_srcImg);
-    fInput->Update();
-    m_srcImgROI = SrcImageType::New();
-    m_srcImgROI = fInput->GetOutput();
+    //typename SrcImageType::RegionType iRegion;
+    //iRegion.SetSize( isize );
+    //iRegion.SetIndex( istart );
+
+    //typedef itk::RegionOfInterestImageFilter< SrcImageType, SrcImageType > iFilterType;
+//    typename iFilterType::Pointer fInput = iFilterType::New();
+//    fInput->SetRegionOfInterest( iRegion );
+
+//    fInput->SetInput( m_srcImg);
+//    fInput->Update();
+//    m_srcImgROI = SrcImageType::New();
+//    m_srcImgROI = fInput->GetOutput();
 
 //    typename LabImageType::RegionType oRegion;
-    m_outRegion.SetSize(lsize);
-    m_outRegion.SetIndex(lstart);
+    //m_outRegion.SetSize(lsize);
+    //m_outRegion.SetIndex(lstart);
 
-    typedef itk::RegionOfInterestImageFilter< LabImageType, LabImageType > oFilterType;
-    typename oFilterType::Pointer fOutput = oFilterType::New();
-    fOutput->SetRegionOfInterest( m_outRegion );
+    //typedef itk::RegionOfInterestImageFilter< LabImageType, LabImageType > oFilterType;
+    //typename oFilterType::Pointer fOutput = oFilterType::New();
+    //fOutput->SetRegionOfInterest( m_outRegion );
 
-    fOutput->SetInput( m_seedImg);
-    fOutput->Update();
-   m_seedImgROI = LabImageType::New();
-   m_seedImgROI = fOutput->GetOutput();
+    //fOutput->SetInput( m_seedImg);
+    //fOutput->Update();
+   //m_seedImgROI = LabImageType::New();
+   //m_seedImgROI = fOutput->GetOutput();
 }
 
 } // end FGC

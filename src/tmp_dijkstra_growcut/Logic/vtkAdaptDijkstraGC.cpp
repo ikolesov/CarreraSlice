@@ -40,6 +40,14 @@ vtkAdaptDijkstraGC::~vtkAdaptDijkstraGC() {
   std::cout<<"AdaptDijkstraGC destroyed"<<std::endl;
 }
 
+void vtkAdaptDijkstraGC::Initialize(){
+    fastGC= new FGC::FastGrowCut<SrcImageType, LabImageType>();
+    fastGC->SetSourceImage(srcImg);
+    fastGC->SetSeedlImage(seedImg);
+    fastGC->SetWorkMode(bInitialized);
+
+}
+
 void vtkAdaptDijkstraGC::RunADS(){
 
     //itk images, as growcut currently needs (converted from vtk data above)
@@ -50,27 +58,25 @@ void vtkAdaptDijkstraGC::RunADS(){
 
     timer.Start();
 
-    srcImg = FGC::convertImgToITK<SrcImageType>(this->SourceVol);
-    seedImg = FGC::convertImgToITK<LabImageType>(this->SeedVol);
-
-
     bInitialized = strInitial == "yes" ? true : false;
 
-    fastGC= new FGC::FastGrowCut<SrcImageType, LabImageType>();
 
-    // Initialization
-    fastGC->SetSourceImage(srcImg);
-    fastGC->SetSeedlImage(seedImg);
     fastGC->SetWorkMode(bInitialized);
 
     // Do Dijkstra-based grow cut classification
     fastGC->DoSegmentation();
 
+    timer.Stop();
+
+
+
+
+
+    // Output preparation
     // Get output image
-    //segImg = fastGC.GetLabeImage();
+    // segImg = fastGC.GetLabeImage();
     segImg = fastGC->GetForegroundmage();
 
-    timer.Stop();
 
     if(!bInitialized)
         std::cout << "Initial Dijkstra segmentation time: " << timer.GetMeanTime() << " seconds\n";

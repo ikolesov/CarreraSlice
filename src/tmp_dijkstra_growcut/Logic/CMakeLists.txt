@@ -14,10 +14,11 @@ set(ADAP_DIJKSTRA_GC_SRCS
   utilities.h
   AdaptiveDijkstraSegmenter.hxx
   AdaptiveDijkstraSegmenter.h
-  itkImageToVTKImageFilter.h
-  itkImageToVTKImageFilter.txx
-  itkVTKImageToImageFilter.h
-  itkVTKImageToImageFilter.txx
+  KSandbox.h
+  #itkImageToVTKImageFilter.h
+  #itkImageToVTKImageFilter.txx
+  #itkVTKImageToImageFilter.h
+  #itkVTKImageToImageFilter.txx
   )
 
 set(ADAP_DIJKSTRA_GC_LIBS
