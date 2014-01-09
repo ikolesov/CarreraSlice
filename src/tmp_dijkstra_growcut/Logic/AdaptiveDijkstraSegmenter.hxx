@@ -661,26 +661,16 @@ template<typename T> void *GetROI(T *array, long *vecROI)
         free(array);
     }
     //code the allocation
-    num
-    void *croppedArr;
-    croppedArr=malloc(          );
+    int numElemCR=(vecROI[1]-vecROI[0] +1)*(vecROI[3]-vecROI[2] +1)*(vecROI[5]-vecROI[4] +1);
+    T *croppedArr;
+    croppedArr=malloc(numElemCR*sizeof(T));
 
     //code cropping
+    elemNum=0;
     for(x=vecROI[0];x<vecROI[1];x++) for(y=vecROI[2];y<vecROI[3];y++) for(z=vecROI[4];z<vecROI[5];z++){
       idx = (int)(z*DIMXY+x*DIMY+y);
-      if(mask[idx] !=0){
-        flag = 0;
-        //if any neighbors are 1;
-        if(((y+1)<DIMY) && mask[idx+OFFY]!=0){flag = 1;}//up
-        if(((y-1)>=0)   && mask[idx-OFFY]!=0){flag = 1;}//down
-        if(((x+1)<DIMX) && mask[idx+OFFX]!=0){flag = 1;}//right
-        if(((x-1)>=0)   && mask[idx-OFFX]!=0){flag = 1;}//left
-        if(((z+1)<DIMZ) && mask[idx+OFFZ]!=0){flag = 1;}//front
-        if(((z-1)>=0)   && mask[idx-OFFZ]!=0){flag = 1;}//back
-        if(!flag){ //if none of the neighbors are 1, remove this noisy pixel
-          mask[idx] = 0;
-        }
-      }
+      croppedArr[elemNum]=array[idx];
+      elemNum++;
     }
 
 

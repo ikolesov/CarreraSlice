@@ -75,7 +75,7 @@ void vtkAdaptDijkstraGC::RunADS(){
     // Output preparation
     // Get output image
     // segImg = fastGC.GetLabeImage();
-    segImg = fastGC->GetForegroundmage();
+    //segImg = fastGC->GetForegroundmage();
 
 
     if(!bInitialized)

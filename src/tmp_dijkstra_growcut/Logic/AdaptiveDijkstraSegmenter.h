@@ -64,8 +64,8 @@ class FastGrowCut {
         void SetWorkMode(bool bSegInitialized = false);
         void DoSegmentation();
         //typename LabImageType::Pointer GetLabeImage();
-        typename DistImageType::Pointer GetDistImage();
-        typename LabImageType::Pointer GetForegroundmage();
+        //typename DistImageType::Pointer GetDistImage();
+        //typename LabImageType::Pointer GetForegroundmage();
 
 		private:
             void FindROI();
@@ -84,12 +84,12 @@ class FastGrowCut {
             short *m_seedImgROI;
 
             //
-            typename LabImageType::SizeType m_imSize;
-            typename LabImageType::RegionType m_outRegion;
+            //typename LabImageType::SizeType m_imSize;
+            //typename LabImageType::RegionType m_outRegion;
 
 
 
-            typedef typename SrcImageType::IndexType IndexType;
+            //typedef typename SrcImageType::IndexType IndexType;
             long m_DIMX, m_DIMY, m_DIMZ, m_DIMXY, m_DIMXYZ;
             long m_NDiff;
 
