@@ -72,6 +72,13 @@ void FastGrowCut::InitializeVariables(vtkImageData *image, vtkImageData *seed){
     dimz = (int) mdims[2];
     dimy = (int) mdims[1];
     dimx = (int) mdims[0];
+
+    dims[2] = dimz;
+    dims[1] = dimy;
+    dims[0] = dimx;
+
+    dims[3] = dims[0]*dims[1];
+    dims[4] = dims[0]*dims[1]*dims[2];
 }
 
 void FastGrowCut::InitializeData(){
@@ -651,21 +658,31 @@ template<typename T> void *GetROI(T *array, long *vecROI)
     //code the de-allocation
     if(array==NULL){
         //deallocate previous ROI
-
+        free(array);
     }
     //code the allocation
+    num
     void *croppedArr;
     croppedArr=malloc(          );
 
     //code cropping
-
+    for(x=vecROI[0];x<vecROI[1];x++) for(y=vecROI[2];y<vecROI[3];y++) for(z=vecROI[4];z<vecROI[5];z++){
+      idx = (int)(z*DIMXY+x*DIMY+y);
+      if(mask[idx] !=0){
+        flag = 0;
+        //if any neighbors are 1;
+        if(((y+1)<DIMY) && mask[idx+OFFY]!=0){flag = 1;}//up
+        if(((y-1)>=0)   && mask[idx-OFFY]!=0){flag = 1;}//down
+        if(((x+1)<DIMX) && mask[idx+OFFX]!=0){flag = 1;}//right
+        if(((x-1)>=0)   && mask[idx-OFFX]!=0){flag = 1;}//left
+        if(((z+1)<DIMZ) && mask[idx+OFFZ]!=0){flag = 1;}//front
+        if(((z-1)>=0)   && mask[idx-OFFZ]!=0){flag = 1;}//back
+        if(!flag){ //if none of the neighbors are 1, remove this noisy pixel
+          mask[idx] = 0;
+        }
+      }
+    }
 
 
     return croppedArr;
-//    float phi_val = 0;
-//    for (int idx=0;idx<Nelements;idx++)
-//    {
-//        phi_val = source[idx];
-//        array[idx] =( (T) 0 >= phi_val )*currLabel;
-//    }
 }

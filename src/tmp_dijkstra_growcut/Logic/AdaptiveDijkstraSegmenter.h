@@ -13,6 +13,18 @@
 
 #include "fibheap.h"
 
+
+#define DIMX dims[1]
+#define DIMY dims[0]
+#define DIMZ dims[2]
+#define DIMXY dims[3]
+#define NUMEL dims[4]
+//#define NUMDIMS numdims
+
+#define OFFX dims[0]
+#define OFFY 1
+#define OFFZ dims[3]
+
 namespace FGC {
 
 /***************************************************************************
@@ -100,6 +112,7 @@ class FastGrowCut {
             short *seed;
             int *mdims;
             long dimz,dimy,dimx;
+            long    dims[5];
             //std::string m_fnROI;
             //std::string m_fnDistPre;
             //std::string m_fnLabPre;
