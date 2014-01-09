@@ -5,7 +5,8 @@ from EditorLib.EditOptions import HelpButton
 from EditorLib.EditOptions import EditOptions
 from EditorLib import EditUtil
 from EditorLib import LabelEffect
-
+from EditorLib import Effect
+from EditorLib import LabelEffectLogic
 
 from copy import copy, deepcopy
 import numpy as np
@@ -18,7 +19,8 @@ from KUtil import KUtil, Print_Bad, Print_Good
 # KSliceEffectOptions - see LabelEffect, EditOptions and Effect for superclasses
 #
 
-class KSliceEffectOptions(EditorLib.LabelEffectOptions):
+# KSliceEffectOptions(EditorLib.LabelEffectOptions):
+class KSliceEffectOptions(Effect.EffectOptions):
   """ KSliceEffect-specfic gui
 """
 
@@ -36,10 +38,13 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
     self.parameterNode=parameterNode
 
   def __del__(self):
-    super(KSliceEffectOptions,self).__del__()
+	super(KSliceEffectOptions,self).__del__()
 
   def create(self):
     super(KSliceEffectOptions,self).create()
+    
+    self.helpLabel = qt.QLabel("Run the CarreraSlice segmentation on the current label/seed image.\nThis will use your current seed image as an example\nto fill in the rest of the volume.", self.frame)
+    self.frame.layout().addWidget(self.helpLabel)
     
     #create a "Start Bot" button
     self.botButton = qt.QPushButton(self.frame)
@@ -80,7 +85,8 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
     self.numItsSpinBox.connect('valueChanged(double)', self.onNumItsSpinBoxChanged)
     self.widgets.append(self.numItsSpinBox)
 
-    HelpButton(self.frame, "TO USE: \n Start the interactive segmentor and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n C: copy label slice \n V: paste label slice \n Q: evolve contour in 2D \n E: evolve contour in 3D \n A: toggle between draw/erase modes" )
+    #HelpButton(self.frame, "TO USE: \n Start the interactive segmentor and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n C: copy label slice \n V: paste label slice \n Q: evolve contour in 2D \n E: evolve contour in 3D \n A: toggle between draw/erase modes" )
+    HelpButton(self.frame, "TO USE: \n Start the interactive segmentor and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n G: start Fast GrowCut \n S: toggle between seed image and segmentation result \n R: reset fast GrowCut \n M: start smoothing process \n F: smooth with local-global energy \n U: smooth contour only" )
     self.frame.layout().addStretch(1) # Add vertical spacer
 
     if hasattr(slicer.modules, 'editorBot'):
@@ -93,7 +99,8 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
         self.locRadFrame.show()
         
   def destroy(self):
-    super(KSliceEffectOptions,self).destroy()
+	slicer.util.showStatusMessage("")
+	super(KSliceEffectOptions,self).destroy()
 
   def onRadiusSpinBoxChanged(self,value):
     self.parameterNode.SetParameter("KSliceEffect,radius", str(value))
@@ -149,14 +156,16 @@ class KSliceEffectOptions(EditorLib.LabelEffectOptions):
       slicer.modules.editorBot.stop()
       del(slicer.modules.editorBot)
       if self.botButton:
-        self.botButton.text = "Start Interactive Segmentor"
+        self.botButton.text = "Start Interactive Segmentor"   
+        slicer.util.showStatusMessage("CarreraSlice: stoped")     
       if self.locRadFrame:
         self.locRadFrame.show()
     else:
       KSliceBot(self)
       slicer.modules.editorBot.logic.emergencyStopFunc = self.botEstop; #save the function that stops bot, destroys KSlice, if things go wrong
       if self.botButton:
-        self.botButton.text = "Stop Interactive Segmentor"
+        self.botButton.text = "Stop Interactive Segmentor"   
+        slicer.util.showStatusMessage("CarreraSlice: started")
       if self.locRadFrame:
         self.locRadFrame.hide()
 
@@ -212,7 +221,8 @@ so it can access tools if needed.
 # KSliceEffectTool
 #
 
-class KSliceEffectTool(LabelEffect.LabelEffectTool):
+#class KSliceEffectTool(LabelEffect.LabelEffectTool):
+class KSliceEffectTool(Effect.EffectTool):
   """
 One instance of this will be created per-view when the effect
 is selected. It is responsible for implementing feedback and
@@ -318,6 +328,7 @@ def bind_view_observers( handlerFunc ):
 #
 
 class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
+#class KSliceEffectLogic(Effect.EffectLogic):
   """
 [concise useful desc]
 """
@@ -859,13 +870,17 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 		parameters["sourceImageName"] = srcImgNode.GetID()
 		parameters["seedImageName"] = seedImgNode.GetID()        
 
+		slicer.util.showStatusMessage("CarreraSlice: Runing Fast GrowCut...")
 		fastGrowCut = slicer.modules.adaptivedijkstrasegmentercli
 		slicer.cli.run(fastGrowCut, None, parameters, True)
 			
 		self.bSegmenterInitialized = "yes"
 		self.bEditGrowCutSeed = False
+		
+		slicer.util.showStatusMessage("CarreraSlice: press M go to smoothing, or S to edit seed image and refine segmentation, or R to reset fast GrowCut parameters")
 	else:
 		print('Please go to seed labels first by pressing S')
+		slicer.util.showStatusMessage("CarreraSlice: go to seed labels first by pressing S")
   
   # reset fast growcut segmenter
   def resetFastGrowCutFlag(self):
@@ -880,7 +895,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         
         seedImgNode.GetImageData().Modified()
         seedImgNode.Modified()
-        print('reset adaptive Dijkstra segmenter')
+        print('reset fast GrowCut parameters')
+        slicer.util.showStatusMessage("CarreraSlice: reseted fast GrowCut parameters, go to PaintEffect to edit seed image")
         
         
   # extract the foreground label (==1)
@@ -902,8 +918,9 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
 		seedImgNode.GetImageData().Modified()
 		seedImgNode.Modified()
-
-		print('show label image')
+		
+		print('show seed image')
+		slicer.util.showStatusMessage("CarreraSlice: show seed image")
 	else:
 		if self.growCutSegArray.any() != 0 :
 		
@@ -912,8 +929,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 			seedImgNode.GetImageData().Modified()
 			seedImgNode.Modified()
 			print('show segmentation')
+			slicer.util.showStatusMessage("CarreraSlice: show segmentation result")
 		else:
 			print('no segmentation result')	
+			slicer.util.showStatusMessage("CarreraSlice: no segmentation result available")
+			
 			
   # extract the foreground label (==1)
 #  def extractFastGrowCutForeground(self):
@@ -930,7 +950,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 	#	return
 	
 	self.init_kslice()
-	 
+	slicer.util.showStatusMessage("CarreraSlice: press F for local-global smoothing or U for contour smoothing only") 
      
 	#for i in range(1):
 	#	self.runSegment3DLocCV()
@@ -970,6 +990,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
       return
 
     print("doing 3D local chan-vese segmentation")
+    slicer.util.showStatusMessage("doing 3D local chan-vese segmentation")
     self.computeCurrSliceSmarter()
 
     #make connections, parameter settings
@@ -1017,6 +1038,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
       return
 
     print("doing curvature flow")
+    
+    slicer.util.showStatusMessage("doing curvature flow smoothing")
     self.computeCurrSliceSmarter()
 
     #make connections, parameter settings
@@ -1121,7 +1144,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 # The KSliceEffectExtension class definition
 #
 
-class KSliceEffectExtension(LabelEffect.LabelEffect):
+#class KSliceEffectExtension(LabelEffect.LabelEffect):
+class KSliceEffectExtension(Effect.Effect):
   """Organizes the Options, Tool, and Logic classes into a single instance
 that can be managed by the EditBox
 """
