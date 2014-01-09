@@ -1,6 +1,6 @@
 
 #include "AdaptiveDijkstraSegmenter.h"
-
+#include "KSandbox.h"
 #include "itkImageRegionIterator.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkNumericTraits.h"
@@ -83,23 +83,13 @@ void FastGrowCut::InitializeVariables(vtkImageData *image, vtkImageData *seed){
 
 void FastGrowCut::InitializeData(){
     //set up vtkimagedata to array
-    int imgType=imageVol->GetScalarType();
+    int imgType=m_srcImg->GetScalarType();
     vrcl::convertImage( imgType,m_srcImg->GetScalarPointer(),img, dimx, dimy, dimz);
 
-    int labType=labelVol->GetScalarType();
+    int labType=m_seedImg->GetScalarType();
     vrcl::convertLabel( labType,m_seedImg->GetScalarPointer(), seed, dimx, dimy, dimz);
 
     //set up roi arrays
-}
-
-void FastGrowCut::SetSourceImage(const typename SrcImageType::Pointer srcImg) {
-
-    m_srcImg = srcImg;
-}
-
-void FastGrowCut::SetSeedlImage(const typename LabImageType::Pointer seedImg) {
-
-    m_seedImg = seedImg;
 }
 
 
@@ -650,10 +640,7 @@ void FastGrowCut::FindROI() {
    //m_seedImgROI = fOutput->GetOutput();
 }
 
-} // end FGC
-
-
-template<typename T> void *GetROI(T *array, long *vecROI)
+template<typename T> void *FastGrowCut::GetROI(T *array, long *vecROI)
 {
     //code the de-allocation
     if(array==NULL){
@@ -666,8 +653,9 @@ template<typename T> void *GetROI(T *array, long *vecROI)
     croppedArr=malloc(numElemCR*sizeof(T));
 
     //code cropping
-    elemNum=0;
-    for(x=vecROI[0];x<vecROI[1];x++) for(y=vecROI[2];y<vecROI[3];y++) for(z=vecROI[4];z<vecROI[5];z++){
+    int elemNum=0;
+    int idx;
+    for(int x=vecROI[0];x<vecROI[1];x++) for(int y=vecROI[2];y<vecROI[3];y++) for(int z=vecROI[4];z<vecROI[5];z++){
       idx = (int)(z*DIMXY+x*DIMY+y);
       croppedArr[elemNum]=array[idx];
       elemNum++;
@@ -676,3 +664,8 @@ template<typename T> void *GetROI(T *array, long *vecROI)
 
     return croppedArr;
 }
+
+} // end FGC
+
+
+

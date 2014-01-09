@@ -63,6 +63,9 @@ class FastGrowCut {
         //void SetSeedlImage(const typename LabImageType::Pointer seedImg);
         void SetWorkMode(bool bSegInitialized = false);
         void DoSegmentation();
+        void InitializeVariables(vtkImageData *image, vtkImageData *seed);
+        void InitializeData();
+
         //typename LabImageType::Pointer GetLabeImage();
         //typename DistImageType::Pointer GetDistImage();
         //typename LabImageType::Pointer GetForegroundmage();
@@ -73,6 +76,7 @@ class FastGrowCut {
             void DijkstraBasedClassificationHP();
             void InitializationAHP();
             void DijkstraBasedClassificationAHP();
+            template<typename T> void *GetROI(T *array, long *vecROI);
 
             //computation containers
             vtkImageData *m_srcImg;

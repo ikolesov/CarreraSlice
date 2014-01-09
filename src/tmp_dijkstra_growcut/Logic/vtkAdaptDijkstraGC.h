@@ -32,6 +32,7 @@ public:
   vtkSetMacro(bInitialized, bool);
 
   //processing functions
+  void Initialize();
   void RunADS();
   void PrintSelf(ostream &os, vtkIndent indent);
 
@@ -43,7 +44,6 @@ private:
   //vtk image data (from slicer)
   vtkImageData* SourceVol;
   vtkImageData* SeedVol;
-  vtkImageData* OutputVol;
 
   //converted itk images
   //SrcImageType::Pointer srcImg;
@@ -51,7 +51,7 @@ private:
   //LabImageType::Pointer segImg;
 
   //logic code
-  FGC::FastGrowCut<SrcImageType, LabImageType> *fastGC;
+  FGC::FastGrowCut *fastGC;
 
   //state variables
   bool bInitialized;
