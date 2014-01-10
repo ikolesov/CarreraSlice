@@ -13,6 +13,18 @@
 
 #include "fibheap.h"
 
+
+#define DIMX dims[1]
+#define DIMY dims[0]
+#define DIMZ dims[2]
+#define DIMXY dims[3]
+#define NUMEL dims[4]
+//#define NUMDIMS numdims
+
+#define OFFX dims[0]
+#define OFFY 1
+#define OFFZ dims[3]
+
 namespace FGC {
 
 /***************************************************************************
@@ -51,9 +63,12 @@ class FastGrowCut {
         //void SetSeedlImage(const typename LabImageType::Pointer seedImg);
         void SetWorkMode(bool bSegInitialized = false);
         void DoSegmentation();
+        void InitializeVariables(vtkImageData *image, vtkImageData *seed);
+        void InitializeData();
+
         //typename LabImageType::Pointer GetLabeImage();
-        typename DistImageType::Pointer GetDistImage();
-        typename LabImageType::Pointer GetForegroundmage();
+        //typename DistImageType::Pointer GetDistImage();
+        //typename LabImageType::Pointer GetForegroundmage();
 
 		private:
             void FindROI();
@@ -61,6 +76,7 @@ class FastGrowCut {
             void DijkstraBasedClassificationHP();
             void InitializationAHP();
             void DijkstraBasedClassificationAHP();
+            template<typename T> void *GetROI(T *array, long *vecROI);
 
             //computation containers
             vtkImageData *m_srcImg;
@@ -72,12 +88,12 @@ class FastGrowCut {
             short *m_seedImgROI;
 
             //
-            typename LabImageType::SizeType m_imSize;
-            typename LabImageType::RegionType m_outRegion;
+            //typename LabImageType::SizeType m_imSize;
+            //typename LabImageType::RegionType m_outRegion;
 
 
 
-            typedef typename SrcImageType::IndexType IndexType;
+            //typedef typename SrcImageType::IndexType IndexType;
             long m_DIMX, m_DIMY, m_DIMZ, m_DIMXY, m_DIMXYZ;
             long m_NDiff;
 
@@ -100,6 +116,7 @@ class FastGrowCut {
             short *seed;
             int *mdims;
             long dimz,dimy,dimx;
+            long    dims[5];
             //std::string m_fnROI;
             //std::string m_fnDistPre;
             //std::string m_fnLabPre;

@@ -1,6 +1,6 @@
 
 #include "AdaptiveDijkstraSegmenter.h"
-
+#include "KSandbox.h"
 #include "itkImageRegionIterator.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkNumericTraits.h"
@@ -72,27 +72,24 @@ void FastGrowCut::InitializeVariables(vtkImageData *image, vtkImageData *seed){
     dimz = (int) mdims[2];
     dimy = (int) mdims[1];
     dimx = (int) mdims[0];
+
+    dims[2] = dimz;
+    dims[1] = dimy;
+    dims[0] = dimx;
+
+    dims[3] = dims[0]*dims[1];
+    dims[4] = dims[0]*dims[1]*dims[2];
 }
 
 void FastGrowCut::InitializeData(){
     //set up vtkimagedata to array
-    int imgType=imageVol->GetScalarType();
+    int imgType=m_srcImg->GetScalarType();
     vrcl::convertImage( imgType,m_srcImg->GetScalarPointer(),img, dimx, dimy, dimz);
 
-    int labType=labelVol->GetScalarType();
+    int labType=m_seedImg->GetScalarType();
     vrcl::convertLabel( labType,m_seedImg->GetScalarPointer(), seed, dimx, dimy, dimz);
 
     //set up roi arrays
-}
-
-void FastGrowCut::SetSourceImage(const typename SrcImageType::Pointer srcImg) {
-
-    m_srcImg = srcImg;
-}
-
-void FastGrowCut::SetSeedlImage(const typename LabImageType::Pointer seedImg) {
-
-    m_seedImg = seedImg;
 }
 
 
@@ -643,29 +640,32 @@ void FastGrowCut::FindROI() {
    //m_seedImgROI = fOutput->GetOutput();
 }
 
-} // end FGC
-
-
-template<typename T> void *GetROI(T *array, long *vecROI)
+template<typename T> void *FastGrowCut::GetROI(T *array, long *vecROI)
 {
     //code the de-allocation
     if(array==NULL){
         //deallocate previous ROI
-
+        free(array);
     }
     //code the allocation
-    void *croppedArr;
-    croppedArr=malloc(          );
+    int numElemCR=(vecROI[1]-vecROI[0] +1)*(vecROI[3]-vecROI[2] +1)*(vecROI[5]-vecROI[4] +1);
+    T *croppedArr;
+    croppedArr=malloc(numElemCR*sizeof(T));
 
     //code cropping
-
+    int elemNum=0;
+    int idx;
+    for(int x=vecROI[0];x<vecROI[1];x++) for(int y=vecROI[2];y<vecROI[3];y++) for(int z=vecROI[4];z<vecROI[5];z++){
+      idx = (int)(z*DIMXY+x*DIMY+y);
+      croppedArr[elemNum]=array[idx];
+      elemNum++;
+    }
 
 
     return croppedArr;
-//    float phi_val = 0;
-//    for (int idx=0;idx<Nelements;idx++)
-//    {
-//        phi_val = source[idx];
-//        array[idx] =( (T) 0 >= phi_val )*currLabel;
-//    }
 }
+
+} // end FGC
+
+
+

@@ -3,7 +3,6 @@
 
 
 #include "vtkSmartPointer.h"
-#include "KViewerOptions.h"
 //#include "KDataWarehouse.h"
 //#include "Logger.h"
 #include <assert.h>

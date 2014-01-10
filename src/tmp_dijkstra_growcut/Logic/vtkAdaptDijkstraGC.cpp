@@ -20,7 +20,6 @@ vtkAdaptDijkstraGC::vtkAdaptDijkstraGC( ) {
 
     SourceVol   = NULL;
     SeedVol   = NULL;
-    OutputVol = NULL;
 }
 
 
@@ -41,11 +40,7 @@ vtkAdaptDijkstraGC::~vtkAdaptDijkstraGC() {
 }
 
 void vtkAdaptDijkstraGC::Initialize(){
-    fastGC= new FGC::FastGrowCut<SrcImageType, LabImageType>();
-    fastGC->SetSourceImage(srcImg);
-    fastGC->SetSeedlImage(seedImg);
-    fastGC->SetWorkMode(bInitialized);
-
+    fastGC= new FGC::FastGrowCut(SourceVol, SeedVol);
 }
 
 void vtkAdaptDijkstraGC::RunADS(){
@@ -75,7 +70,7 @@ void vtkAdaptDijkstraGC::RunADS(){
     // Output preparation
     // Get output image
     // segImg = fastGC.GetLabeImage();
-    segImg = fastGC->GetForegroundmage();
+    //segImg = fastGC->GetForegroundmage();
 
 
     if(!bInitialized)
@@ -85,7 +80,7 @@ void vtkAdaptDijkstraGC::RunADS(){
 
     //FGC::writeImage<LabImageType>(segImg, labImageName.c_str());
     //FGC::writeImage<LabImageType>(segImg, seedImageName.c_str());
-    OutputVol = FGC::convertImgToVTK<LabImageType>(this->SeedVol);
+    //OutputVol = FGC::convertImgToVTK<LabImageType>(this->SeedVol);
 
     std::cout<<"Ran ADS done"<<std::endl;
     return;
