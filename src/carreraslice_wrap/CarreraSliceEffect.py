@@ -5,8 +5,8 @@ from EditorLib.EditOptions import HelpButton
 from EditorLib.EditOptions import EditOptions
 from EditorLib import EditUtil
 from EditorLib import LabelEffect
-from EditorLib import Effect
-from EditorLib import LabelEffectLogic
+#from EditorLib import Effect
+#from EditorLib import LabelEffectLogic
 
 from copy import copy, deepcopy
 import numpy as np
@@ -19,8 +19,8 @@ from KUtil import KUtil, Print_Bad, Print_Good
 # KSliceEffectOptions - see LabelEffect, EditOptions and Effect for superclasses
 #
 
-# KSliceEffectOptions(EditorLib.LabelEffectOptions):
-class KSliceEffectOptions(Effect.EffectOptions):
+class KSliceEffectOptions(EditorLib.LabelEffectOptions):
+#class KSliceEffectOptions(Effect.EffectOptions):
   """ KSliceEffect-specfic gui
 """
 
@@ -226,8 +226,8 @@ so it can access tools if needed.
 # KSliceEffectTool
 #
 
-#class KSliceEffectTool(LabelEffect.LabelEffectTool):
-class KSliceEffectTool(Effect.EffectTool):
+class KSliceEffectTool(LabelEffect.LabelEffectTool):
+#class KSliceEffectTool(Effect.EffectTool):
   """
 One instance of this will be created per-view when the effect
 is selected. It is responsible for implementing feedback and
@@ -1169,8 +1169,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 # The KSliceEffectExtension class definition
 #
 
-#class KSliceEffectExtension(LabelEffect.LabelEffect):
-class KSliceEffectExtension(Effect.Effect):
+class KSliceEffectExtension(LabelEffect.LabelEffect):
+#class KSliceEffectExtension(Effect.Effect):
   """Organizes the Options, Tool, and Logic classes into a single instance
 that can be managed by the EditBox
 """
