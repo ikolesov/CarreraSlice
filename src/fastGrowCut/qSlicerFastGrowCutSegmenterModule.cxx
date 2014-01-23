@@ -18,63 +18,63 @@
 // Qt includes
 #include <QtPlugin>
 
-// AdaptiveDijkstraSegmenter Logic includes
-#include <vtkSlicerAdaptiveDijkstraSegmenterLogic.h>
+// FastGrowCutSegmenter Logic includes
+#include <vtkSlicerFastGrowCutSegmenterLogic.h>
 
-// AdaptiveDijkstraSegmenter includes
-#include "qSlicerAdaptiveDijkstraSegmenterModule.h"
-#include "qSlicerAdaptiveDijkstraSegmenterModuleWidget.h"
+// FastGrowCutSegmenter includes
+#include "qSlicerFastGrowCutSegmenterModule.h"
+#include "qSlicerFastGrowCutSegmenterModuleWidget.h"
 
 //-----------------------------------------------------------------------------
-Q_EXPORT_PLUGIN2(qSlicerAdaptiveDijkstraSegmenterModule, qSlicerAdaptiveDijkstraSegmenterModule);
+Q_EXPORT_PLUGIN2(qSlicerFastGrowCutSegmenterModule, qSlicerFastGrowCutSegmenterModule);
 
 //-----------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class qSlicerAdaptiveDijkstraSegmenterModulePrivate
+class qSlicerFastGrowCutSegmenterModulePrivate
 {
 public:
-  qSlicerAdaptiveDijkstraSegmenterModulePrivate();
+  qSlicerFastGrowCutSegmenterModulePrivate();
 };
 
 //-----------------------------------------------------------------------------
-// qSlicerAdaptiveDijkstraSegmenterModulePrivate methods
+// qSlicerFastGrowCutSegmenterModulePrivate methods
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterModulePrivate
-::qSlicerAdaptiveDijkstraSegmenterModulePrivate()
+qSlicerFastGrowCutSegmenterModulePrivate
+::qSlicerFastGrowCutSegmenterModulePrivate()
 {
 }
 
 //-----------------------------------------------------------------------------
-// qSlicerAdaptiveDijkstraSegmenterModule methods
+// qSlicerFastGrowCutSegmenterModule methods
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterModule
-::qSlicerAdaptiveDijkstraSegmenterModule(QObject* _parent)
+qSlicerFastGrowCutSegmenterModule
+::qSlicerFastGrowCutSegmenterModule(QObject* _parent)
   : Superclass(_parent)
-  , d_ptr(new qSlicerAdaptiveDijkstraSegmenterModulePrivate)
+  , d_ptr(new qSlicerFastGrowCutSegmenterModulePrivate)
 {
 }
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterModule::~qSlicerAdaptiveDijkstraSegmenterModule()
+qSlicerFastGrowCutSegmenterModule::~qSlicerFastGrowCutSegmenterModule()
 {
 }
 
 //-----------------------------------------------------------------------------
-QString qSlicerAdaptiveDijkstraSegmenterModule::helpText()const
+QString qSlicerFastGrowCutSegmenterModule::helpText()const
 {
   return "This is a loadable module bundled in an extension";
 }
 
 //-----------------------------------------------------------------------------
-QString qSlicerAdaptiveDijkstraSegmenterModule::acknowledgementText()const
+QString qSlicerFastGrowCutSegmenterModule::acknowledgementText()const
 {
   return "This work was was partially funded by NIH grant 3P41RR013218-12S1";
 }
 
 //-----------------------------------------------------------------------------
-QStringList qSlicerAdaptiveDijkstraSegmenterModule::contributors()const
+QStringList qSlicerFastGrowCutSegmenterModule::contributors()const
 {
   QStringList moduleContributors;
   moduleContributors << QString("Jean-Christophe Fillion-Robin (Kitware)");
@@ -82,38 +82,38 @@ QStringList qSlicerAdaptiveDijkstraSegmenterModule::contributors()const
 }
 
 //-----------------------------------------------------------------------------
-QIcon qSlicerAdaptiveDijkstraSegmenterModule::icon()const
+QIcon qSlicerFastGrowCutSegmenterModule::icon()const
 {
-  return QIcon(":/Icons/AdaptiveDijkstraSegmenter.png");
+  return QIcon(":/Icons/FastGrowCutSegmenter.png");
 }
 
 //-----------------------------------------------------------------------------
-QStringList qSlicerAdaptiveDijkstraSegmenterModule::categories() const
+QStringList qSlicerFastGrowCutSegmenterModule::categories() const
 {
   return QStringList() << "Examples";
 }
 
 //-----------------------------------------------------------------------------
-QStringList qSlicerAdaptiveDijkstraSegmenterModule::dependencies() const
+QStringList qSlicerFastGrowCutSegmenterModule::dependencies() const
 {
   return QStringList();
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerAdaptiveDijkstraSegmenterModule::setup()
+void qSlicerFastGrowCutSegmenterModule::setup()
 {
   this->Superclass::setup();
 }
 
 //-----------------------------------------------------------------------------
-qSlicerAbstractModuleRepresentation * qSlicerAdaptiveDijkstraSegmenterModule
+qSlicerAbstractModuleRepresentation * qSlicerFastGrowCutSegmenterModule
 ::createWidgetRepresentation()
 {
-  return new qSlicerAdaptiveDijkstraSegmenterModuleWidget;
+  return new qSlicerFastGrowCutSegmenterModuleWidget;
 }
 
 //-----------------------------------------------------------------------------
-vtkMRMLAbstractLogic* qSlicerAdaptiveDijkstraSegmenterModule::createLogic()
+vtkMRMLAbstractLogic* qSlicerFastGrowCutSegmenterModule::createLogic()
 {
-  return vtkSlicerAdaptiveDijkstraSegmenterLogic::New();
+  return vtkSlicerFastGrowCutSegmenterLogic::New();
 }

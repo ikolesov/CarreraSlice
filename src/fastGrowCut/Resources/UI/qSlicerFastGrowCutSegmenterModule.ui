@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>qSlicerAdaptiveDijkstraSegmenterModuleWidget</class>
- <widget class="qSlicerWidget" name="qSlicerAdaptiveDijkstraSegmenterModuleWidget">
+ <class>qSlicerFastGrowCutSegmenterModule</class>
+ <widget class="qSlicerWidget" name="qSlicerFastGrowCutSegmenterModule">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,7 +21,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="qSlicerAdaptiveDijkstraSegmenterFooBarWidget" name="FooBar" native="true"/>
+       <widget class="qSlicerFastGrowCutSegmenterFooBarWidget" name="FooBar" native="true"/>
       </item>
      </layout>
     </widget>
@@ -55,9 +55,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>qSlicerAdaptiveDijkstraSegmenterFooBarWidget</class>
+   <class>qSlicerFastGrowCutSegmenterFooBarWidget</class>
    <extends>QWidget</extends>
-   <header>qSlicerAdaptiveDijkstraSegmenterFooBarWidget.h</header>
+   <header>qSlicerFastGrowCutSegmenterFooBarWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

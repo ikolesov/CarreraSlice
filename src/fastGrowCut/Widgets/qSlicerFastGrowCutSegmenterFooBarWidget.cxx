@@ -19,54 +19,54 @@
 ==============================================================================*/
 
 // FooBar Widgets includes
-#include "qSlicerAdaptiveDijkstraSegmenterFooBarWidget.h"
-#include "ui_qSlicerAdaptiveDijkstraSegmenterFooBarWidget.h"
+#include "qSlicerFastGrowCutSegmenterFooBarWidget.h"
+#include "ui_qSlicerFastGrowCutSegmenterFooBarWidget.h"
 
 //-----------------------------------------------------------------------------
-/// \ingroup Slicer_QtModules_AdaptiveDijkstraSegmenter
-class qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate
-  : public Ui_qSlicerAdaptiveDijkstraSegmenterFooBarWidget
+/// \ingroup Slicer_QtModules_FastGrowCutSegmenter
+class qSlicerFastGrowCutSegmenterFooBarWidgetPrivate
+  : public Ui_qSlicerFastGrowCutSegmenterFooBarWidget
 {
-  Q_DECLARE_PUBLIC(qSlicerAdaptiveDijkstraSegmenterFooBarWidget);
+  Q_DECLARE_PUBLIC(qSlicerFastGrowCutSegmenterFooBarWidget);
 protected:
-  qSlicerAdaptiveDijkstraSegmenterFooBarWidget* const q_ptr;
+  qSlicerFastGrowCutSegmenterFooBarWidget* const q_ptr;
 
 public:
-  qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate(
-    qSlicerAdaptiveDijkstraSegmenterFooBarWidget& object);
-  virtual void setupUi(qSlicerAdaptiveDijkstraSegmenterFooBarWidget*);
+  qSlicerFastGrowCutSegmenterFooBarWidgetPrivate(
+    qSlicerFastGrowCutSegmenterFooBarWidget& object);
+  virtual void setupUi(qSlicerFastGrowCutSegmenterFooBarWidget*);
 };
 
 // --------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate
-::qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate(
-  qSlicerAdaptiveDijkstraSegmenterFooBarWidget& object)
+qSlicerFastGrowCutSegmenterFooBarWidgetPrivate
+::qSlicerFastGrowCutSegmenterFooBarWidgetPrivate(
+  qSlicerFastGrowCutSegmenterFooBarWidget& object)
   : q_ptr(&object)
 {
 }
 
 // --------------------------------------------------------------------------
-void qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate
-::setupUi(qSlicerAdaptiveDijkstraSegmenterFooBarWidget* widget)
+void qSlicerFastGrowCutSegmenterFooBarWidgetPrivate
+::setupUi(qSlicerFastGrowCutSegmenterFooBarWidget* widget)
 {
-  this->Ui_qSlicerAdaptiveDijkstraSegmenterFooBarWidget::setupUi(widget);
+  this->Ui_qSlicerFastGrowCutSegmenterFooBarWidget::setupUi(widget);
 }
 
 //-----------------------------------------------------------------------------
-// qSlicerAdaptiveDijkstraSegmenterFooBarWidget methods
+// qSlicerFastGrowCutSegmenterFooBarWidget methods
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterFooBarWidget
-::qSlicerAdaptiveDijkstraSegmenterFooBarWidget(QWidget* parentWidget)
+qSlicerFastGrowCutSegmenterFooBarWidget
+::qSlicerFastGrowCutSegmenterFooBarWidget(QWidget* parentWidget)
   : Superclass( parentWidget )
-  , d_ptr( new qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate(*this) )
+  , d_ptr( new qSlicerFastGrowCutSegmenterFooBarWidgetPrivate(*this) )
 {
-  Q_D(qSlicerAdaptiveDijkstraSegmenterFooBarWidget);
+  Q_D(qSlicerFastGrowCutSegmenterFooBarWidget);
   d->setupUi(this);
 }
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterFooBarWidget
-::~qSlicerAdaptiveDijkstraSegmenterFooBarWidget()
+qSlicerFastGrowCutSegmenterFooBarWidget
+::~qSlicerFastGrowCutSegmenterFooBarWidget()
 {
 }

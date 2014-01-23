@@ -25,7 +25,7 @@ set(MIDAS_PACKAGE_API_KEY  tqsS/lB5zAE7xcI3i52P0NFVvJx0x8EQ)
 set(EXTENSION_HOMEPAGE     http://wiki.slicer.org/slicerWiki/index.php/Documentation/Nightly/Modules/CarreraSliceInteractiveSegmenter)
 set(EXTENSION_CATEGORY    "Segmentation")
 set(EXTENSION_ICONURL    http://wiki.slicer.org/slicerWiki/images/2/2a/CarreraSliceEffect.png)
-set(EXTENSION_CONTRIBUTORS  "Ivan Kolesov, LiangJia Zhu, Allen Tannenbaum (Stony Brook University), Peter Karasev, Patricio Vela (GT), Yi Gao (UAB), Karl Fritscher (BWH & MGH), Steve Pieper (Isomics)")
+set(EXTENSION_CONTRIBUTORS  "Ivan Kolesov, Liangjia Zhu, Allen Tannenbaum (Stony Brook University), Peter Karasev, Patricio Vela (GT), Yi Gao (UAB), Karl Fritscher (BWH & MGH), Steve Pieper (Isomics)")
 set(EXTENSION_DESCRIPTION   "This extension provides an interactive 3D segmentation tool.")
 #-----------------------------------------------------------------------------
 
@@ -73,11 +73,6 @@ else(WIN32)
 endif(WIN32)
 
 
-
-
-
-
-
 message(STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
 
 set( KSlice_include  ${CMAKE_CURRENT_SOURCE_DIR}/util/vrcl/include
@@ -94,7 +89,8 @@ include_directories( ${QT_include_DIR} ${KSlice_include} )
 add_subdirectory(KViewerMain)
 add_subdirectory(KSegmentor)
 add_subdirectory(sfm_local_chanvese)
-add_subdirectory(dijkstra_growcut)
+#add_subdirectory(dijkstra_growcut)
+add_subdirectory(fastGrowCut)
 
 message(STATUS "Check that this dir actually contains libraries! On windows, will have subdirs! ${KSLICE_LIB_PATH}" )
 if(KSlice_Build_SlicerWrap)

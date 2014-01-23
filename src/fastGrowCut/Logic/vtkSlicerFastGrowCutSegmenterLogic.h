@@ -15,14 +15,14 @@
 
 ==============================================================================*/
 
-// .NAME vtkSlicerAdaptiveDijkstraSegmenterLogic - slicer logic class for volumes manipulation
+// .NAME vtkSlicerFastGrowCutSegmenterLogic - slicer logic class for volumes manipulation
 // .SECTION Description
 // This class manages the logic associated with reading, saving,
 // and changing propertied of the volumes
 
 
-#ifndef __vtkSlicerAdaptiveDijkstraSegmenterLogic_h
-#define __vtkSlicerAdaptiveDijkstraSegmenterLogic_h
+#ifndef __vtkSlicerFastGrowCutSegmenterLogic_h
+#define __vtkSlicerFastGrowCutSegmenterLogic_h
 
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
@@ -33,25 +33,24 @@
 // STD includes
 #include <cstdlib>
 
-#include "vtkSlicerAdaptiveDijkstraSegmenterModuleLogicExport.h"
+#include "vtkSlicerFastGrowCutSegmenterModuleLogicExport.h"
 
 //Our includes
 #include "itkTimeProbe.h"
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class VTK_SLICER_ADAPTIVEDIJKSTRASEGMENTER_MODULE_LOGIC_EXPORT vtkSlicerAdaptiveDijkstraSegmenterLogic :
+class VTK_SLICER_FASTGROWCUTSEGMENTER_MODULE_LOGIC_EXPORT vtkSlicerFastGrowCutSegmenterLogic :
   public vtkSlicerModuleLogic
 {
 public:
 
-  static vtkSlicerAdaptiveDijkstraSegmenterLogic *New();
-  vtkTypeMacro(vtkSlicerAdaptiveDijkstraSegmenterLogic, vtkSlicerModuleLogic);
+  static vtkSlicerFastGrowCutSegmenterLogic *New();
+  vtkTypeMacro(vtkSlicerFastGrowCutSegmenterLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-
 protected:
-  vtkSlicerAdaptiveDijkstraSegmenterLogic();
-  virtual ~vtkSlicerAdaptiveDijkstraSegmenterLogic();
+  vtkSlicerFastGrowCutSegmenterLogic();
+  virtual ~vtkSlicerFastGrowCutSegmenterLogic();
 
   virtual void SetMRMLSceneInternal(vtkMRMLScene* newScene);
   /// Register MRML Node classes to Scene. Gets called automatically when the MRMLScene is attached to this logic class.
@@ -61,8 +60,8 @@ protected:
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
 private:
 
-  vtkSlicerAdaptiveDijkstraSegmenterLogic(const vtkSlicerAdaptiveDijkstraSegmenterLogic&); // Not implemented
-  void operator=(const vtkSlicerAdaptiveDijkstraSegmenterLogic&);               // Not implemented
+  vtkSlicerFastGrowCutSegmenterLogic(const vtkSlicerFastGrowCutSegmenterLogic&); // Not implemented
+  void operator=(const vtkSlicerFastGrowCutSegmenterLogic&);               // Not implemented
 };
 
 #endif

@@ -19,44 +19,44 @@
 #include <QDebug>
 
 // SlicerQt includes
-#include "qSlicerAdaptiveDijkstraSegmenterModuleWidget.h"
-#include "ui_qSlicerAdaptiveDijkstraSegmenterModuleWidget.h"
+#include "qSlicerFastGrowCutSegmenterModuleWidget.h"
+#include "ui_qSlicerFastGrowCutSegmenterModule.h"
 
 //-----------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate: public Ui_qSlicerAdaptiveDijkstraSegmenterModuleWidget
+class qSlicerFastGrowCutSegmenterModuleWidgetPrivate: public Ui_qSlicerFastGrowCutSegmenterModule
 {
 public:
-  qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate();
+  qSlicerFastGrowCutSegmenterModuleWidgetPrivate();
 };
 
 //-----------------------------------------------------------------------------
-// qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate methods
+// qSlicerFastGrowCutSegmenterModuleWidgetPrivate methods
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate::qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate()
+qSlicerFastGrowCutSegmenterModuleWidgetPrivate::qSlicerFastGrowCutSegmenterModuleWidgetPrivate()
 {
 }
 
 //-----------------------------------------------------------------------------
-// qSlicerAdaptiveDijkstraSegmenterModuleWidget methods
+// qSlicerFastGrowCutSegmenterModuleWidget methods
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterModuleWidget::qSlicerAdaptiveDijkstraSegmenterModuleWidget(QWidget* _parent)
+qSlicerFastGrowCutSegmenterModuleWidget::qSlicerFastGrowCutSegmenterModuleWidget(QWidget* _parent)
   : Superclass( _parent )
-  , d_ptr( new qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate )
+  , d_ptr( new qSlicerFastGrowCutSegmenterModuleWidgetPrivate )
 {
 }
 
 //-----------------------------------------------------------------------------
-qSlicerAdaptiveDijkstraSegmenterModuleWidget::~qSlicerAdaptiveDijkstraSegmenterModuleWidget()
+qSlicerFastGrowCutSegmenterModuleWidget::~qSlicerFastGrowCutSegmenterModuleWidget()
 {
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerAdaptiveDijkstraSegmenterModuleWidget::setup()
+void qSlicerFastGrowCutSegmenterModuleWidget::setup()
 {
-  Q_D(qSlicerAdaptiveDijkstraSegmenterModuleWidget);
+  Q_D(qSlicerFastGrowCutSegmenterModuleWidget);
   d->setupUi(this);
   this->Superclass::setup();
 }

@@ -15,9 +15,8 @@
 
 ==============================================================================*/
 
-// AdaptiveDijkstraSegmenter Logic includes
-#include "vtkSlicerAdaptiveDijkstraSegmenterLogic.h"
-#include "itkTimeProbe.h"
+// FastGrowCutSegmenter Logic includes
+#include "vtkSlicerFastGrowCutSegmenterLogic.h"
 
 // MRML includes
 
@@ -30,28 +29,27 @@
 #include <cassert>
 
 //----------------------------------------------------------------------------
-vtkStandardNewMacro(vtkSlicerAdaptiveDijkstraSegmenterLogic);
+vtkStandardNewMacro(vtkSlicerFastGrowCutSegmenterLogic);
 
 //----------------------------------------------------------------------------
-vtkSlicerAdaptiveDijkstraSegmenterLogic::vtkSlicerAdaptiveDijkstraSegmenterLogic()
+vtkSlicerFastGrowCutSegmenterLogic::vtkSlicerFastGrowCutSegmenterLogic()
 {
 }
 
 //----------------------------------------------------------------------------
-vtkSlicerAdaptiveDijkstraSegmenterLogic::~vtkSlicerAdaptiveDijkstraSegmenterLogic()
+vtkSlicerFastGrowCutSegmenterLogic::~vtkSlicerFastGrowCutSegmenterLogic()
 {
+
 }
 
 //----------------------------------------------------------------------------
-void vtkSlicerAdaptiveDijkstraSegmenterLogic::PrintSelf(ostream& os, vtkIndent indent)
+void vtkSlicerFastGrowCutSegmenterLogic::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
 
-
-
 //---------------------------------------------------------------------------
-void vtkSlicerAdaptiveDijkstraSegmenterLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
+void vtkSlicerFastGrowCutSegmenterLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
 {
   vtkNew<vtkIntArray> events;
   events->InsertNextValue(vtkMRMLScene::NodeAddedEvent);
@@ -61,25 +59,25 @@ void vtkSlicerAdaptiveDijkstraSegmenterLogic::SetMRMLSceneInternal(vtkMRMLScene 
 }
 
 //-----------------------------------------------------------------------------
-void vtkSlicerAdaptiveDijkstraSegmenterLogic::RegisterNodes()
+void vtkSlicerFastGrowCutSegmenterLogic::RegisterNodes()
 {
   assert(this->GetMRMLScene() != 0);
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerAdaptiveDijkstraSegmenterLogic::UpdateFromMRMLScene()
+void vtkSlicerFastGrowCutSegmenterLogic::UpdateFromMRMLScene()
 {
   assert(this->GetMRMLScene() != 0);
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerAdaptiveDijkstraSegmenterLogic
+void vtkSlicerFastGrowCutSegmenterLogic
 ::OnMRMLSceneNodeAdded(vtkMRMLNode* vtkNotUsed(node))
 {
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerAdaptiveDijkstraSegmenterLogic
+void vtkSlicerFastGrowCutSegmenterLogic
 ::OnMRMLSceneNodeRemoved(vtkMRMLNode* vtkNotUsed(node))
 {
 }

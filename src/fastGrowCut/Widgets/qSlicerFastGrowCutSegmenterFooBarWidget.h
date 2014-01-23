@@ -18,35 +18,35 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerAdaptiveDijkstraSegmenterFooBarWidget_h
-#define __qSlicerAdaptiveDijkstraSegmenterFooBarWidget_h
+#ifndef __qSlicerFastGrowCutSegmenterFooBarWidget_h
+#define __qSlicerFastGrowCutSegmenterFooBarWidget_h
 
 // Qt includes
 #include <QWidget>
 
 // FooBar Widgets includes
-#include "qSlicerAdaptiveDijkstraSegmenterModuleWidgetsExport.h"
+#include "qSlicerFastGrowCutSegmenterModuleWidgetsExport.h"
 
-class qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate;
+class qSlicerFastGrowCutSegmenterFooBarWidgetPrivate;
 
-/// \ingroup Slicer_QtModules_AdaptiveDijkstraSegmenter
-class Q_SLICER_MODULE_ADAPTIVEDIJKSTRASEGMENTER_WIDGETS_EXPORT qSlicerAdaptiveDijkstraSegmenterFooBarWidget
+/// \ingroup Slicer_QtModules_FastGrowCutSegmenter
+class Q_SLICER_MODULE_FASTGROWCUTSEGMENTER_WIDGETS_EXPORT qSlicerFastGrowCutSegmenterFooBarWidget
   : public QWidget
 {
   Q_OBJECT
 public:
   typedef QWidget Superclass;
-  qSlicerAdaptiveDijkstraSegmenterFooBarWidget(QWidget *parent=0);
-  virtual ~qSlicerAdaptiveDijkstraSegmenterFooBarWidget();
+  qSlicerFastGrowCutSegmenterFooBarWidget(QWidget *parent=0);
+  virtual ~qSlicerFastGrowCutSegmenterFooBarWidget();
 
 protected slots:
 
 protected:
-  QScopedPointer<qSlicerAdaptiveDijkstraSegmenterFooBarWidgetPrivate> d_ptr;
+  QScopedPointer<qSlicerFastGrowCutSegmenterFooBarWidgetPrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerAdaptiveDijkstraSegmenterFooBarWidget);
-  Q_DISABLE_COPY(qSlicerAdaptiveDijkstraSegmenterFooBarWidget);
+  Q_DECLARE_PRIVATE(qSlicerFastGrowCutSegmenterFooBarWidget);
+  Q_DISABLE_COPY(qSlicerFastGrowCutSegmenterFooBarWidget);
 };
 
 #endif

@@ -15,19 +15,19 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerAdaptiveDijkstraSegmenterModule_h
-#define __qSlicerAdaptiveDijkstraSegmenterModule_h
+#ifndef __qSlicerFastGrowCutSegmenterModule_h
+#define __qSlicerFastGrowCutSegmenterModule_h
 
 // SlicerQt includes
 #include "qSlicerLoadableModule.h"
 
-#include "qSlicerAdaptiveDijkstraSegmenterModuleExport.h"
+#include "qSlicerFastGrowCutSegmenterModuleExport.h"
 
-class qSlicerAdaptiveDijkstraSegmenterModulePrivate;
+class qSlicerFastGrowCutSegmenterModulePrivate;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class Q_SLICER_QTMODULES_ADAPTIVEDIJKSTRASEGMENTER_EXPORT
-qSlicerAdaptiveDijkstraSegmenterModule
+class Q_SLICER_QTMODULES_FASTGROWCUTSEGMENTER_EXPORT
+qSlicerFastGrowCutSegmenterModule
   : public qSlicerLoadableModule
 {
   Q_OBJECT
@@ -36,8 +36,8 @@ qSlicerAdaptiveDijkstraSegmenterModule
 public:
 
   typedef qSlicerLoadableModule Superclass;
-  explicit qSlicerAdaptiveDijkstraSegmenterModule(QObject *parent=0);
-  virtual ~qSlicerAdaptiveDijkstraSegmenterModule();
+  explicit qSlicerFastGrowCutSegmenterModule(QObject *parent=0);
+  virtual ~qSlicerFastGrowCutSegmenterModule();
 
   qSlicerGetTitleMacro(QTMODULE_TITLE);
 
@@ -62,11 +62,11 @@ protected:
   virtual vtkMRMLAbstractLogic* createLogic();
 
 protected:
-  QScopedPointer<qSlicerAdaptiveDijkstraSegmenterModulePrivate> d_ptr;
+  QScopedPointer<qSlicerFastGrowCutSegmenterModulePrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerAdaptiveDijkstraSegmenterModule);
-  Q_DISABLE_COPY(qSlicerAdaptiveDijkstraSegmenterModule);
+  Q_DECLARE_PRIVATE(qSlicerFastGrowCutSegmenterModule);
+  Q_DISABLE_COPY(qSlicerFastGrowCutSegmenterModule);
 
 };
 

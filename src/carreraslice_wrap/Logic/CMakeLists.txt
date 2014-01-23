@@ -14,8 +14,6 @@ set(${KIT}_INCLUDE_DIRECTORIES
   )
 
 set(${KIT}_SRCS
-  #vtkSlicer${MODULE_NAME}Logic.cxx
-  #vtkSlicer${MODULE_NAME}Logic.h
   vtkSlicerKSliceLogic.h
   vtkSlicerKSliceLogic.cxx
   vtkKSlice.cpp 
@@ -40,13 +38,6 @@ SlicerMacroBuildModuleLogic(
   TARGET_LIBRARIES ${${KIT}_TARGET_LIBRARIES}
   )
 
-
-#add_executable(KSlice_smoketest      
-#  KSlice_smoketest.cpp)
-#link_directories(${KSLICE_LIB_PATH})
-#target_link_libraries(KSlice_smoketest
-#  ${ITK_LIBRARIES} KSegmentor  sfm_local_chanvese  KSlice
-#)
 
 # TODO: fix so builds on windows, "inconsistent dll linkage"
 # Add your test after this line, using SIMPLE_TEST( <testname> )

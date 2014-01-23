@@ -15,19 +15,19 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerAdaptiveDijkstraSegmenterModuleWidget_h
-#define __qSlicerAdaptiveDijkstraSegmenterModuleWidget_h
+#ifndef __qSlicerFastGrowCutSegmenterModuleWidget_h
+#define __qSlicerFastGrowCutSegmenterModuleWidget_h
 
 // SlicerQt includes
 #include "qSlicerAbstractModuleWidget.h"
 
-#include "qSlicerAdaptiveDijkstraSegmenterModuleExport.h"
+#include "qSlicerFastGrowCutSegmenterModuleExport.h"
 
-class qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate;
+class qSlicerFastGrowCutSegmenterModuleWidgetPrivate;
 class vtkMRMLNode;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class Q_SLICER_QTMODULES_ADAPTIVEDIJKSTRASEGMENTER_EXPORT qSlicerAdaptiveDijkstraSegmenterModuleWidget :
+class Q_SLICER_QTMODULES_FASTGROWCUTSEGMENTER_EXPORT qSlicerFastGrowCutSegmenterModuleWidget :
   public qSlicerAbstractModuleWidget
 {
   Q_OBJECT
@@ -35,20 +35,20 @@ class Q_SLICER_QTMODULES_ADAPTIVEDIJKSTRASEGMENTER_EXPORT qSlicerAdaptiveDijkstr
 public:
 
   typedef qSlicerAbstractModuleWidget Superclass;
-  qSlicerAdaptiveDijkstraSegmenterModuleWidget(QWidget *parent=0);
-  virtual ~qSlicerAdaptiveDijkstraSegmenterModuleWidget();
+  qSlicerFastGrowCutSegmenterModuleWidget(QWidget *parent=0);
+  virtual ~qSlicerFastGrowCutSegmenterModuleWidget();
 
 public slots:
 
 
 protected:
-  QScopedPointer<qSlicerAdaptiveDijkstraSegmenterModuleWidgetPrivate> d_ptr;
+  QScopedPointer<qSlicerFastGrowCutSegmenterModuleWidgetPrivate> d_ptr;
   
   virtual void setup();
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerAdaptiveDijkstraSegmenterModuleWidget);
-  Q_DISABLE_COPY(qSlicerAdaptiveDijkstraSegmenterModuleWidget);
+  Q_DECLARE_PRIVATE(qSlicerFastGrowCutSegmenterModuleWidget);
+  Q_DISABLE_COPY(qSlicerFastGrowCutSegmenterModuleWidget);
 };
 
 #endif

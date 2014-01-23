@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(AdaptiveDijkstraSegmenter)
+project(FastGrowCutSegmenter)
 
 if(NOT Slicer_SOURCE_DIR)
   find_package(Slicer REQUIRED)
@@ -22,9 +22,8 @@ else(WIN32)
   set(CMAKE_CXX_FLAGS_DEBUG "-g3 " CACHE STRING "extra compiler flags for debug" FORCE )
 endif(WIN32)
 
-
 #-----------------------------------------------------------------------------
-set(MODULE_NAME AdaptiveDijkstraSegmenter)
+set(MODULE_NAME FastGrowCutSegmenter)
 set(MODULE_TITLE ${MODULE_NAME})
 
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
@@ -57,7 +56,7 @@ set(MODULE_MOC_SRCS
   )
 
 set(MODULE_UI_SRCS
-  Resources/UI/qSlicer${MODULE_NAME}ModuleWidget.ui
+  Resources/UI/qSlicer${MODULE_NAME}Module.ui
   )
 
 set(MODULE_TARGET_LIBRARIES
@@ -88,3 +87,7 @@ if(BUILD_TESTING)
   add_subdirectory(Testing)
 endif()
 
+#-----------------------------------------------------------------------------
+if(NOT Slicer_SOURCE_DIR)
+  include(${Slicer_EXTENSION_CPACK})
+endif()

@@ -11,12 +11,6 @@ set(MODULE_TITLE ${MODULE_NAME})
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
 
 #-----------------------------------------------------------------------------
-#if(NOT Slicer_SOURCE_DIR)
-#  find_package(Slicer REQUIRED)
-#  include(${Slicer_USE_FILE})
-#endif()
-
-#-----------------------------------------------------------------------------
 add_subdirectory(Logic)
 add_subdirectory(Widgets)
 
@@ -97,20 +91,11 @@ set(MODULE_PYTHON_RESOURCES
 set(CMAKE_INSTALL_PREFIX  ${Slicer_DIR} CACHE PATH  "cmake install prefix")
 
 
-# ctkMacroCompilePythonScript(
-#   TARGET_NAME KSliceEffect
-#   SCRIPTS "${MODULE_PYTHON_SCRIPTS}"
-#   RESOURCES "${MODULE_PYTHON_RESOURCES}"
-#   DESTINATION_DIR ${CMAKE_BINARY_DIR}/${Slicer_QTSCRIPTEDMODULES_LIB_DIR}
-#   INSTALL_DIR ${Slicer_INSTALL_BIN_DIR}
-#  )
 #-----------------------------------------------------------------------------
 slicerMacroBuildScriptedModule(
   NAME      ${MODULE_NAME}
   SCRIPTS   ${MODULE_PYTHON_SCRIPTS}
   RESOURCES ${MODULE_PYTHON_RESOURCES}
-  #WITH_SUBDIR
-  #WITH_GENERIC_TESTS
   VERBOSE
   )
 
