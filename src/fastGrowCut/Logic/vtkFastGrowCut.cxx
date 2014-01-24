@@ -41,30 +41,6 @@ vtkFastGrowCut::~vtkFastGrowCut() {
     }
 }
 
-void vtkFastGrowCut::CleanUp() {
-
-
-    if(InitializationFlag) {
-        this->SetInitializationFlag(false);
-    }
-
-    ReleaseMemVectors();
-
-    if(m_fastGC != NULL) {
-        delete m_fastGC;
-       m_fastGC = NULL;
-    }
-}
-
-void vtkFastGrowCut::ReleaseMemVectors() {
-
-    std::vector<LabPixelType> tmpLabVec;
-    std::vector<SrcPixelType> tmpSrcVec;
-    m_imSrcVec.swap(tmpSrcVec);
-    m_imLabVec.swap(tmpLabVec);
-    m_imSeedVec.swap(tmpLabVec);
-}
-
 void vtkFastGrowCut::Initialization() {
 
     InitializationFlag = false;

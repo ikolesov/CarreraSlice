@@ -353,36 +353,58 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     #disconnect all shortcuts that may exist, to allow KSlice's to work, reconnect once bot is turned off
     slicer.modules.EditorWidget.removeShortcutKeys()
     self.sliceLogic = sliceLogic
-
     self.editUtil = EditUtil.EditUtil()
+    
+    #initialize Fast GrowCut
+    self.init_fGrwoCut()
+   
+    #self.currSlice = None
+    self.ijkPlane = 'IJ'
+    self.sw = slicer.app.layoutManager().sliceWidget('Red')
+    self.interactor = self.sw.sliceView().interactor() #initialize to red slice interactor
+    self.computeCurrSliceSmarter() #initialize the current slice to something meaningful
 
-    # fast grow cut parameters
-    self.bSegmenterInitialized = "no"
-    self.bEditGrowCutSeed = True
-    self.currentMessage = ""
+    self.mouse_obs_growcut, self.swLUT_growcut = bind_view_observers(self.entranceCursorDetect)
+
+    self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly) of KSlice
+
+  def init_fGrwoCut(self):
+      
+    self.emergencyStopFunc = None    
+    self.dialogBox=qt.QMessageBox() #will display messages to draw users attention if he does anything wrong
+    self.dialogBox.setWindowTitle("CarreraSlice Error")
+    self.dialogBox.setWindowModality(qt.Qt.NonModal) #will allow user to continue interacting with Slicer
     
-    seedImgNode = self.sliceLogic.GetLabelLayer().GetVolumeNode()
-    seedArray = slicer.util.array(seedImgNode.GetName())
-    self.growCutSeedArray = deepcopy(slicer.util.array(seedImgNode.GetName()))
-    self.growCutSegArray = deepcopy(slicer.util.array(seedImgNode.GetName()))
-    self.growCutSeedArray = seedArray.copy()
-    self.growCutSegArray = seedArray.copy()
-    self.growCutSeedArray[:] = 0
-    self.growCutSegArray[:] = 0
+    # TODO: check this claim- might be causing leaks
+    # set the image, label nodes (this will not change although the user can
+    # alter what is bgrnd/frgrnd in editor)
+    # Confused about how info propagates UIarray to UIVol, not the other way, NEEDS AUTO TESTS
+    self.labelNode = self.editUtil.getLabelVolume() #labelLogic.GetVolumeNode()
+    self.backgroundNode = self.editUtil.getBackgroundVolume() #backgroundLogic.GetVolumeNode()
     
-    import vtkSlicerFastGrowCutSegmenterModuleLogicPython
-    eUtil = EditorLib.EditUtil.EditUtil()
-    fastGCMod =vtkSlicerFastGrowCutSegmenterModuleLogicPython.vtkFastGrowCut()
-    fastGCMod.SetSourceVol(eUtil.getBackgroundImage())
-    fastGCMod.SetSeedVol(eUtil.getLabelImage())
-    fastGCMod.Initialization()
-    self.fastGCMod = fastGCMod
+      #perform safety check on right images/labels being selected, #set up images
+    if type(self.backgroundNode)==type(None) or type(self.labelNode)==type(None): #if red slice doesnt have a label or image, go no further
+       self.dialogBox.setText("Either Image (must be Background Image) or Label not set in slice views.")
+       self.dialogBox.show()
+       
+       if self.emergencyStopFunc:
+           self.emergencyStopFunc()
+       return
+       
+    volumesLogic = slicer.modules.volumes.logic()       
     
+    self.labelName = self.labelNode.GetName() # record name of label so user, cant trick us
+    self.imgName = self.backgroundNode.GetName()
+    
+    if self.sliceViewMatchEditor(self.sliceLogic)==False: # do nothing, exit function if user has played with images
+      if self.emergencyStopFunc:
+          self.emergencyStopFunc()
+      return
+         
     # fast growcut shortcuts
     resetFGC = qt.QKeySequence(qt.Qt.Key_R) # reset initialization flag
     runFGC = qt.QKeySequence(qt.Qt.Key_G) # run fast growcut
     editSeed = qt.QKeySequence(qt.Qt.Key_S) # edit seed labels
-    #getFgrd = qt.QKeySequence(qt.Qt.Key_L) # get the label == 1
     findGC = qt.QKeySequence(qt.Qt.Key_M) # finish growcut, start kslice
 
     print " keys for reset init, run GC, edit seed, and smooth are R,G, S, M"
@@ -400,18 +422,35 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         s.connect('activated()', keydef[1])
         #s.connect('activatedAmbiguously()', keydef[1])
         self.qtkeyconnections.append(s)
+    
+    self.fGCLabelMod_tag = self.sliceLogic.AddObserver("ModifiedEvent", self.FastGrowCutChangeLabelInput) # put test listener on the whole window  
+   
+    # fast grow cut parameters
+    self.bSegmenterInitialized = "no"
+    self.bEditGrowCutSeed = True
+    self.currentMessage = ""
+    
+    seedArray = slicer.util.array(self.labelName)
+    self.growCutSeedArray = seedArray.copy()
+    self.growCutSegArray = seedArray.copy()
+    self.growCutSeedArray[:] = 0
+    self.growCutSegArray[:] = 0
+    
+    print("Made a FastGrowCutLogic")
+    
+    import vtkSlicerFastGrowCutSegmenterModuleLogicPython
 
+    fastGCMod =vtkSlicerFastGrowCutSegmenterModuleLogicPython.vtkFastGrowCut()
+    fastGCMod.SetSourceVol(self.backgroundNode.GetImageData())
+    fastGCMod.SetSeedVol(self.labelNode.GetImageData())
+    fastGCMod.Initialization()
+    self.fastGCMod = fastGCMod
 
-    #self.currSlice = None
-    self.ijkPlane = 'IJ'
-    self.sw = slicer.app.layoutManager().sliceWidget('Red')
-    self.interactor = self.sw.sliceView().interactor() #initialize to red slice interactor
-    self.computeCurrSliceSmarter() #initialize the current slice to something meaningful
-
-    self.mouse_obs_growcut, self.swLUT_growcut = bind_view_observers(self.entranceCursorDetect)
-
-    self.fullInitialized=False #tracks if completed the initializtion (so can do stop correctly) of KSlice
-
+  def FastGrowCutChangeLabelInput(self, caller, event):
+    
+    if self.sliceViewMatchEditor(self.sliceLogic)==False:
+       return #do nothing, exit function if user has played with images
+      
   def init_kslice(self):
     self.numGrowcutShortcuts=len(self.qtkeydefsGrowcut)
     #remove observers used in growcut so they dont interfere
@@ -433,7 +472,12 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         self.qtkeydefsGrowcut.pop()
     
     # clear GrowCut object
-    self.fastGCMod.CleanUp()
+    self.growCutSeedArray = None
+    self.growCutSegArray = None
+    self.fastGCMod = None
+    
+    # remove GrowCut observer
+    self.sliceLogic.RemoveObserver(self.fGCLabelMod_tag)
 
     import vtkSlicerCarreraSliceModuleLogicPython
 
@@ -644,7 +688,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     if (self.imgName== imgNode.GetName()) and (self.labelName == labelNode.GetName()):
         return True
     else:
-        self.dialogBox.setText("Set image to values used for starting the KSlice bot or stop bot.")
+        self.dialogBox.setText("Set image to values used for starting the CarreraSlice bot or stop bot.")
         self.dialogBox.show()
         if self.emergencyStopFunc:
             self.emergencyStopFunc()
@@ -882,31 +926,30 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
   def runFastGrowCut(self):
 	  
 	if self.bEditGrowCutSeed == True:
-		srcImgNode = self.editUtil.getBackgroundVolume()
-		seedImgNode = self.editUtil.getLabelVolume()
-		#self.growCutSegArray = slicer.util.array(seedImgNode.GetName())
-		#self.growCutSeedArray[:] = self.growCutSegArray[:]
+		#srcImgNode = self.editUtil.getBackgroundVolume()
+		#seedImgNode = self.editUtil.getLabelVolume()
 		self.currentMessage = "CarreraSlice: running fast GrowCut..."
-		slicer.util.showStatusMessage(self.currentMessage, 10000)
-		#parameters = {}
-		#parameters["strInitial"] = self.bSegmenterInitialized
-		#parameters["sourceImageName"] = srcImgNode.GetID()
-		#parameters["seedImageName"] = seedImgNode.GetID()        
-		seedArray = slicer.util.array(seedImgNode.GetName())
+		slicer.util.showStatusMessage(self.currentMessage)
+
+		#seedArray = slicer.util.array(seedImgNode.GetName())
+		seedArray = slicer.util.array(self.labelNode.GetName())
 		self.growCutSeedArray[:]  = seedArray[:]
 		
 		bGCInitialized = False
 		if self.bSegmenterInitialized != "no":
 			bGCInitialized = True
-		self.fastGCMod.SetSourceVol(srcImgNode.GetImageData())
-		self.fastGCMod.SetSeedVol(seedImgNode.GetImageData())
+		#self.fastGCMod.SetSourceVol(srcImgNode.GetImageData())
+		#self.fastGCMod.SetSeedVol(seedImgNode.GetImageData())
+		self.fastGCMod.SetSourceVol(self.backgroundNode.GetImageData())
+		self.fastGCMod.SetSeedVol(self.labelNode.GetImageData())
 		self.fastGCMod.SetInitializationFlag(bGCInitialized)
 		self.fastGCMod.RunFGC()
-		#fastGrowCut = slicer.modules.adaptivedijkstrasegmentercli
-		#slicer.cli.run(fastGrowCut, None, parameters, True)
 		self.growCutSegArray[:] = seedArray[:]
-		seedImgNode.GetImageData().Modified()
-		seedImgNode.Modified()
+		
+		self.labelNode.GetImageData().Modified()
+		self.labelNode.Modified()
+		#seedImgNode.GetImageData().Modified()
+		#seedImgNode.Modified()
 			
 		self.bSegmenterInitialized = "yes"
 		self.bEditGrowCutSeed = False
@@ -924,12 +967,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         self.growCutSeedArray[:] = 0
         self.growCutSegArray[:] = 0
         
-        seedImgNode = self.editUtil.getLabelVolume()
-        seedArray = slicer.util.array(seedImgNode.GetName())
+        seedArray = slicer.util.array(self.labelNode.GetName())
         seedArray[:] = 0
         
-        seedImgNode.GetImageData().Modified()
-        seedImgNode.Modified()
+        self.labelNode.GetImageData().Modified()
+        self.labelNode.Modified()
         print('reset fast GrowCut parameters')
         self.currentMessage = "CarreraSlice: reseted fast GrowCut parameters. Go to PaintEffect to edit seed image and press G to run fast GrowCut"
         slicer.util.showStatusMessage(self.currentMessage)
@@ -937,50 +979,36 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         
   def editGrowCutSeed(self):
 	
-	seedImgNode = self.editUtil.getLabelVolume()
-	seedArray = slicer.util.array(seedImgNode.GetName())
-	if self.bEditGrowCutSeed == False:
+    seedArray = slicer.util.array(self.labelNode.GetName())
+    if self.bEditGrowCutSeed == False:
+        self.growCutSegArray[:] = seedArray[:]
+        seedArray[:] = self.growCutSeedArray[:]
+        self.bEditGrowCutSeed = True
+        self.labelNode.GetImageData().Modified()
+        self.labelNode.Modified()
 		
-		self.growCutSegArray[:] = seedArray[:]
-		seedArray[:] = self.growCutSeedArray[:]
-		self.bEditGrowCutSeed = True
-
-		seedImgNode.GetImageData().Modified()
-		seedImgNode.Modified()
-		
-		print('show seed image')
-		self.currentMessage = "CarreraSlice: show seed image. Go to PaintEffect to edit seed image or press G to run fast GrowCut"
-		slicer.util.showStatusMessage(self.currentMessage)
-	else:
-		if self.growCutSegArray.any() != 0 :
+        print('show seed image')
+        self.currentMessage = "CarreraSlice: show seed image. Go to PaintEffect to edit seed image or press G to run fast GrowCut"
+        slicer.util.showStatusMessage(self.currentMessage)
+    else:
+        if self.growCutSegArray.any() != 0 :
 		
 			seedArray[:] = self.growCutSegArray[:]
 			self.bEditGrowCutSeed = False
-			seedImgNode.GetImageData().Modified()
-			seedImgNode.Modified()
+			self.labelNode.GetImageData().Modified()
+			self.labelNode.Modified()
+			
 			print('show segmentation')
 			self.currentMessage = "CarreraSlice: show segmentation result. Press M to smooth the result or press S to edit seed image and run fast GrowCut again"
 			slicer.util.showStatusMessage(self.currentMessage)
-		else:
+        else:
 			print('no segmentation result')	
 			self.currentMessage = "CarreraSlice: no segmentation result available"
 			slicer.util.showStatusMessage(self.currentMessage)
 			
-			
-  # extract the foreground label (==1)
-#  def extractFastGrowCutForeground(self):
-#        labelArray = slicer.util.array(self.editUtil.getLabelVolume().GetName())
-#        labelArray[labelArray != 1] = 0
-#        self.labelImg.Modified()
-#        print('extract foreground label == 1')
-
+		
   def demoCarreraSlice(self):
 
-        #LiangJia: what if user wants to use level sets immediately (he's initializing it differently), shouldnt we let him?	
-	#if self.bEditGrowCutSeed == True:
-	#	print('Please run adaptive Dijkstra first by pressing G')
-	#	return
-	
 	#if EditorLib.EditUtil.EditUtil().getLabel() == 0:
 	#	self.dialogBox.setText("Segmentation label must be greater than 0!")
     #    self.dialogBox.show()
@@ -1147,9 +1175,21 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         keydef.setParent(None)
         #why is this necessary for full disconnect (if removed, get the error that more and more keypresses are required if module is repetedly erased and created
         keydef.delete() #this causes errors   
-        
-	self.fastGCMod.CleanUp()
-
+    
+    # destroy GrowCut objects
+    self.growCutSeedArray = None
+    self.growCutSegArray = None
+    self.fastGCMod = None
+    self.currentMessage = ""
+    self.imgName = None
+    self.labelName = None
+    self.labelNode = None
+    self.backgroundNode = None
+    
+    # remove GrowCut observer
+    self.sliceLogic.RemoveObserver(self.fGCLabelMod_tag)
+    print("Fast GrowCut deletion completed")
+    	    
     if self.fullInitialized==False: #if initialized, remove, otherwise do nothing
         return
 

@@ -38,14 +38,12 @@ public:
   void Initialization();
   void RunFGC();
   void PrintSelf(ostream &os, vtkIndent indent);
-  void CleanUp();
 
 protected:
   vtkFastGrowCut();
   virtual ~vtkFastGrowCut();
 
 private:
-  void ReleaseMemVectors();
   //vtk image data (from slicer)
   vtkImageData* SourceVol;
   vtkImageData* SeedVol;
