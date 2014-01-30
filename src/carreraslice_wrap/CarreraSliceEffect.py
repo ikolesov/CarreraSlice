@@ -45,7 +45,7 @@ class KSliceEffectOptions(Effect.EffectOptions):
   def create(self):
     super(KSliceEffectOptions,self).create()
     
-    self.helpLabel = qt.QLabel("Run the CarreraSlice segmentation on the current label/seed image.\nThis will use your current seed image as an example\nto fill in the rest of the volume.", self.frame)
+    self.helpLabel = qt.QLabel("Run the CarreraSlice segmentation on the current label/seed image.\n Background and foreground seeds will be used as starting points \n to fill in the rest of the volume.", self.frame)
     self.frame.layout().addWidget(self.helpLabel)
     
     #create a "Start Bot" button
@@ -171,7 +171,7 @@ class KSliceEffectOptions(Effect.EffectOptions):
       slicer.modules.editorBot.logic.emergencyStopFunc = self.botEstop; #save the function that stops bot, destroys KSlice, if things go wrong
       if self.botButton:
         self.botButton.text = "Stop Interactive Segmentor"
-        self.currentMessage = "CarreraSlice started: go to PaintEffect to edit seed image or press G to do fast GrowCut"
+        self.currentMessage = "CarreraSlice started: draw foreground('1') and background('2') seeds. Then, press 'G' to run fast GrowCut. Or, press 'M' to skip initialization, start KSlice."
         slicer.util.showStatusMessage(self.currentMessage)
         
       if self.locRadFrame:
@@ -413,9 +413,8 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.qtkeydefsGrowcut = [ [resetFGC, self.resetFastGrowCutFlag],
                               [runFGC,self.runFastGrowCut],
                               [editSeed, self.editGrowCutSeed],
-                              #[getFgrd, self.extractFastGrowCutForeground],
-                              #[findGC, self.init_kslice] ] #this is turned off temporarily, once interaction in growcut is better established, will add back in
-                                                         [findGC, self.demoCarreraSlice]]
+                              [findGC, self.demoCarreraSlice] ]
+                                                         
     for keydef in self.qtkeydefsGrowcut:
         s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
         #s.setContext(1)
@@ -954,10 +953,10 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
                 self.bSegmenterInitialized = "yes"
                 self.bEditGrowCutSeed = False
                 
-                self.currentMessage = "Fast GrowCut done: press M go to smoothing, or S to edit seed image and refine segmentation, or R to reset fast GrowCut parameters"
+                self.currentMessage = "Initialization via Fast GrowCut done: press 'M' to start KSlice interactive segmentation, 'S' to refine seed image, or 'R' to reset fast GrowCut parameters."
                 slicer.util.showStatusMessage(self.currentMessage)
         else:
-                self.currentMessage = "CarreraSlice: go to seed labels first by pressing S"
+                self.currentMessage = "CarreraSlice: view seed labels first by pressing 'S'."
                 slicer.util.showStatusMessage(self.currentMessage)
   
   # reset fast growcut segmenter
@@ -973,7 +972,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         self.labelNode.GetImageData().Modified()
         self.labelNode.Modified()
         print('reset fast GrowCut parameters')
-        self.currentMessage = "CarreraSlice: reseted fast GrowCut parameters. Go to PaintEffect to edit seed image and press G to run fast GrowCut"
+        self.currentMessage = "CarreraSlice: fast GrowCut parameters have been reset. Draw foreground('1') and background('2') seeds and press 'G' to run fast GrowCut."
         slicer.util.showStatusMessage(self.currentMessage)
         
         
@@ -988,7 +987,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
         self.labelNode.Modified()
                 
         print('show seed image')
-        self.currentMessage = "CarreraSlice: show seed image. Go to PaintEffect to edit seed image or press G to run fast GrowCut"
+        self.currentMessage = "CarreraSlice: seed image is shown. Draw foreground('1') and background('2') seeds and press 'G' to run fast GrowCut."
         slicer.util.showStatusMessage(self.currentMessage)
     else:
         if self.growCutSegArray.any() != 0 :
@@ -999,11 +998,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
                         self.labelNode.Modified()
                         
                         print('show segmentation')
-                        self.currentMessage = "CarreraSlice: show segmentation result. Press M to smooth the result or press S to edit seed image and run fast GrowCut again"
+                        self.currentMessage = "CarreraSlice: segmentation result is shown. Press 'M' to start KSlice interactive segmentation, 'S' to refine seed image."
                         slicer.util.showStatusMessage(self.currentMessage)
         else:
                         print('no segmentation result')        
-                        self.currentMessage = "CarreraSlice: no segmentation result available"
+                        self.currentMessage = "CarreraSlice: no segmentation result available."
                         slicer.util.showStatusMessage(self.currentMessage)
                         
                 
@@ -1014,11 +1013,11 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     # self.dialogBox.show()
         
         if EditorLib.EditUtil.EditUtil().getLabel() == 0:
-                self.currentMessage = "CarreraSlice: segmentation label must be greater than 0"
+                self.currentMessage = "CarreraSlice: segmentation label must be non-zero."
                 slicer.util.showStatusMessage(self.currentMessage)
         else:
                 self.init_kslice()
-                self.currentMessage = "CarreraSlice: press F for local-global smoothing or U for contour smoothing only"
+                self.currentMessage = "CarreraSlice: press 'F' to use the local-global Chan-Vese energy in KSlice or 'U' for curvature flow (smoothing)."
                 slicer.util.showStatusMessage(self.currentMessage)
      
         #for i in range(1):
@@ -1059,7 +1058,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
       return
 
     print("doing 3D local chan-vese segmentation")
-    self.currentMessage = "Doing 3D local chan-vese segmentation"
+    self.currentMessage = "Doing 3D local-global chan-vese segmentation."
     slicer.util.showStatusMessage(self.currentMessage)
     self.computeCurrSliceSmarter()
 
@@ -1080,13 +1079,13 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     #slicer.util.showStatusMessage("Finished 3D local chan-vese segmentation")
     #self.check_U_sync() # turn the debug off
     
-    self.currentMessage = "Finished 3D local-global segmentation"
+    self.currentMessage = "Finished 3D local-global segmentation."
     slicer.util.showStatusMessage(self.currentMessage)
   def runSegment3DCV(self):
     if self.sliceViewMatchEditor(self.sliceLogic)==False: #do nothing, exit function if user has played with images
       return
 
-    print("doing 3D chan-vese segmentation")
+    print("doing 3D chan-vese segmentation.")
     self.computeCurrSliceSmarter()
 
     #make connections, parameter settings
@@ -1106,7 +1105,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     #self.check_U_sync() # turn the debug off
     
-    self.currentMessage = "Finished 3D Chan-Vese segmentation"
+    self.currentMessage = "Finished 3D Chan-Vese segmentation."
     slicer.util.showStatusMessage(self.currentMessage)
 
   def runCurvatureFlow(self):
@@ -1114,7 +1113,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
       return
 
     print("doing curvature flow")
-    self.currentMessage = "Doing curvature flow smoothing"
+    self.currentMessage = "Doing curvature flow smoothing."
     slicer.util.showStatusMessage(self.currentMessage)
     self.computeCurrSliceSmarter()
 
@@ -1132,7 +1131,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
     self.labelImg.Modified()
     self.labelNode.Modified() # labelNode.SetModifiedSinceRead(1)
-    self.currentMessage = "Finished curvature flow smoothing"
+    self.currentMessage = "Finished curvature flow smoothing."
     slicer.util.showStatusMessage(self.currentMessage)
         
   def runSegment2p5D(self):
