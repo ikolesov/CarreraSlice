@@ -87,17 +87,17 @@ class KSliceEffectOptions(Effect.EffectOptions):
     self.numItsSpinBox.connect('valueChanged(double)', self.onNumItsSpinBoxChanged)
     self.widgets.append(self.numItsSpinBox)
 
-    #HelpButton(self.frame, "TO USE: \n Start the interactive segmentor and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n C: copy label slice \n V: paste label slice \n Q: evolve contour in 2D \n E: evolve contour in 3D \n A: toggle between draw/erase modes" )
+    #HelpButton(self.frame, "TO USE: \n Start the interactive segmenter and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n C: copy label slice \n V: paste label slice \n Q: evolve contour in 2D \n E: evolve contour in 3D \n A: toggle between draw/erase modes" )
     HelpButton(self.frame, "TO USE: \n Start the interactive segmenter and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n G: start Fast GrowCut \n S: toggle between seed image and segmentation result \n R: reset fast GrowCut \n M: start smoothing process \n F: smooth with local-global energy \n U: smooth contour only" )
     self.frame.layout().addStretch(1) # Add vertical spacer
 
     if hasattr(slicer.modules, 'editorBot'):
          slicer.util.showStatusMessage(slicer.modules.editorBot.logic.currentMessage)
-         self.botButton.text = "Stop Interactive Segmentor"
+         self.botButton.text = "Stop Interactive segmenter"
          if self.locRadFrame:
                 self.locRadFrame.hide()
     else:
-         self.botButton.text = "Start Interactive Segmentor"
+         self.botButton.text = "Start Interactive segmenter"
          if self.locRadFrame:
                 self.locRadFrame.show()
         
@@ -162,7 +162,7 @@ class KSliceEffectOptions(Effect.EffectOptions):
       slicer.modules.editorBot.stop()
       del(slicer.modules.editorBot)
       if self.botButton:
-        self.botButton.text = "Start Interactive Segmentor"
+        self.botButton.text = "Start Interactive segmenter"
         slicer.util.showStatusMessage("CarreraSlice: stopped")
       if self.locRadFrame:
         self.locRadFrame.show()
@@ -170,7 +170,7 @@ class KSliceEffectOptions(Effect.EffectOptions):
       KSliceBot(self)
       slicer.modules.editorBot.logic.emergencyStopFunc = self.botEstop; #save the function that stops bot, destroys KSlice, if things go wrong
       if self.botButton:
-        self.botButton.text = "Stop Interactive Segmentor"
+        self.botButton.text = "Stop Interactive segmenter"
         self.currentMessage = "CarreraSlice started: draw foreground('1') and background('2') seeds. Then, press 'G' to run fast GrowCut. Or, press 'M' to skip initialization, start KSlice."
         slicer.util.showStatusMessage(self.currentMessage)
         
@@ -192,7 +192,7 @@ class KSliceEffectOptions(Effect.EffectOptions):
       slicer.modules.editorBot.stop()
       del(slicer.modules.editorBot)
       if self.botButton:
-        self.botButton.text = "Start Interactive Segmentor"
+        self.botButton.text = "Start Interactive segmenter"
       if self.locRadFrame:
         self.locRadFrame.show()
 
@@ -541,10 +541,10 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
 
     #create key shortcuts, make the connections
-    s2 = qt.QKeySequence(qt.Qt.Key_Q) # Press q/Q to run segmentor 2d
-    s3 = qt.QKeySequence(qt.Qt.Key_F) # Press f/F to run segmentor 3d
-    s4 = qt.QKeySequence(qt.Qt.Key_T) # Press t/T to run segmentor 2.5d
-    s5 = qt.QKeySequence(qt.Qt.Key_E) # Press e/E to run segmentor(chan-vese) 3D
+    s2 = qt.QKeySequence(qt.Qt.Key_Q) # Press q/Q to run segmenter 2d
+    s3 = qt.QKeySequence(qt.Qt.Key_F) # Press f/F to run segmenter 3d
+    s4 = qt.QKeySequence(qt.Qt.Key_T) # Press t/T to run segmenter 2.5d
+    s5 = qt.QKeySequence(qt.Qt.Key_E) # Press e/E to run segmenter(chan-vese) 3D
     tg = qt.QKeySequence(qt.Qt.Key_A) # toggle between the painting label and 0--erasing label
     cp = qt.QKeySequence(qt.Qt.Key_C) # copy
     ps = qt.QKeySequence(qt.Qt.Key_V) # paste
@@ -923,7 +923,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
     self.currSlice = abs(cs) # hacky, is this always the fix if result of above is negative?
 
 
-  # run fast GrowCut segmentor for the current master volume and label volume
+  # run fast GrowCut segmenter for the current master volume and label volume
   def runFastGrowCut(self):
         
         if self.bEditGrowCutSeed == True:
