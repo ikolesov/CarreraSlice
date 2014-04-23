@@ -276,8 +276,10 @@ def get_view_names( sw ):
 def smart_xyToIJK(xy,sliceWidget):
   xyz = sliceWidget.sliceView().convertDeviceToXYZ(xy);
   ll = sliceWidget.sliceLogic().GetLabelLayer()
-  xyToIJK = ll.GetXYToIJKTransform().GetMatrix()
-  ijkFloat = xyToIJK.MultiplyPoint(xyz+(1,))[:3]
+  #~ xyToIJK = ll.GetXYToIJKTransform().GetMatrix()
+  #~ ijkFloat = xyToIJK.MultiplyPoint(xyz+(1,))[:3]
+  xyToIJK = ll.GetXYToIJKTransform()
+  ijkFloat = xyToIJK.TransformDoublePoint(xyz)
   #print( ijkFloat )
   ijk = []
   for element in ijkFloat:
