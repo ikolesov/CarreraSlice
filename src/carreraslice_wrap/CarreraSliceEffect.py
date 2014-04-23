@@ -88,7 +88,7 @@ class KSliceEffectOptions(Effect.EffectOptions):
     self.widgets.append(self.numItsSpinBox)
 
     #HelpButton(self.frame, "TO USE: \n Start the interactive segmentor and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n C: copy label slice \n V: paste label slice \n Q: evolve contour in 2D \n E: evolve contour in 3D \n A: toggle between draw/erase modes" )
-    HelpButton(self.frame, "TO USE: \n Start the interactive segmentor and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n G: start Fast GrowCut \n S: toggle between seed image and segmentation result \n R: reset fast GrowCut \n M: start smoothing process \n F: smooth with local-global energy \n U: smooth contour only" )
+    HelpButton(self.frame, "TO USE: \n Start the interactive segmenter and initialize the segmentation with any other editor tool. \n KEYS: \n Press the following keys to interact: \n G: start Fast GrowCut \n S: toggle between seed image and segmentation result \n R: reset fast GrowCut \n M: start smoothing process \n F: smooth with local-global energy \n U: smooth contour only" )
     self.frame.layout().addStretch(1) # Add vertical spacer
 
     if hasattr(slicer.modules, 'editorBot'):
