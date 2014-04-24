@@ -156,6 +156,11 @@ class KSliceEffectOptions(Effect.EffectOptions):
     self.updatingGUI = False
 
   def onStartBot(self):
+    """Stop FastGrowCut bot to avoid conflicts"""
+    if hasattr(slicer.modules, 'FGCEditorBot'):
+      slicer.modules.FGCEditorBot.stop()
+      del(slicer.modules.FGCEditorBot)
+      
     """create the bot for background editing"""
     print("entered 'onStartBot'")
     if hasattr(slicer.modules, 'editorBot'):
