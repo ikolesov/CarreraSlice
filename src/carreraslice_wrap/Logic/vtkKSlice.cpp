@@ -69,6 +69,7 @@ void vtkKSlice::applyUserIncrement(int i, int j, int k, double val)
   std::cout << "\033[94m  vtkKSlice::applyUserIncrement" << val << " at i,j,k =  " << i << "," <<j << ", " << k << "\033[0m" << std::endl;
     this->ksegmentor->accumulateUserInput(val,i,j,k);
   assert( UIVol == this->ksegmentor->U_Integral_image );
+  UIVol->Modified();
   //UIVol->Update();
 }
 
