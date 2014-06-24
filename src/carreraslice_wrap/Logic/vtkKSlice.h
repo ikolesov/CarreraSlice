@@ -17,7 +17,7 @@ class VTK_SLICER_CARRERASLICE_MODULE_LOGIC_EXPORT vtkKSlice : public vtkObject
 public:
   static vtkKSlice* New();
   //vtkTypeRevisionMacro(vtkKSlice,vtkObject);
-  //vtkTypeMacro(vtkKSlice,vtkObject);
+  vtkTypeMacro(vtkKSlice,vtkObject);
   
 
   void PrintSelf(ostream &os, vtkIndent indent);

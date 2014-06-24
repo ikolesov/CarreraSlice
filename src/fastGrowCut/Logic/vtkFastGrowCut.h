@@ -24,7 +24,7 @@ class VTK_SLICER_FASTGROWCUTSEGMENTER_MODULE_LOGIC_EXPORT vtkFastGrowCut : publi
 public:
   static vtkFastGrowCut* New();
 //  vtkTypeRevisionMacro(vtkFastGrowCut,vtkObject);
-  //vtkTypeMacro(vtkKSlice,vtkObject);
+  vtkTypeMacro(vtkFastGrowCut,vtkObject);
 
 
   //set parameters of grow cut

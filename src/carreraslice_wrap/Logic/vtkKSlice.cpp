@@ -11,7 +11,7 @@
 
 
 //vtkCxxRevisionMacro(vtkKSlice, "$Revision$"); //necessary?
-vtkStandardNewMacro(vtkKSlice); //for the new() macro
+vtkStandardNewMacro(vtkKSlice) //for the new() macro
 
 //----------------------------------------------------------------------------
 
