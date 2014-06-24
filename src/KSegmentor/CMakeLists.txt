@@ -5,9 +5,10 @@ file( GLOB ksegm_headers include/*.h  )
 
 set( KSEGM_LIBS
   ${OpenCV_LIBS}
-  vtkRendering  vtkGraphics
-  vtkHybrid vtkImaging vtkIO
-  vtkFiltering vtkCommon
+  ${VTK_LIBRARIES}
+#  vtkRendering  vtkGraphics
+#  vtkHybrid vtkImaging vtkIO
+#  vtkFiltering vtkCommon
 )
 
 
