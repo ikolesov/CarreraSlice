@@ -9,7 +9,7 @@
 
 #include "FastGrowCutSegmenter.h"
 
-vtkCxxRevisionMacro(vtkFastGrowCut, "$Revision$"); //necessary?
+//vtkCxxRevisionMacro(vtkFastGrowCut, "$Revision$"); //necessary?
 vtkStandardNewMacro(vtkFastGrowCut); //for the new() macro
 
 //----------------------------------------------------------------------------

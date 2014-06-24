@@ -55,28 +55,28 @@ namespace vrcl {
               const std::vector<double>& rgb_primary = std::vector<double>()  );
 
 
-  template<class InputType>
-  vtkSmartPointer<vtkImageData> createVTKImageFromPointer(InputType* imagePointer, int* dims, double spacing[3])
-  {
-      vtkSmartPointer<vtkImageData> imgvol = vtkSmartPointer<vtkImageData>::New( );
-      imgvol->SetDimensions( dims[0],dims[1],dims[2] );
-      imgvol->SetNumberOfScalarComponents(1);
-      imgvol->SetSpacing( spacing );
-      imgvol->SetOrigin( 0,0,0 );
-      imgvol->SetScalarTypeToDouble( );
-      imgvol->AllocateScalars( );
-      double* outputImgPointer=static_cast<double*>(imgvol->GetScalarPointer());
-      long element=0;
+//  template<class InputType>
+//  vtkSmartPointer<vtkImageData> createVTKImageFromPointer(InputType* imagePointer, int* dims, double spacing[3])
+//  {
+//      vtkSmartPointer<vtkImageData> imgvol = vtkSmartPointer<vtkImageData>::New( );
+//      imgvol->SetDimensions( dims[0],dims[1],dims[2] );
+//      imgvol->SetNumberOfScalarComponents(1);
+//      imgvol->SetSpacing( spacing );
+//      imgvol->SetOrigin( 0,0,0 );
+//      imgvol->SetScalarTypeToDouble( );
+//      imgvol->AllocateScalars( );
+//      double* outputImgPointer=static_cast<double*>(imgvol->GetScalarPointer());
+//      long element=0;
 
-      for (int k=0; k<dims[0]; k++) {
-          for (int j=0; j<dims[1]; j++)  {
-              for (int i=0; i<dims[2]; i++, element++) {
-                  outputImgPointer[element]=imagePointer[element];
-              }
-          }
-      }
-      return imgvol;
-  }
+//      for (int k=0; k<dims[0]; k++) {
+//          for (int j=0; j<dims[1]; j++)  {
+//              for (int i=0; i<dims[2]; i++, element++) {
+//                  outputImgPointer[element]=imagePointer[element];
+//              }
+//          }
+//      }
+//      return imgvol;
+//  }
 
 
   template<typename T> void convertSliceToDouble(T* array, double *destination, int dim0, int dim1, int dim2, int currSlice, Orient sliceView)

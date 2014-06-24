@@ -38,8 +38,8 @@ void getXYZExtentsAsString( const std::vector<double>& imageSpacing,
 void copySliceFromTo( vtkImageData* label_map, int idxFrom, int idxTo, const std::string& orient );
 
 /** remove 3D islands: erode slightly, dilate a lot, AND this with original */
-vtkSmartPointer<vtkImageData>  removeImageOstrava( vtkImageData* img_dirty,
-                                               int erode_sz=3, int dilate_sz=5);
+//vtkSmartPointer<vtkImageData>  removeImageOstrava( vtkImageData* img_dirty,
+//                                               int erode_sz=3, int dilate_sz=5);
 
 class KSegmentorBase
 {

@@ -115,46 +115,49 @@ namespace  vrcl
 }
 
 
-SP(vtkImageData) removeImageOstrava( vtkImageData* img_dirty,
-                                               int erode_sz, int dilate_sz )
-{
-  int dims[3];
-  img_dirty->GetDimensions( dims );
-  SP(vtkImageData) img_clean = SP(vtkImageData)::New();
-  img_clean->DeepCopy(img_dirty);
+//SP(vtkImageData) removeImageOstrava( vtkImageData* img_dirty,
+//                                               int erode_sz, int dilate_sz )
+//{
+//  int dims[3];
+//  img_dirty->GetDimensions( dims );
+//  SP(vtkImageData) img_clean = SP(vtkImageData)::New();
+//  img_clean->DeepCopy(img_dirty);
 
-  SP(vtkImageData) imageDataTmp   =  SP(vtkImageData)::New();
-  SP( vtkImageContinuousErode3D ) erode_filter = SP(vtkImageContinuousErode3D)::New();
-  SP( vtkImageContinuousDilate3D ) dilate_filter = SP(vtkImageContinuousDilate3D)::New();
+//  SP(vtkImageData) imageDataTmp   =  SP(vtkImageData)::New();
+//  SP( vtkImageContinuousErode3D ) erode_filter = SP(vtkImageContinuousErode3D)::New();
+//  SP( vtkImageContinuousDilate3D ) dilate_filter = SP(vtkImageContinuousDilate3D)::New();
 
-  // erode: the islands should be deleted
-  erode_filter->SetInput( img_clean );
-  erode_filter->SetKernelSize(erode_sz,erode_sz,erode_sz);
-  erode_filter->Update();
+//  // erode: the islands should be deleted
+//  //erode_filter->SetInput( img_clean );
+//  erode_filter->SetInputData(img_clean);
+//  erode_filter->SetKernelSize(erode_sz,erode_sz,erode_sz);
+//  erode_filter->Update();
 
-  // dilate: non-islands should expand and fill in well. dilate more than erode
-  // to ensure the erode does not delete any borders
-  dilate_filter->SetInput(erode_filter->GetOutput());
-  dilate_filter->SetKernelSize(dilate_sz,dilate_sz,dilate_sz);
-  dilate_filter->Update();
-  imageDataTmp = dilate_filter->GetOutput();
+//  // dilate: non-islands should expand and fill in well. dilate more than erode
+//  // to ensure the erode does not delete any borders
+//  //dilate_filter->SetInput(erode_filter->GetOutput());
+//  dilate_filter->SetInputData(erode_filter->GetOutput());
+//  dilate_filter->SetKernelSize(dilate_sz,dilate_sz,dilate_sz);
+//  dilate_filter->Update();
+//  imageDataTmp = dilate_filter->GetOutput();
 
-  // do an "AND" of dilate_filter output and original data.
-  unsigned short *ptrDilate   = static_cast<unsigned short*>(imageDataTmp->GetScalarPointer());
-  unsigned short *ptrOriginal = static_cast<unsigned short*>(img_dirty->GetScalarPointer());
-  unsigned short *ptrClean    = static_cast<unsigned short*>(img_clean->GetScalarPointer());
-  int numel                   = dims[0]*dims[1]*dims[2];
-  for( int i=0; i<numel; i++ )
-  {
-    unsigned short dilateVal       =  ptrDilate[i];
-    unsigned short originalVal     =  ptrOriginal[i];
-    unsigned short newVal          =  (dilateVal > 0 ) * originalVal;
-    ptrClean[i]                    = newVal;
-  }
+//  // do an "AND" of dilate_filter output and original data.
+//  unsigned short *ptrDilate   = static_cast<unsigned short*>(imageDataTmp->GetScalarPointer());
+//  unsigned short *ptrOriginal = static_cast<unsigned short*>(img_dirty->GetScalarPointer());
+//  unsigned short *ptrClean    = static_cast<unsigned short*>(img_clean->GetScalarPointer());
+//  int numel                   = dims[0]*dims[1]*dims[2];
+//  for( int i=0; i<numel; i++ )
+//  {
+//    unsigned short dilateVal       =  ptrDilate[i];
+//    unsigned short originalVal     =  ptrOriginal[i];
+//    unsigned short newVal          =  (dilateVal > 0 ) * originalVal;
+//    ptrClean[i]                    = newVal;
+//  }
 
-  img_clean->Update();
-  return img_clean;
-}
+//  //img_clean->Update();
+//  //img_clean->GetData()
+//  return img_clean;
+//}
 
 
 

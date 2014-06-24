@@ -6,7 +6,7 @@ include_DIRECTORIES(
 
 include_directories( ${PYTHON_INCLUDE_DIRS} )
 
-set(KV_LIBS vtkRendering  vtkGraphics  vtkIO  vtkCommon  vtkVolumeRendering
+set(KV_LIBS ${VTK_LIBRARIES} #vtkRendering  vtkGraphics  vtkIO  vtkCommon  vtkVolumeRendering
              ${PYTHON_LIBRARIES}  KSegmentor  ) 
 
 

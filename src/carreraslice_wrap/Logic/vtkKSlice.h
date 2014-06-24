@@ -16,7 +16,7 @@ class VTK_SLICER_CARRERASLICE_MODULE_LOGIC_EXPORT vtkKSlice : public vtkObject
 
 public:
   static vtkKSlice* New();
-  vtkTypeRevisionMacro(vtkKSlice,vtkObject);
+  //vtkTypeRevisionMacro(vtkKSlice,vtkObject);
   //vtkTypeMacro(vtkKSlice,vtkObject);
   
 
