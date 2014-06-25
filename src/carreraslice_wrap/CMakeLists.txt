@@ -45,8 +45,6 @@ set(MODULE_RESOURCES
   Resources/qSlicer${MODULE_NAME}Module.qrc
   )
 
-link_directories(${KSLICE_LIB_PATH})
-
 #-----------------------------------------------------------------------------
 slicerMacroBuildLoadableModule(
   NAME ${MODULE_NAME}

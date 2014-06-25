@@ -87,11 +87,6 @@ add_subdirectory(fastGrowCut)
 
 message(STATUS "Check that this dir actually contains libraries! On windows, will have subdirs! ${KSLICE_LIB_PATH}" )
 if(KSlice_Build_SlicerWrap)
-	if(WIN32)   # for absurd OS
-		set(KSLICE_LIB_PATH  ${CMAKE_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE} CACHE PATH "where are vrcl and KSegmentor libraries")
-	else(WIN32) # for sane OS
-		set(KSLICE_LIB_PATH  ${CMAKE_BINARY_DIR}/lib/ CACHE PATH "where are vrcl and KSegmentor libraries")
-  endif(WIN32)
   add_subdirectory(carreraslice_wrap)
   add_subdirectory(KViewerMain/exes)    # STANDALONE
 endif()

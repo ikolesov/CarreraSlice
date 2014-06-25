@@ -31,8 +31,6 @@ if(KSLICE_BUILD_FOOBAR_WIDGET)
 	  vtkSlicer${MODULE_NAME}ModuleLogic
 	  )
 
-	message(STATUS "KSLICE_LIB_PATH = ${KSLICE_LIB_PATH}" )
-	link_directories(${KSLICE_LIB_PATH})
 	#-----------------------------------------------------------------------------
 	SlicerMacroBuildModuleWidgets(
 	  NAME ${KIT}

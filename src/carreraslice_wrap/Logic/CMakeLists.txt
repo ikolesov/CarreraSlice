@@ -18,9 +18,7 @@ set(${KIT}_SRCS
   vtkSlicerKSliceLogic.cxx
   vtkKSlice.cpp 
   vtkKSlice.h 
-)
-
-link_directories(${KSLICE_LIB_PATH})
+  )
 
 message(STATUS "Slicer_SOURCE_DIR is:  [ ${Slicer_SOURCE_DIR} ]...")
 
