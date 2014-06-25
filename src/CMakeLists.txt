@@ -25,13 +25,8 @@ if(KSlice_Build_SlicerWrap)
   include(${Slicer_USE_FILE})
 endif()
 
-if(NOT KSlice_Build_SlicerWrap)
-  find_package(VTK REQUIRED)
-  if(NOT VTK_DIR)
-    message(FATAL_ERROR "Please set VTK_DIR, or build with Slicer.")
-  endif(NOT VTK_DIR)
-  include(${VTK_USE_FILE})
-endif()
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
 
 SET(BUILD_SHARED_LIBS ON CACHE INTERNAL ON)
