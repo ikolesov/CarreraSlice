@@ -3,11 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 project(CarreraSlice)
 
 #-----------------------------------------------------------------------------
-set(EXTENSION_NAME CarreraSlice)
-
 set(KSLICE_VERSION_MAJOR "1")
 set(KSLICE_VERSION_MINOR "0")
 set(KSLICE_VERSION ${KSLICE_VERSION_MAJOR}.${KSLICE_VERSION_MINOR})
+
+#-----------------------------------------------------------------------------
+set(EXTENSION_NAME CarreraSlice)
 set(EXTENSION_STATUS "Beta")
 set(EXTENSION_DEPENDS "NA") 
 set(EXTENSION_SCREENSHOTURLS   "http://www.slicer.org/slicerWiki/images/thumb/2/2c/DrawLabel.png/500px-DrawLabel.png  http://www.na-mic.org/Wiki/images/thumb/d/d0/TendonSegment.png/800px-TendonSegment.png  http://www.na-mic.org/Wiki/images/thumb/b/b8/FiducialSnapshotX.png/800px-FiducialSnapshotX.png")
