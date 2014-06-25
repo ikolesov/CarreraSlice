@@ -17,14 +17,12 @@ set(EXTENSION_CATEGORY    "Segmentation")
 set(EXTENSION_ICONURL    http://wiki.slicer.org/slicerWiki/images/2/2a/CarreraSliceEffect.png)
 set(EXTENSION_CONTRIBUTORS  "Ivan Kolesov, Liangjia Zhu, Allen Tannenbaum (Stony Brook University), Peter Karasev, Patricio Vela (GT), Yi Gao (UAB), Karl Fritscher (BWH & MGH), Steve Pieper (Isomics)")
 set(EXTENSION_DESCRIPTION   "This extension provides an interactive 3D segmentation tool.")
-#-----------------------------------------------------------------------------
 
+#-----------------------------------------------------------------------------
 set(KSlice_Build_SlicerWrap TRUE CACHE BOOL TRUE)
 if(KSlice_Build_SlicerWrap)
-  if(NOT Slicer_SOURCE_DIR)
-    find_package(Slicer REQUIRED)
-    include(${Slicer_USE_FILE})
-  endif()
+  find_package(Slicer REQUIRED)
+  include(${Slicer_USE_FILE})
 endif()
 
 if(NOT KSlice_Build_SlicerWrap)

@@ -110,9 +110,8 @@ add_subdirectory(Testing)
 #endif()
 
 #-----------------------------------------------------------------------------
-#if(NOT Slicer_SOURCE_DIR)   # why? look at slicerRT
 include(${Slicer_EXTENSION_CPACK})
-#endif()
+
 #-----------------------------------------------------------------------------
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};
                                   ${CMAKE_BINARY_DIR};
