@@ -1,11 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
-
-
-#roject(KSlice3D-slicer)
-#make_policy(SET CMP0012 NEW)
-
 enable_testing()
+project(CarreraSlice)
 
 #-----------------------------------------------------------------------------
 set(EXTENSION_NAME CarreraSlice)
