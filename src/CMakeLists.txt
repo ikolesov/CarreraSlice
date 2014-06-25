@@ -87,8 +87,6 @@ if(KSlice_Build_SlicerWrap)
   add_subdirectory(KViewerMain/exes)    # STANDALONE
 endif()
 
-
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_INSTALL_PREFIX  ${Slicer_DIR} CACHE PATH  "cmake install prefix")
 
 message(STATUS " Compiler: ${CMAKE_COMPILER} ")
@@ -96,4 +94,8 @@ message(STATUS " C++ flags (Release): ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEA
 message(STATUS " C++ flags (Debug): ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS " QT_LIBRARIES: ${QT_LIBRARIES} " )
 message(STATUS " qt include dir: ${QT_include_DIR} " )
-#
+
+#-----------------------------------------------------------------------------
+if(KSlice_Build_SlicerWrap)
+  include(${Slicer_EXTENSION_CPACK})
+endif()

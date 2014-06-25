@@ -89,24 +89,7 @@ slicerMacroBuildScriptedModule(
 set_property(GLOBAL APPEND PROPERTY Slicer_TARGETS ${MODULE_NAME} )
 
 #-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
 if(BUILD_TESTING)
   add_subdirectory(Testing)
 endif()
-
-#-----------------------------------------------------------------------------
-include(${Slicer_EXTENSION_CPACK})
-
-#-----------------------------------------------------------------------------
-set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};
-                                  ${CMAKE_BINARY_DIR};
-                                  ${EXTENSION_NAME};
-                                  ${MODULE_NAME};
-                                  ALL;/")
-
-
-
-
-
 
