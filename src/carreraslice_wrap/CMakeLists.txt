@@ -74,15 +74,6 @@ set(MODULE_PYTHON_RESOURCES
   CarreraSliceEffect.png
   )
 
-#-----------------------------------------------------------------------------
-#ctkMacroCompilePythonScript(
- # TARGET_NAME KUtil
- # SCRIPTS "KUtil.py"
- # RESOURCES ""
- # DESTINATION_DIR ${CMAKE_BINARY_DIR}/${Slicer_QTSCRIPTEDMODULES_LIB_DIR}
-#  INSTALL_DIR ${Slicer_INSTALL_ROOT}
- # )
-
 set(CMAKE_INSTALL_PREFIX  ${Slicer_DIR} CACHE PATH  "cmake install prefix")
 
 
