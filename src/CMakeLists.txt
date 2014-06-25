@@ -16,8 +16,6 @@ set(KSLICE_VERSION ${KSLICE_VERSION_MAJOR}.${KSLICE_VERSION_MINOR})
 set(EXTENSION_STATUS "Beta")
 set(EXTENSION_DEPENDS "NA") 
 set(EXTENSION_SCREENSHOTURLS   "http://www.slicer.org/slicerWiki/images/thumb/2/2c/DrawLabel.png/500px-DrawLabel.png  http://www.na-mic.org/Wiki/images/thumb/d/d0/TendonSegment.png/800px-TendonSegment.png  http://www.na-mic.org/Wiki/images/thumb/b/b8/FiducialSnapshotX.png/800px-FiducialSnapshotX.png")
-# "boost") # Specified as a space separated list or 'NA' if any
-#set(EXTENSION_BUILD_SUBDIRECTORY  
 set(EXTENSION_HOMEPAGE     http://wiki.slicer.org/slicerWiki/index.php/Documentation/Nightly/Modules/CarreraSliceInteractiveSegmenter)
 set(EXTENSION_CATEGORY    "Segmentation")
 set(EXTENSION_ICONURL    http://wiki.slicer.org/slicerWiki/images/2/2a/CarreraSliceEffect.png)
