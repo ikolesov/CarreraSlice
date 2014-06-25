@@ -1,9 +1,4 @@
 
-
-enable_testing()
-
-
-
 #-----------------------------------------------------------------------------
 set(MODULE_NAME CarreraSlice)
 set(MODULE_TITLE ${MODULE_NAME})
@@ -105,9 +100,9 @@ set_property(GLOBAL APPEND PROPERTY Slicer_TARGETS ${MODULE_NAME} )
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-#if(BUILD_TESTING)
-add_subdirectory(Testing)
-#endif()
+if(BUILD_TESTING)
+  add_subdirectory(Testing)
+endif()
 
 #-----------------------------------------------------------------------------
 include(${Slicer_EXTENSION_CPACK})
