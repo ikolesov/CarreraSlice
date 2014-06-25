@@ -48,7 +48,7 @@ set(MODULE_RESOURCES
 link_directories(${KSLICE_LIB_PATH})
 
 #-----------------------------------------------------------------------------
-slicerMacroBuildQtModule(
+slicerMacroBuildLoadableModule(
   NAME ${MODULE_NAME}
   TITLE ${MODULE_TITLE}
   EXPORT_DIRECTIVE ${MODULE_EXPORT_DIRECTIVE}
