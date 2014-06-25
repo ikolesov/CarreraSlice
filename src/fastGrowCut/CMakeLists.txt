@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.9)
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS_DEBUG "/D_DEBUG /MDd /Zi /Ob0 /Od /RTC1" CACHE STRING "extra compiler flags for debug" FORCE )
@@ -28,7 +28,6 @@ add_subdirectory(Widgets)
 #-----------------------------------------------------------------------------
 set(MODULE_EXPORT_DIRECTIVE "Q_SLICER_QTMODULES_${MODULE_NAME_UPPER}_EXPORT")
 
-# Current_{source,binary} and Slicer_{Libs,Base} already included
 set(MODULE_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/Logic
   ${CMAKE_CURRENT_BINARY_DIR}/Logic
@@ -80,7 +79,3 @@ if(BUILD_TESTING)
   add_subdirectory(Testing)
 endif()
 
-##-----------------------------------------------------------------------------
-#if(NOT Slicer_SOURCE_DIR)
-#  include(${Slicer_EXTENSION_CPACK})
-#endif()

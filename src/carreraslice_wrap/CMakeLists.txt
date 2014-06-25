@@ -1,9 +1,4 @@
 
-
-enable_testing()
-
-
-
 #-----------------------------------------------------------------------------
 set(MODULE_NAME CarreraSlice)
 set(MODULE_TITLE ${MODULE_NAME})
@@ -50,10 +45,8 @@ set(MODULE_RESOURCES
   Resources/qSlicer${MODULE_NAME}Module.qrc
   )
 
-link_directories(${KSLICE_LIB_PATH})
-
 #-----------------------------------------------------------------------------
-slicerMacroBuildQtModule(
+slicerMacroBuildLoadableModule(
   NAME ${MODULE_NAME}
   TITLE ${MODULE_TITLE}
   EXPORT_DIRECTIVE ${MODULE_EXPORT_DIRECTIVE}
@@ -79,15 +72,6 @@ set(MODULE_PYTHON_RESOURCES
   CarreraSliceEffect.png
   )
 
-#-----------------------------------------------------------------------------
-#ctkMacroCompilePythonScript(
- # TARGET_NAME KUtil
- # SCRIPTS "KUtil.py"
- # RESOURCES ""
- # DESTINATION_DIR ${CMAKE_BINARY_DIR}/${Slicer_QTSCRIPTEDMODULES_LIB_DIR}
-#  INSTALL_DIR ${Slicer_INSTALL_ROOT}
- # )
-
 set(CMAKE_INSTALL_PREFIX  ${Slicer_DIR} CACHE PATH  "cmake install prefix")
 
 
@@ -103,25 +87,7 @@ slicerMacroBuildScriptedModule(
 set_property(GLOBAL APPEND PROPERTY Slicer_TARGETS ${MODULE_NAME} )
 
 #-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
-#if(BUILD_TESTING)
-add_subdirectory(Testing)
-#endif()
-
-#-----------------------------------------------------------------------------
-#if(NOT Slicer_SOURCE_DIR)   # why? look at slicerRT
-include(${Slicer_EXTENSION_CPACK})
-#endif()
-#-----------------------------------------------------------------------------
-set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};
-                                  ${CMAKE_BINARY_DIR};
-                                  ${EXTENSION_NAME};
-                                  ${MODULE_NAME};
-                                  ALL;/")
-
-
-
-
-
+if(BUILD_TESTING)
+  add_subdirectory(Testing)
+endif()
 

@@ -1,13 +1,11 @@
 #include "interactive_kurvolver.h"
-#include "stdio.h"
 //#include "sfm_local_chanvese_mex.h"
-#include <iostream>
+
+// STD includes
+#include <cstdio>
 #include <fstream>
-using std::endl;
-using std::cout;
-
-
- //
+#include <iostream>
+#include <string>
 
 void interactive_edgebased(energy3c* segEngine, double *img, float *phi, short *U_integral, short *label, long *dims,
                     LL *Lz, LL *Ln1, LL *Lp1, LL *Ln2, LL *Lp2, LL *Lin2out, LL *Lout2in,
@@ -36,8 +34,9 @@ void interactive_edgebased(energy3c* segEngine, double *img, float *phi, short *
       segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
 
     }
-    if( display > 0 )
-      cout << "done sfls iters: " << iter << endl;
+    if( display > 0 ){
+      std::cout << "done sfls iters: " << iter << std::endl;
+    }
 
     //segEngine->en_lrbac_destroy();    // in the destructor
 }
@@ -69,8 +68,9 @@ void interactive_edgebased_ext(energy3c* segEngine, double *img, float *phi, sho
       segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, rad);
 
     }
-    if( display > 0 )
-      cout << "done sfls iters: " << iter << endl;
+    if( display > 0 ){
+      std::cout << "done sfls iters: " << iter << std::endl;
+    }
 
     //segEngine->en_lrbac_destroy(); //this is done in the destructor of segEngine!
 }
@@ -125,8 +125,9 @@ void interactive_rbchanvese(energy3c* segEngine, double *img, float *phi, short 
 //  }
 //  phiAfterFile.close();
 
-  if( display > 0 )
-    cout << "done sfls iters: " << iter << endl;
+  if( display > 0 ){
+    std::cout << "done sfls iters: " << iter << std::endl;
+  }
 
    //segEngine->en_lrbac_destroy(); //in the destructor
 }
@@ -164,8 +165,9 @@ void curvatureFlow(energy3c* segEngine, double *img, float *phi, short *label, l
     }
 
   }
-  if( display > 0 )
-    cout << "done sfls iters: " << iter << endl;
+  if( display > 0 ){
+    std::cout << "done sfls iters: " << iter << std::endl;
+  }
 }
 
 void interactive_rbchanvese_ext(energy3c* segEngine, double *img, float *phi, short *U_integral, short *label, long *dims,
@@ -203,8 +205,9 @@ void interactive_rbchanvese_ext(energy3c* segEngine, double *img, float *phi, sh
     segEngine->en_lrbac_update(img, dims, Lin2out, Lout2in, segEngine->GetRadius());
 
   }
-  if( display > 0 )
-    cout << "done sfls iters: " << iter << endl;
+  if( display > 0 ){
+    std::cout << "done sfls iters: " << iter << std::endl;
+  }
 
   //segEngine->en_lrbac_destroy();   //in the destructor
 }

@@ -1,18 +1,14 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.9)
 
-
-
-#roject(KSlice3D-slicer)
-#make_policy(SET CMP0012 NEW)
-
-enable_testing()
+project(CarreraSlice)
 
 #-----------------------------------------------------------------------------
-set(EXTENSION_NAME CarreraSlice)
-
 set(KSLICE_VERSION_MAJOR "1")
 set(KSLICE_VERSION_MINOR "0")
 set(KSLICE_VERSION ${KSLICE_VERSION_MAJOR}.${KSLICE_VERSION_MINOR})
+
+#-----------------------------------------------------------------------------
+set(EXTENSION_NAME CarreraSlice)
 set(EXTENSION_STATUS "Beta")
 set(EXTENSION_DEPENDS "NA") 
 set(EXTENSION_SCREENSHOTURLS   "http://www.slicer.org/slicerWiki/images/thumb/2/2c/DrawLabel.png/500px-DrawLabel.png  http://www.na-mic.org/Wiki/images/thumb/d/d0/TendonSegment.png/800px-TendonSegment.png  http://www.na-mic.org/Wiki/images/thumb/b/b8/FiducialSnapshotX.png/800px-FiducialSnapshotX.png")
@@ -21,31 +17,34 @@ set(EXTENSION_CATEGORY    "Segmentation")
 set(EXTENSION_ICONURL    http://wiki.slicer.org/slicerWiki/images/2/2a/CarreraSliceEffect.png)
 set(EXTENSION_CONTRIBUTORS  "Ivan Kolesov, Liangjia Zhu, Allen Tannenbaum (Stony Brook University), Peter Karasev, Patricio Vela (GT), Yi Gao (UAB), Karl Fritscher (BWH & MGH), Steve Pieper (Isomics)")
 set(EXTENSION_DESCRIPTION   "This extension provides an interactive 3D segmentation tool.")
-#-----------------------------------------------------------------------------
 
+#-----------------------------------------------------------------------------
 set(KSlice_Build_SlicerWrap TRUE CACHE BOOL TRUE)
 if(KSlice_Build_SlicerWrap)
-  if(NOT Slicer_SOURCE_DIR)
-    find_package(Slicer REQUIRED)
-    include(${Slicer_USE_FILE})
-  endif()
+  find_package(Slicer REQUIRED)
+  include(${Slicer_USE_FILE})
 endif()
 
-if(NOT KSlice_Build_SlicerWrap)
-  find_package(VTK REQUIRED)
-  if(NOT VTK_DIR)
-    message(FATAL_ERROR "Please set VTK_DIR, or build with Slicer.")
-  endif(NOT VTK_DIR)
-  include(${VTK_USE_FILE})
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+
+#-----------------------------------------------------------------------------
+# Set a default build type if none was specified
+#-----------------------------------------------------------------------------
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Debug' as none was specified.")
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+  mark_as_advanced(CMAKE_BUILD_TYPE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+    "MinSizeRel" "RelWithDebInfo")
 endif()
 
+#-----------------------------------------------------------------------------
+include(CTest)
 
 SET(BUILD_SHARED_LIBS ON CACHE INTERNAL ON)
 set(CMAKE_VERBOSE_MAKEFILE CACHE bool true FORCE)
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Debug;Release")
- #Q: what does this line do??  A: enables dropdown box in cmake-gui, instead of needed to type
-
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "Debug")
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables")
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "Single Directory for all Libraries")
@@ -88,17 +87,10 @@ add_subdirectory(fastGrowCut)
 
 message(STATUS "Check that this dir actually contains libraries! On windows, will have subdirs! ${KSLICE_LIB_PATH}" )
 if(KSlice_Build_SlicerWrap)
-	if(WIN32)   # for absurd OS
-		set(KSLICE_LIB_PATH  ${CMAKE_BINARY_DIR}/lib/${CMAKE_BUILD_TYPE} CACHE PATH "where are vrcl and KSegmentor libraries")
-	else(WIN32) # for sane OS
-		set(KSLICE_LIB_PATH  ${CMAKE_BINARY_DIR}/lib/ CACHE PATH "where are vrcl and KSegmentor libraries")
-    endif(WIN32)
-    add_subdirectory(carreraslice_wrap)
-    add_subdirectory(KViewerMain/exes)    # STANDALONE
+  add_subdirectory(carreraslice_wrap)
+  add_subdirectory(KViewerMain/exes)    # STANDALONE
 endif()
 
-
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_INSTALL_PREFIX  ${Slicer_DIR} CACHE PATH  "cmake install prefix")
 
 message(STATUS " Compiler: ${CMAKE_COMPILER} ")
@@ -106,4 +98,8 @@ message(STATUS " C++ flags (Release): ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEA
 message(STATUS " C++ flags (Debug): ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS " QT_LIBRARIES: ${QT_LIBRARIES} " )
 message(STATUS " qt include dir: ${QT_include_DIR} " )
-#
+
+#-----------------------------------------------------------------------------
+if(KSlice_Build_SlicerWrap)
+  include(${Slicer_EXTENSION_CPACK})
+endif()
