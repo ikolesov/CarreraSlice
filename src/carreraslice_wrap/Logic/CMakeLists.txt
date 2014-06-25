@@ -1,9 +1,7 @@
+
 project(vtkSlicer${MODULE_NAME}ModuleLogic)
 
-
-
 set(KIT ${PROJECT_NAME})
-enable_testing()
 
 set(${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT")
 
@@ -24,7 +22,8 @@ message(STATUS "Slicer_SOURCE_DIR is:  [ ${Slicer_SOURCE_DIR} ]...")
 
 set(${KIT}_TARGET_LIBRARIES
   ${ITK_LIBRARIES}
-    KSegmentor  sfm_local_chanvese
+  KSegmentor
+  sfm_local_chanvese
   )
 
 #-----------------------------------------------------------------------------
