@@ -28,14 +28,23 @@ endif()
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
+#-----------------------------------------------------------------------------
+# Set a default build type if none was specified
+#-----------------------------------------------------------------------------
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Debug' as none was specified.")
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+  mark_as_advanced(CMAKE_BUILD_TYPE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+    "MinSizeRel" "RelWithDebInfo")
+endif()
+
+#-----------------------------------------------------------------------------
 include(CTest)
 
 SET(BUILD_SHARED_LIBS ON CACHE INTERNAL ON)
 set(CMAKE_VERBOSE_MAKEFILE CACHE bool true FORCE)
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Debug;Release")
- #Q: what does this line do??  A: enables dropdown box in cmake-gui, instead of needed to type
-
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "Debug")
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables")
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "Single Directory for all Libraries")
