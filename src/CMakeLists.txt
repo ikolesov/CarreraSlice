@@ -18,10 +18,6 @@ set(EXTENSION_DEPENDS "NA")
 set(EXTENSION_SCREENSHOTURLS   "http://www.slicer.org/slicerWiki/images/thumb/2/2c/DrawLabel.png/500px-DrawLabel.png  http://www.na-mic.org/Wiki/images/thumb/d/d0/TendonSegment.png/800px-TendonSegment.png  http://www.na-mic.org/Wiki/images/thumb/b/b8/FiducialSnapshotX.png/800px-FiducialSnapshotX.png")
 # "boost") # Specified as a space separated list or 'NA' if any
 #set(EXTENSION_BUILD_SUBDIRECTORY  
-
-set(MIDAS_PACKAGE_URL   http://slicer.kitware.com/midas3)
-set(MIDAS_PACKAGE_EMAIL  ivan.kolesov1@gmail.com)
-set(MIDAS_PACKAGE_API_KEY  tqsS/lB5zAE7xcI3i52P0NFVvJx0x8EQ)
 set(EXTENSION_HOMEPAGE     http://wiki.slicer.org/slicerWiki/index.php/Documentation/Nightly/Modules/CarreraSliceInteractiveSegmenter)
 set(EXTENSION_CATEGORY    "Segmentation")
 set(EXTENSION_ICONURL    http://wiki.slicer.org/slicerWiki/images/2/2a/CarreraSliceEffect.png)
