@@ -138,7 +138,7 @@ void curvatureFlow(energy3c* segEngine, double *img, float *phi, short *label, l
 {
   float *F;
 
-  std::cout<<"This is the state: "<<prevMode<<std::endl;
+  //std::cout<<"This is the state: "<<prevMode<<std::endl;
   for(int i=0;i<iter;i++){
     // compute force
     F = segEngine->en_kappa_compute(Lz, phi, dims, lambda);
