@@ -47,7 +47,6 @@ class VolumeMaskerWidget:
 
     self.inputVolumeSelector = slicer.qMRMLNodeComboBox(self.inputVolumeSelectorFrame)
     self.inputVolumeSelector.nodeTypes = ( ("vtkMRMLScalarVolumeNode"), "" )
-    self.inputVolumeSelector.addAttribute( "vtkMRMLScalarVolumeNode", "LabelMap", 0 )
     self.inputVolumeSelector.selectNodeUponCreation = False
     self.inputVolumeSelector.addEnabled = False
     self.inputVolumeSelector.removeEnabled = False
@@ -70,8 +69,7 @@ class VolumeMaskerWidget:
     self.labelSelectorFrame.layout().addWidget( self.labelSelectorLabel )
 
     self.labelSelector = slicer.qMRMLNodeComboBox()
-    self.labelSelector.nodeTypes = ( "vtkMRMLScalarVolumeNode", "" )
-    self.labelSelector.addAttribute( "vtkMRMLScalarVolumeNode", "LabelMap", "1" )
+    self.labelSelector.nodeTypes = ( "vtkMRMLLabelMapVolumeNode", "" )
     self.labelSelector.selectNodeUponCreation = False
     self.labelSelector.addEnabled = False
     self.labelSelector.noneEnabled = True
