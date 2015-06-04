@@ -312,7 +312,7 @@ def get_values_at_IJK( ijk, sliceWidget):
     if ijk[ele] < 0 or ijk[ele] >= dims[ele]:
       #print "Out of Frame"
       wasOutOfFrame=True
-  if not wasOutOfFrame and volumeNode.GetLabelMap():
+  if not wasOutOfFrame and volumeNode.IsA('vtkMRMLLabelMapVolumeNode'):
     labelIndex = int(imageData.GetScalarComponentAsDouble(ijk[0], ijk[1], ijk[2], 0))
     #print "labelIndex = " + str(labelIndex)
     values['label'] = labelIndex
