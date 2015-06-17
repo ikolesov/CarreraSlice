@@ -2,12 +2,9 @@ import os
 from __main__ import vtk, qt, ctk, slicer
 import EditorLib
 from EditorLib.EditOptions import HelpButton
-from EditorLib.EditOptions import EditOptions
 from EditorLib import EditUtil
 from EditorLib import LabelEffect
-
 from EditorLib import Effect
-from EditorLib import LabelEffectLogic
 
 from copy import copy, deepcopy
 import numpy as np
