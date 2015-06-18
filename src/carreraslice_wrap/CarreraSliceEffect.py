@@ -2,12 +2,9 @@ import os
 from __main__ import vtk, qt, ctk, slicer
 import EditorLib
 from EditorLib.EditOptions import HelpButton
-from EditorLib.EditOptions import EditOptions
 from EditorLib import EditUtil
 from EditorLib import LabelEffect
-
 from EditorLib import Effect
-from EditorLib import LabelEffectLogic
 
 from copy import copy, deepcopy
 import numpy as np
@@ -423,7 +420,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
                               [findGC, self.demoCarreraSlice] ]
                                                          
     for keydef in self.qtkeydefsGrowcut:
-        s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
+        s = qt.QShortcut(keydef[0], slicer.util.mainWindow()) # connect this qt event to mainWindow focus
         #s.setContext(1)
         s.connect('activated()', keydef[1])
         #s.connect('activatedAmbiguously()', keydef[1])
@@ -574,7 +571,7 @@ class KSliceEffectLogic(LabelEffect.LabelEffectLogic):
 
 
     for keydef in self.qtkeydefsKSlice:
-        s = qt.QShortcut(keydef[0], mainWindow()) # connect this qt event to mainWindow focus
+        s = qt.QShortcut(keydef[0], slicer.util.mainWindow()) # connect this qt event to mainWindow focus
         #s.setContext(1)
         s.connect('activated()', keydef[1])
         #s.connect('activatedAmbiguously()', keydef[1])
