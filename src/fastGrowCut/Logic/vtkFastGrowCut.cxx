@@ -95,9 +95,9 @@ void vtkFastGrowCut::RunFGC(){
     timer.Stop();
 
     if(!InitializationFlag)
-        std::cout << "Initial fast GrowCut segmentation time: " << timer.GetMeanTime() << " seconds\n";
+        std::cout << "Initial fast GrowCut segmentation time: " << timer.GetMean() << " seconds\n";
     else
-        std::cout << "Adaptive fast GrowCut segmentation time: " << timer.GetMeanTime() << " seconds\n";
+        std::cout << "Adaptive fast GrowCut segmentation time: " << timer.GetMean() << " seconds\n";
 
 }
 
