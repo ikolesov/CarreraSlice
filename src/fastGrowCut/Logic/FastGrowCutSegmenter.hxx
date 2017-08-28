@@ -148,8 +148,6 @@ void FastGrowCut<SrcPixelType, LabPixelType>
      else {
          for(index = 0; index < m_DIMXYZ; index++) {
              if(m_imSeed[index] != 0 && m_imSeed[index] != m_imLabPre[index]) {
-//             if(m_imSeed[index] != 0 && (m_imDistPre[index] != 0 ||  (m_imDistPre[index] == 0 && \
-//                                                                      m_imSeed[index] != m_imLabPre[index]))) {
                  m_hpNodes[index] = (float)DIST_EPSION;
                  m_imDist[index] = DIST_EPSION;
                  m_imLab[index] = m_imSeed[index];
