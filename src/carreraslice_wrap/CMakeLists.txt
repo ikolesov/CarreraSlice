@@ -76,8 +76,3 @@ slicerMacroBuildScriptedModule(
 # Export target
 set_property(GLOBAL APPEND PROPERTY Slicer_TARGETS ${MODULE_NAME} )
 
-#-----------------------------------------------------------------------------
-if(BUILD_TESTING)
-  add_subdirectory(Testing)
-endif()
-
