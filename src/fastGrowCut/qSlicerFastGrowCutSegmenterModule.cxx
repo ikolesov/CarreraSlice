@@ -23,7 +23,6 @@
 
 // FastGrowCutSegmenter includes
 #include "qSlicerFastGrowCutSegmenterModule.h"
-#include "qSlicerFastGrowCutSegmenterModuleWidget.h"
 
 //-----------------------------------------------------------------------------
 Q_EXPORT_PLUGIN2(qSlicerFastGrowCutSegmenterModule, qSlicerFastGrowCutSegmenterModule);
@@ -54,6 +53,7 @@ qSlicerFastGrowCutSegmenterModule
   : Superclass(_parent)
   , d_ptr(new qSlicerFastGrowCutSegmenterModulePrivate)
 {
+  this->setWidgetRepresentationCreationEnabled(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void qSlicerFastGrowCutSegmenterModule::setup()
 qSlicerAbstractModuleRepresentation * qSlicerFastGrowCutSegmenterModule
 ::createWidgetRepresentation()
 {
-  return new qSlicerFastGrowCutSegmenterModuleWidget;
+  return 0;
 }
 
 //-----------------------------------------------------------------------------

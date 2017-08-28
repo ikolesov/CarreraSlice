@@ -23,7 +23,6 @@
 
 // KSlice includes
 #include "qSlicerCarreraSliceModule.h"
-#include "qSlicerCarreraSliceModuleWidget.h"
 
 //-----------------------------------------------------------------------------
 Q_EXPORT_PLUGIN2(qSlicerCarreraSliceModule, qSlicerCarreraSliceModule);
@@ -54,6 +53,7 @@ qSlicerCarreraSliceModule
   : Superclass(_parent)
   , d_ptr(new qSlicerCarreraSliceModulePrivate)
 {
+  this->setWidgetRepresentationCreationEnabled(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void qSlicerCarreraSliceModule::setup()
 qSlicerAbstractModuleRepresentation * qSlicerCarreraSliceModule
 ::createWidgetRepresentation()
 {
-  return new qSlicerCarreraSliceModuleWidget;
+  return 0;
 }
 
 //-----------------------------------------------------------------------------
