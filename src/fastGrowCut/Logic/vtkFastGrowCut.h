@@ -3,34 +3,25 @@
 #define FASTGROWCUT_H
 
 #include "vtkSlicerFastGrowCutSegmenterModuleLogicExport.h"
-#include "vtkImageData.h"
+
 #include "FastGrowCutSegmenter.h"
 
-#include <QProgressBar>
-#include <QMainWindow>
-#include <QStatusBar>
-#include "qSlicerApplication.h"
-
-const unsigned short SrcDimension = 3;
-typedef float DistPixelType;											// float type pixel for cost function
-typedef short SrcPixelType;
-typedef unsigned char LabPixelType;
+// VTK includes
+#include <vtkImageData.h>
+#include <vtkObject.h>
 
 class VTK_SLICER_FASTGROWCUTSEGMENTER_MODULE_LOGIC_EXPORT vtkFastGrowCut : public vtkObject
 {
-
-
-
 public:
-  static vtkFastGrowCut* New();
-//  vtkTypeRevisionMacro(vtkFastGrowCut,vtkObject);
-  vtkTypeMacro(vtkFastGrowCut,vtkObject);
+  typedef short SrcPixelType;
+  typedef unsigned char LabPixelType;
 
+  static vtkFastGrowCut* New();
+  vtkTypeMacro(vtkFastGrowCut,vtkObject);
 
   //set parameters of grow cut
   vtkSetObjectMacro(SourceVol, vtkImageData);
   vtkSetObjectMacro(SeedVol, vtkImageData);
-  //vtkSetObjectMacro(OutputVol, vtkImageData);
 
   vtkSetMacro(InitializationFlag, bool);
 
