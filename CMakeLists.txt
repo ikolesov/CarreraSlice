@@ -1,3 +1,2 @@
-cmake_minimum_required(VERSION 2.8.9)
-message(STATUS   "recursing into src directory...")
+cmake_minimum_required(VERSION 3.5)
 add_subdirectory(src)

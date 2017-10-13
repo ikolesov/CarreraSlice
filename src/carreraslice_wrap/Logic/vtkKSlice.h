@@ -1,24 +1,18 @@
 
-#ifndef KVIEWER_GUI_H
-#define KVIEWER_GUI_H
+#ifndef __vtkKSlice_h
+#define __vtkKSlice_h
 
-
-//#include "KDataWarehouse.h"
 #include "KViewerOptions.h"
-#include "vtkSlicerCarreraSliceModuleLogicExport.h"
 #include "vtkImageData.h"
 #include "KSegmentor3D.h"
 
+#include "vtkSlicerCarreraSliceModuleLogicExport.h"
+
 class VTK_SLICER_CARRERASLICE_MODULE_LOGIC_EXPORT vtkKSlice : public vtkObject
 {
-
-
-
 public:
   static vtkKSlice* New();
-  //vtkTypeRevisionMacro(vtkKSlice,vtkObject);
   vtkTypeMacro(vtkKSlice,vtkObject);
-  
 
   void PrintSelf(ostream &os, vtkIndent indent);
 

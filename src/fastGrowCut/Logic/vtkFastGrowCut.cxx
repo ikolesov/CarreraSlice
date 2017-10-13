@@ -1,27 +1,30 @@
-#include <iostream>
+
 #include "vtkFastGrowCut.h"
 
-#include "vtkObjectFactory.h"
-#include "vtkSmartPointer.h"
+// VTK includes
+#include <vtkObjectFactory.h>
+#include <vtkSmartPointer.h>
 
-#include "itkImage.h"
-#include "itkTimeProbe.h"
+// ITK includes
+#include <itkTimeProbe.h>
+
+// STD includes
+#include <iostream>
 
 #include "FastGrowCutSegmenter.h"
 
-vtkStandardNewMacro(vtkFastGrowCut); //for the new() macro
+//----------------------------------------------------------------------------
+vtkStandardNewMacro(vtkFastGrowCut);
 
 //----------------------------------------------------------------------------
-
-
 vtkFastGrowCut::vtkFastGrowCut( ) {
 
     SourceVol   = NULL;
     SeedVol   = NULL;
     m_fastGC = NULL;
- }
+}
 
-
+//----------------------------------------------------------------------------
 vtkFastGrowCut::~vtkFastGrowCut() {
 
     //these functions decrement reference count on the vtkImageData's (incremented by the SetMacros)
@@ -40,6 +43,7 @@ vtkFastGrowCut::~vtkFastGrowCut() {
     }
 }
 
+//----------------------------------------------------------------------------
 void vtkFastGrowCut::Initialization() {
 
     InitializationFlag = false;
@@ -48,15 +52,11 @@ void vtkFastGrowCut::Initialization() {
     }
 }
 
-
+//----------------------------------------------------------------------------
 void vtkFastGrowCut::RunFGC(){
 
     itk::TimeProbe timer;
-
     timer.Start();
-
-    QProgressBar* computationProgressBar =  new QProgressBar;
-    qSlicerApplication::application()->mainWindow()->statusBar()->addPermanentWidget(computationProgressBar);
 
     // Find ROI
     if(!InitializationFlag) {
@@ -77,30 +77,25 @@ void vtkFastGrowCut::RunFGC(){
     m_fastGC->SetSourceImage(m_imSrcVec);
     m_fastGC->SetSeedlImage(m_imSeedVec);
     m_fastGC->SetImageSize(imSize);
-     m_fastGC->SetWorkMode(InitializationFlag);
-
-//     computationProgressBar->setValue(10);
+    m_fastGC->SetWorkMode(InitializationFlag);
 
     // Do Segmentation
     m_fastGC->DoSegmentation();
     m_fastGC->GetForegroundmage(m_imLabVec);
 
-//    computationProgressBar->setValue(90);
-
     // Update result
     FGC::UpdateVTKImageROI<LabPixelType>(m_imLabVec, m_imROI, SeedVol);
 
-//    computationProgressBar->setValue(100);
-    delete computationProgressBar;
     timer.Stop();
 
     if(!InitializationFlag)
-        std::cout << "Initial fast GrowCut segmentation time: " << timer.GetMeanTime() << " seconds\n";
+        std::cout << "Initial fast GrowCut segmentation time: " << timer.GetMean() << " seconds\n";
     else
-        std::cout << "Adaptive fast GrowCut segmentation time: " << timer.GetMeanTime() << " seconds\n";
+        std::cout << "Adaptive fast GrowCut segmentation time: " << timer.GetMean() << " seconds\n";
 
 }
 
+//----------------------------------------------------------------------------
 void vtkFastGrowCut::PrintSelf(ostream &os, vtkIndent indent){
     std::cout<<"This function has been found"<<std::endl;
 }

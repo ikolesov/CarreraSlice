@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.5)
 
 project(CarreraSlice)
 
@@ -43,8 +43,6 @@ endif()
 #-----------------------------------------------------------------------------
 include(CTest)
 
-SET(BUILD_SHARED_LIBS ON CACHE INTERNAL ON)
-set(CMAKE_VERBOSE_MAKEFILE CACHE bool true FORCE)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables")
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib CACHE PATH "Single Directory for all Libraries")

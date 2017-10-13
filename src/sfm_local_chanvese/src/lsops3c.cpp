@@ -43,7 +43,6 @@ void ls_iteration(float *F, float *phi, short *label, long* dims,
   //                                             ========
   //     (a) scan Lz values [-2.5 -1.5)[-1.5 -.5)[-.5 .5](.5 1.5](1.5 2.5]
   ll_init(Lz); i = 0;
-  int numRemoved=0;//IKDebug
   while(Lz->curr != NULL){
     x   = Lz->curr->x;
     y   = Lz->curr->y;
